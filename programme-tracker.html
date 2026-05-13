@@ -569,6 +569,12 @@ const KEY='prgm-v2';
 function defState(){return{week:0,tab:'today',expanded:todayDayKey(),completions:{},overrides:{},swapping:null,extras:[],steps:{},startDate:'2026-05-18',measurements:{},targets:{weight:'',bodyFat:'',waist:'',chest:'',hips:'',thigh:'',arm:'',runDist:5,golfHcp:'',totalLift:''},_measWeek:undefined};}
 let S=defState();
 try{const r=localStorage.getItem(KEY);if(r){S=Object.assign(defState(),JSON.parse(r));}}catch(e){}
+// Auto-correct week: if today is before Week 1 start, must be Week 0
+(function(){
+  const today=new Date();today.setHours(0,0,0,0);
+  const wk1=new Date(WK1_START+'T00:00:00');
+  if(today<wk1&&S.week>=1){S.week=0;localStorage.setItem(KEY,JSON.stringify(S));}
+})();
 
 let _st=null;
 function save(){
