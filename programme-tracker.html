@@ -186,9 +186,6 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 .hst-date{font-family:'JetBrains Mono',monospace;font-size:.625rem;color:var(--t3)}
 .hst-info{font-size:.75rem;color:var(--t1)}
 .hst-cal{font-family:'JetBrains Mono',monospace;font-size:.625rem;color:var(--t4)}
-.startdate-row{display:flex;align-items:center;gap:.5rem;padding:.5rem 0 .25rem}
-.startdate-row label{font-size:.625rem;font-family:'JetBrains Mono',monospace;color:var(--t3);letter-spacing:.1em;text-transform:uppercase}
-.startdate-row input[type=date]{background:rgba(38,38,38,.8);color:var(--t1);border:1px solid var(--b1);border-radius:.375rem;padding:.25rem .5rem;font-size:.6875rem;font-family:'JetBrains Mono',monospace;outline:none;cursor:pointer;color-scheme:dark}
 .parsing-msg{font-family:'JetBrains Mono',monospace;font-size:.75rem;color:#22d3ee;letter-spacing:.1em}
 @keyframes spin{to{transform:rotate(360deg)}}
 
@@ -221,6 +218,146 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 .actual-inp{width:4rem;background:rgba(23,23,23,.7);border:1px solid #3d3d3d;border-radius:.375rem;padding:.2rem .375rem;font-family:'JetBrains Mono',monospace;font-size:.875rem;color:var(--t1);outline:none;text-align:center}
 .actual-inp:focus{border-color:rgba(251,146,60,.4)}
 .actual-inp::placeholder{color:#3a3a3a}
+
+.date-row{display:flex;align-items:center;justify-content:space-between;padding:.625rem 1rem;border-top:1px solid rgba(38,38,38,.4)}
+.date-lbl{font-size:.625rem;font-family:'JetBrains Mono',monospace;color:#737373;letter-spacing:.15em;text-transform:uppercase}
+.date-inp{background:rgba(23,23,23,.7);border:1px solid #3d3d3d;border-radius:.5rem;padding:.35rem .625rem;font-family:'JetBrains Mono',monospace;font-size:.875rem;color:var(--t1);outline:none;-webkit-appearance:none}
+.date-inp:focus{border-color:rgba(251,146,60,.4)}
+.add-sess-btn{width:100%;padding:.75rem;border:1px dashed #3d3d3d;border-radius:.75rem;background:transparent;color:#737373;font-size:.6875rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;margin-top:.5rem;font-family:'JetBrains Mono',monospace;display:flex;align-items:center;justify-content:center;gap:.5rem}
+.add-sess-btn:active{background:rgba(38,38,38,.4);color:var(--t1)}
+.extra-wrap{margin-top:.5rem;border-radius:1rem;border:1px solid #3d3d3d;background:rgba(23,23,23,.5);overflow:hidden;position:relative}
+.extra-wrap.done{background:rgba(23,23,23,.3)}
+.extra-top{display:flex;align-items:center;gap:.625rem;padding:.75rem 1rem}
+.extra-icon{font-size:1rem;line-height:1;flex-shrink:0}
+.extra-info{flex:1;min-width:0}
+.extra-name{font-size:.875rem;color:var(--t1);font-family:'Fraunces',Georgia,serif;font-weight:500}
+.extra-date-disp{font-size:.625rem;font-family:'JetBrains Mono',monospace;color:#737373;margin-top:.1rem}
+.extra-del{background:transparent;border:none;color:#525252;cursor:pointer;padding:.25rem .5rem;font-size:1.125rem;line-height:1;flex-shrink:0}
+.extra-del:active{color:#ef4444}
+.extra-chev{color:#525252;transition:transform .2s;flex-shrink:0}
+.extra-chev.op{transform:rotate(180deg)}
+
+.sunsal-row{padding:.75rem 0 .5rem;border-bottom:1px solid rgba(38,38,38,.4)}
+.sunsal-hdr{display:flex;align-items:center;gap:.625rem;margin-bottom:.625rem}
+.sunsal-title{font-size:.875rem;color:var(--t1);flex:1}
+.sunsal-target{font-size:.625rem;font-family:'JetBrains Mono',monospace;color:#737373}
+.sunsal-inp-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.625rem}
+.sunsal-inp-lbl{font-size:.6875rem;color:#a3a3a3;width:7rem;flex-shrink:0}
+.sunsal-inp{width:5rem;background:rgba(23,23,23,.7);border:1px solid #3d3d3d;border-radius:.5rem;padding:.4rem .625rem;font-family:'JetBrains Mono',monospace;font-size:1.125rem;color:var(--t1);outline:none;text-align:center}
+.sunsal-inp:focus{border-color:rgba(163,230,53,.5)}
+.sunsal-inp::placeholder{color:#3a3a3a}
+.sunsal-prog-wrap{margin-top:.25rem}
+.sunsal-prog-lbl{display:flex;justify-content:space-between;margin-bottom:.375rem}
+.sunsal-prog-txt{font-size:.625rem;font-family:'JetBrains Mono',monospace;color:#737373}
+.sunsal-prog-pct{font-size:.625rem;font-family:'JetBrains Mono',monospace;color:#a3e635}
+.sunsal-bar{height:.375rem;background:#262626;border-radius:999px;overflow:hidden}
+.sunsal-bar-fill{height:100%;background:#a3e635;border-radius:999px;transition:width .5s}
+.walk-log-sect{border-top:1px solid rgba(38,38,38,.4);padding:.75rem .25rem .25rem;margin-top:.25rem}
+
+.steps-row{display:flex;align-items:center;gap:.75rem;padding:.625rem 1rem;
+  border-radius:.75rem;border:1px solid rgba(38,38,38,.5);background:rgba(23,23,23,.4);margin-top:.375rem}
+.steps-icon{font-size:1rem;line-height:1;flex-shrink:0}
+.steps-lbl{font-size:.75rem;color:#a3a3a3;flex:1}
+.steps-inp{width:6rem;background:rgba(23,23,23,.7);border:1px solid #3d3d3d;border-radius:.5rem;
+  padding:.35rem .625rem;font-family:'JetBrains Mono',monospace;font-size:1rem;color:var(--t1);
+  outline:none;text-align:right}
+.steps-inp:focus{border-color:rgba(52,211,153,.5)}
+.steps-inp::placeholder{color:#3a3a3a}
+.steps-unit{font-size:.625rem;font-family:'JetBrains Mono',monospace;color:#525252;flex-shrink:0}
+
+.steps-sect{margin-bottom:1.25rem}
+.steps-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.625rem;margin-bottom:1rem}
+.steps-stat{border-radius:.75rem;border:1px solid var(--b1);background:rgba(23,23,23,.5);padding:.75rem;text-align:center}
+.steps-stat-val{font-family:'Fraunces',Georgia,serif;font-size:1.5rem;font-weight:500;line-height:1}
+.steps-stat-val.hit{color:#34d399}
+.steps-stat-val.miss{color:#fb923c}
+.steps-stat-lbl{font-size:.5rem;font-family:'JetBrains Mono',monospace;color:#525252;letter-spacing:.15em;text-transform:uppercase;margin-top:.25rem}
+.steps-map{border-radius:1rem;border:1px solid var(--b1);background:rgba(23,23,23,.4);padding:.875rem 1rem;overflow-x:auto}
+.steps-map-head{display:grid;grid-template-columns:3rem repeat(7,1fr);gap:.25rem;margin-bottom:.375rem}
+.steps-map-hlbl{font-size:.5rem;font-family:'JetBrains Mono',monospace;color:#525252;text-align:center;letter-spacing:.05em}
+.steps-map-row{display:grid;grid-template-columns:3rem repeat(7,1fr);gap:.25rem;margin-bottom:.25rem;align-items:center}
+.steps-map-wlbl{font-size:.5rem;font-family:'JetBrains Mono',monospace;color:#525252;letter-spacing:.05em}
+.sdot{width:100%;aspect-ratio:1;border-radius:.3rem;display:flex;align-items:center;justify-content:center;position:relative}
+.sdot.hit{background:rgba(52,211,153,.25);border:1px solid rgba(52,211,153,.4)}
+.sdot.miss{background:rgba(251,146,60,.2);border:1px solid rgba(251,146,60,.4)}
+.sdot.empty{background:rgba(38,38,38,.3);border:1px solid rgba(38,38,38,.5)}
+.sdot-val{font-size:.45rem;font-family:'JetBrains Mono',monospace;color:#a3a3a3;line-height:1;text-align:center}
+.sdot.miss .sdot-val{color:#fb923c}
+.sdot.hit .sdot-val{color:#34d399}
+.steps-legend{display:flex;gap:1rem;margin-top:.625rem;justify-content:flex-end}
+.steps-leg-item{display:flex;align-items:center;gap:.375rem;font-size:.5625rem;font-family:'JetBrains Mono',monospace;color:#737373}
+.steps-leg-dot{width:.625rem;height:.625rem;border-radius:.125rem}
+
+.wk-badge{font-size:.5rem;font-family:'JetBrains Mono',monospace;letter-spacing:.05em;
+  margin-top:.375rem;padding:.125rem .3rem;border-radius:.25rem;display:inline-block;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.wk-profile-card{border-radius:1rem;border:1px solid var(--b1);background:rgba(23,23,23,.4);
+  padding:1rem;margin-bottom:1.25rem}
+.wk-profile-row{display:flex;align-items:center;justify-content:space-between;
+  padding:.4rem 0;border-bottom:1px solid rgba(38,38,38,.35)}
+.wk-profile-row:last-child{border-bottom:none}
+.wk-profile-num{font-size:.625rem;font-family:'JetBrains Mono',monospace;color:#525252;width:2.5rem;flex-shrink:0}
+.wk-profile-badge{font-size:.6875rem;font-family:'JetBrains Mono',monospace;font-weight:500;padding:.2rem .5rem;border-radius:.375rem}
+.wk-profile-detail{font-size:.5625rem;font-family:'JetBrains Mono',monospace;color:#525252;text-align:right;flex:1;margin-left:.5rem}
+
+.opt-yoga-wrap{border-radius:1rem;border:1px solid rgba(163,230,53,0.3);
+  background:rgba(163,230,53,0.12);overflow:hidden;margin-top:.375rem;position:relative}
+.opt-yoga-wrap::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,#a3e635,transparent)}
+.opt-yoga-top{width:100%;display:flex;align-items:center;gap:.75rem;
+  padding:.875rem 1rem;background:transparent;border:none;cursor:pointer;text-align:left}
+.opt-yoga-top:active{background:rgba(163,230,53,0.08)}
+.opt-yoga-lbl{font-size:.5rem;font-family:'JetBrains Mono',monospace;color:#a3a3a3;
+  letter-spacing:.2em;text-transform:uppercase;margin-bottom:.15rem}
+.opt-yoga-name{font-family:'Fraunces',Georgia,serif;font-size:1.25rem;
+  color:var(--t1);font-weight:500;line-height:1.2}
+.opt-yoga-sub{font-size:.875rem;color:#a3a3a3;margin-top:.1rem}
+
+/* Measurements */
+.meas-section{margin-bottom:1.5rem}
+.meas-week-sel{display:flex;align-items:center;gap:.75rem;margin-bottom:.875rem}
+.meas-week-lbl{font-size:.625rem;font-family:'JetBrains Mono',monospace;color:#737373;letter-spacing:.15em;text-transform:uppercase}
+.meas-week-btn{padding:.35rem .75rem;background:rgba(23,23,23,.7);border:1px solid #3d3d3d;border-radius:.5rem;font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--t1);cursor:pointer}
+.meas-week-btn.active{border-color:var(--ac);color:var(--ac);background:rgba(251,146,60,.08)}
+.meas-card{border-radius:1rem;border:1px solid var(--b1);background:rgba(23,23,23,.5);padding:1rem;margin-bottom:.75rem}
+.meas-grid{display:grid;grid-template-columns:1fr 1fr;gap:.625rem}
+.meas-field{display:flex;flex-direction:column;gap:.25rem}
+.meas-field.full{grid-column:1/-1}
+.meas-field-lbl{font-size:.5rem;font-family:'JetBrains Mono',monospace;color:#525252;letter-spacing:.15em;text-transform:uppercase}
+.meas-inp{background:rgba(23,23,23,.7);border:1px solid #3d3d3d;border-radius:.5rem;padding:.4rem .625rem;font-family:'JetBrains Mono',monospace;font-size:1rem;color:var(--t1);outline:none;width:100%}
+.meas-inp:focus{border-color:rgba(251,146,60,.4)}
+.meas-inp::placeholder{color:#3a3a3a}
+.meas-inp.readonly{color:#737373;background:rgba(38,38,38,.3)}
+.meas-unit{font-size:.5rem;font-family:'JetBrains Mono',monospace;color:#525252;margin-top:.1rem}
+/* Charts */
+.chart-wrap{margin-bottom:1.25rem}
+.chart-card{border-radius:1rem;border:1px solid var(--b1);background:rgba(23,23,23,.4);padding:.875rem 1rem .625rem}
+.chart-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.625rem}
+.chart-lbl{font-size:.625rem;font-family:'JetBrains Mono',monospace;color:#737373;letter-spacing:.15em;text-transform:uppercase}
+.chart-latest{font-size:.875rem;font-family:'JetBrains Mono',monospace;color:var(--t1)}
+.chart-tgt{font-size:.5rem;font-family:'JetBrains Mono',monospace;color:#525252}
+.chart-empty{text-align:center;padding:1.25rem;font-size:.75rem;color:#525252;font-family:'JetBrains Mono',monospace}
+/* Targets */
+.target-card{border-radius:1rem;border:1px solid var(--b1);background:rgba(23,23,23,.4);padding:1rem;margin-bottom:1.25rem}
+.target-row{display:flex;align-items:center;gap:.75rem;padding:.5rem 0;border-bottom:1px solid rgba(38,38,38,.35)}
+.target-row:last-child{border-bottom:none}
+.target-lbl{font-size:.75rem;color:var(--t2);flex:1}
+.target-inp{width:5rem;background:rgba(23,23,23,.7);border:1px solid #3d3d3d;border-radius:.5rem;padding:.35rem .5rem;font-family:'JetBrains Mono',monospace;font-size:.875rem;color:var(--t1);outline:none;text-align:right}
+.target-inp:focus{border-color:rgba(251,146,60,.4)}
+.target-unit{font-size:.625rem;font-family:'JetBrains Mono',monospace;color:#525252;width:2rem;flex-shrink:0}
+/* Continuation */
+.cont-card{border-radius:1rem;border:1px solid rgba(251,146,60,.4);background:rgba(251,146,60,.06);padding:1.25rem;margin-bottom:1.5rem;text-align:center}
+.cont-title{font-family:'Fraunces',Georgia,serif;font-size:1.5rem;font-weight:500;color:var(--t1);margin-bottom:.375rem}
+.cont-sub{font-size:.75rem;color:#a3a3a3;margin-bottom:1rem}
+.cont-btns{display:flex;gap:.625rem}
+.cont-btn{flex:1;padding:.75rem;border-radius:.75rem;font-size:.75rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;border:none;cursor:pointer;transition:transform .1s}
+.cont-btn:active{transform:scale(.97)}
+.cont-btn.primary{background:var(--ac);color:#0a0a0a}
+.cont-btn.secondary{background:rgba(38,38,38,.7);color:var(--t2);border:1px solid #3d3d3d}
+/* Monday prompt */
+.monday-card{border-radius:1rem;border:1px solid rgba(251,146,60,.3);background:rgba(251,146,60,.06);padding:1rem;margin-bottom:.625rem}
+.monday-title{font-family:'Fraunces',Georgia,serif;font-size:1.125rem;font-weight:500;color:var(--t1);margin-bottom:.25rem}
+.monday-sub{font-size:.75rem;color:#a3a3a3;margin-bottom:.75rem}
 </style>
 </head>
 <body>
@@ -240,14 +377,16 @@ const ACT={
   'gym-a':{color:'#fb923c',tint:'rgba(251,146,60,0.12)',border:'rgba(251,146,60,0.3)',icon:'🏋',label:'Gym A'},
   'gym-b':{color:'#fb923c',tint:'rgba(251,146,60,0.12)',border:'rgba(251,146,60,0.3)',icon:'🏋',label:'Gym B'},
   'gym-c':{color:'#fb923c',tint:'rgba(251,146,60,0.12)',border:'rgba(251,146,60,0.3)',icon:'🏋',label:'Gym C'},
-  'run':  {color:'#60a5fa',tint:'rgba(96,165,250,0.12)',border:'rgba(96,165,250,0.3)',icon:'🏃',label:'Run'},
+  'run':     {color:'#60a5fa',tint:'rgba(96,165,250,0.12)',border:'rgba(96,165,250,0.3)',icon:'🏃',label:'Run'},
   'yoga': {color:'#a3e635',tint:'rgba(163,230,53,0.12)',border:'rgba(163,230,53,0.3)',icon:'🧘',label:'Yoga'},
   'golf': {color:'#c084fc',tint:'rgba(192,132,252,0.12)',border:'rgba(192,132,252,0.3)',icon:'⛳',label:'Golf'},
   'swim': {color:'#22d3ee',tint:'rgba(34,211,238,0.12)',border:'rgba(34,211,238,0.3)',icon:'🏊',label:'Swim'},
+  'walk': {color:'#34d399',tint:'rgba(52,211,153,0.12)',border:'rgba(52,211,153,0.3)',icon:'🚶',label:'Walk'},
   'rest': {color:'#737373',tint:'rgba(115,115,115,0.1)',border:'rgba(115,115,115,0.3)',icon:'☕',label:'Rest'},
 };
 
 const SCHED={
+  0: {ph:0,d:{mon:'rest',tue:'rest',wed:'rest',thu:'rest',fri:'rest',sat:'golf',sun:'rest'}},
   1: {ph:1,d:{mon:'gym-a',tue:'run',wed:'yoga',thu:'gym-b',fri:'rest', sat:'golf',sun:'rest'}},
   2: {ph:1,d:{mon:'gym-a',tue:'run',wed:'yoga',thu:'gym-b',fri:'run',  sat:'golf',sun:'rest'}},
   3: {ph:1,d:{mon:'gym-a',tue:'run',wed:'yoga',thu:'gym-b',fri:'run',  sat:'golf',sun:'swim'}},
@@ -256,16 +395,18 @@ const SCHED={
   6: {ph:2,d:{mon:'gym-a',tue:'run',wed:'yoga',thu:'gym-b',fri:'gym-c',sat:'golf',sun:'swim'}},
   7: {ph:2,d:{mon:'gym-a',tue:'run',wed:'yoga',thu:'gym-b',fri:'gym-c',sat:'golf',sun:'swim'}},
   8: {ph:2,d:{mon:'gym-a',tue:'run',wed:'yoga',thu:'gym-b',fri:'gym-c',sat:'golf',sun:'swim'}},
-  9: {ph:3,d:{mon:'gym-a',tue:'run',wed:'gym-b',thu:'yoga',fri:'gym-c',sat:'golf',sun:'swim'}},
-  10:{ph:3,d:{mon:'gym-a',tue:'run',wed:'gym-b',thu:'yoga',fri:'gym-c',sat:'golf',sun:'swim'}},
-  11:{ph:3,d:{mon:'gym-a',tue:'run',wed:'gym-b',thu:'yoga',fri:'gym-c',sat:'golf',sun:'swim'}},
-  12:{ph:3,d:{mon:'gym-a',tue:'run',wed:'gym-b',thu:'yoga',fri:'gym-c',sat:'golf',sun:'swim'}},
+  9: {ph:3,d:{mon:'gym-a',tue:'run',wed:'gym-b',thu:'run',fri:'gym-c',sat:'golf',sun:'run'}},
+  10:{ph:3,d:{mon:'gym-a',tue:'run',wed:'gym-b',thu:'run',fri:'gym-c',sat:'golf',sun:'run'}},
+  11:{ph:3,d:{mon:'gym-a',tue:'run',wed:'gym-b',thu:'run',fri:'gym-c',sat:'golf',sun:'run'}},
+  12:{ph:3,d:{mon:'gym-a',tue:'run',wed:'gym-b',thu:'run',fri:'gym-c',sat:'golf',sun:'run'}},
 };
 
 const PHASES={
+  0:{name:'START',range:'Wk 0',desc:'Getting started. Free week — change any day to any activity.'},
   1:{name:'REBUILD',range:'Wk 1–4',desc:'Habit formation. 2× gym per week.'},
   2:{name:'RESTORE',range:'Wk 5–8',desc:'Build volume. 3× gym per week.'},
-  3:{name:'RETURN', range:'Wk 9–12',desc:'Full programme. 4× gym per week.'},
+  3:{name:'RETURN', range:'Wk 9–12',desc:'3× gym · 3× run · 3× yoga · 1× golf.'},
+  4:{name:'ADVANCE',range:'Wk 13–24',desc:'Continued progression. Same structure, new targets.'},
 };
 
 const GYM={
@@ -400,6 +541,7 @@ const RUN={
   11:'5 km run · ~33 min',12:'5 km run · ~32 min',
 };
 const YOGA=[
+  {n:'Sun Salutations',d:'reps',isSunSal:true},
   {n:'Cat-Cow',d:'10 reps'},{n:'Low Lunge / Crescent',d:'45s/sd'},
   {n:'Pigeon Pose',d:'60s/sd'},{n:'Downward Dog',d:'30s × 3'},
   {n:'Supine Twist',d:'45s/sd'},{n:'Bridge Pose',d:'10 reps + 30s'},
@@ -414,11 +556,17 @@ const GOLF=[
   {n:'Loose swing warm-up',d:'5 min'},
 ];
 
+
+function getSchedule(w){
+  if(SCHED[w])return SCHED[w];
+  // Phase 4 (weeks 13-24): same structure as Phase 3
+  return{ph:4,d:{mon:'gym-a',tue:'run',wed:'gym-b',thu:'run',fri:'gym-c',sat:'golf',sun:'run'}};
+}
 // =========================================================
 // STATE & STORAGE
 // =========================================================
 const KEY='prgm-v2';
-function defState(){return{week:1,tab:'today',expanded:todayDayKey(),completions:{},overrides:{},swapping:null};}
+function defState(){return{week:0,tab:'today',expanded:todayDayKey(),completions:{},overrides:{},swapping:null,extras:[],steps:{},startDate:'2026-05-18',measurements:{},targets:{weight:'',bodyFat:'',waist:'',chest:'',hips:'',thigh:'',arm:'',runDist:5,golfHcp:'',totalLift:''},_measWeek:undefined};}
 let S=defState();
 try{const r=localStorage.getItem(KEY);if(r){S=Object.assign(defState(),JSON.parse(r));}}catch(e){}
 
@@ -444,6 +592,8 @@ function getDetail(aid,week){
   if(aid==='yoga')return{...m,name:'Yoga / Mobility',focus:'40–45 min flow',items:YOGA};
   if(aid==='swim')return{...m,name:'Swim',focus:'25–30 min',items:SWIM};
   if(aid==='golf')return{...m,name:'Golf',focus:'Walk the course',items:GOLF};
+  if(aid==='run-yoga')return{...m,name:'Run + Yoga',focus:(RUN[week]||'Run intervals')+' · then Yoga flow',items:YOGA,isRunYoga:true};
+  if(aid==='walk')return{...m,name:'Walk',focus:'Steps · Distance · Duration',items:null};
   return{...m,name:'Rest Day',focus:'Recovery — optional 20 min walk',items:null};
 }
 
@@ -465,7 +615,7 @@ function findPrev(exName,curWeek,curDay){
       const d=DAYS[di];
       const c=S.completions['w'+w+'-'+d];
       if(!c?.exercises)continue;
-      const aid=SCHED[w]?.d[d];
+      const aid=getSchedule(w)?.d[d];
       if(!aid?.startsWith('gym'))continue;
       const g=GYM[aid];if(!g)continue;
       const ei=g.ex.findIndex(e=>e.n===exName);
@@ -493,6 +643,892 @@ function findPrev(exName,curWeek,curDay){
 }
 
 
+
+// =========================================================
+// EXTRA SESSION CARD
+// =========================================================
+function mkExtraCard(extra){
+  const det=getDetail(extra.activityId, extra.week||S.week);
+  if(!det)return null;
+  const isDone=!!extra.done;
+  const expKey='extra-'+extra.id;
+  const expanded=S.expanded===expKey;
+
+  const wrap=document.createElement('div');
+  wrap.className='extra-wrap'+(isDone?' done':'');
+
+  // Top row (tap to expand)
+  const top=document.createElement('button');
+  top.className='extra-top';top.style.cssText='width:100%;background:transparent;border:none;cursor:pointer;text-align:left';
+  top.innerHTML=`
+    <span class="extra-icon">${det.icon}</span>
+    <div class="extra-info">
+      <div class="extra-name">${det.name}</div>
+      <div class="extra-date-disp">${extra.date?new Date(extra.date+' ').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'}):''}</div>
+    </div>
+    <span class="extra-chev${expanded?' op':''}">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </span>`;
+  top.onclick=()=>{S.expanded=(expanded?null:expKey);save();render();};
+
+  // Delete button
+  const delBtn=document.createElement('button');delBtn.className='extra-del';
+  delBtn.innerHTML='×';delBtn.title='Delete session';
+  delBtn.onclick=(e)=>{e.stopPropagation();
+    if(confirm('Delete this extra session?')){
+      S.extras=S.extras.filter(x=>x.id!==extra.id);save();render();
+    }
+  };
+  top.appendChild(delBtn);
+  wrap.appendChild(top);
+
+  if(expanded){
+    const exp=document.createElement('div');exp.className='cexp fade';
+    const inner=document.createElement('div');inner.className='cein';
+
+    // Exercises (gym) or items
+    if(det.isGym&&det.items){
+      det.items.forEach((ex,ei)=>{
+        const fakeComp={exercises:extra.exercises||{}};
+        const es=exState(fakeComp,ei);
+        const prev=findPrev(ex.n,extra.week||S.week,extra.day||'mon');
+        const bw=isBW(ex);
+        const row=document.createElement('div');row.className='exrow';
+        const rowHdr=document.createElement('div');rowHdr.className='exhdr';
+        const ckBtn=document.createElement('button');ckBtn.className='ck'+(es.done?' on':'');
+        ckBtn.style.background=es.done?det.color:'transparent';
+        ckBtn.innerHTML=es.done?'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>':'';
+        ckBtn.onclick=()=>{
+          const exs={...(extra.exercises||{})};
+          const cur=exState({exercises:exs},ei);
+          exs[ei]={done:!cur.done,sets:cur.sets};
+          extra.exercises=exs;
+          S.extras=[...S.extras.filter(x=>x.id!==extra.id),extra];
+          save();render();
+        };
+        const nmEl=document.createElement('span');nmEl.className='exnm'+(es.done?' dn':'');nmEl.textContent=ex.n;
+        const mtEl=document.createElement('span');mtEl.className='exmt mf';
+        mtEl.innerHTML=`${ex.s} × ${ex.r}<span class="exrs">${ex.rest}</span>`;
+        rowHdr.append(ckBtn,nmEl,mtEl);
+        const grid=document.createElement('div');grid.className='sgrid';
+        grid.style.gridTemplateColumns=`repeat(${ex.s},minmax(0,1fr))`;
+        for(let si=0;si<ex.s;si++){
+          const s=es.sets[si]||{};
+          const pw=prev?.sets[si]?.weight||'';const pr=prev?.sets[si]?.reps||'';
+          const sc=document.createElement('div');sc.className='scard'+(s.weight||s.reps?' fi':'');
+          let inn=`<div class="snum mf">SET ${si+1}</div>`;
+          if(!bw){
+            inn+=`<input class="sinp wt" type="text" inputmode="decimal" placeholder="${pw||'—'}" value="${s.weight||''}" data-extraid="${extra.id}" data-ei="${ei}" data-si="${si}" data-f="weight">`;
+            inn+=`<div class="sunt mf">kg</div>`;
+          }
+          inn+=`<input class="sinp rp" type="text" inputmode="numeric" placeholder="${pr||'—'}" value="${s.reps||''}" data-extraid="${extra.id}" data-ei="${ei}" data-si="${si}" data-f="reps">`;
+          inn+=`<div class="sunt mf">reps</div>`;
+          sc.innerHTML=inn;grid.appendChild(sc);
+        }
+        row.append(rowHdr,grid);
+        if(prev){
+          const ph2=document.createElement('div');ph2.className='pvhint';
+          const setTxt=prev.sets.slice(0,4).map(s=>{const p=[];if(s.weight)p.push(s.weight+'kg');if(s.reps)p.push(s.reps);return'<span class="pvset">'+p.join('×')+'</span>';}).join(' <span style="color:#3d3d3d">·</span> ');
+          ph2.innerHTML=`<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#737373" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
+            <span class="pvtxt mf"><span style="color:#525252">Last (${prev.label}):</span> ${setTxt}</span>`;
+          row.appendChild(ph2);
+        }
+        inner.appendChild(row);
+      });
+    } else if(det.items){
+      det.items.forEach((item,ii)=>{
+        const fakeComp={exercises:extra.exercises||{}};
+        const es=exState(fakeComp,ii);
+        const row=document.createElement('div');row.className='irow';row.style.cursor='pointer';
+        const ckBtn=document.createElement('button');ckBtn.className='ck'+(es.done?' on':'');
+        ckBtn.style.background=es.done?det.color:'transparent';
+        ckBtn.innerHTML=es.done?'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>':'';
+        const nm=document.createElement('span');nm.className='inm'+(es.done?' dn':'');nm.textContent=item.n||item.name;
+        const mt=document.createElement('span');mt.className='imt mf';mt.textContent=item.d||item.duration||'';
+        ckBtn.onclick=(e)=>{e.stopPropagation();
+          const exs={...(extra.exercises||{})};const cur=exState({exercises:exs},ii);
+          exs[ii]={done:!cur.done,sets:cur.sets};extra.exercises=exs;
+          S.extras=[...S.extras.filter(x=>x.id!==extra.id),extra];save();render();
+        };
+        row.append(ckBtn,nm,mt);row.onclick=()=>ckBtn.onclick(new Event('c'));
+        inner.appendChild(row);
+      });
+    }
+
+    exp.appendChild(inner);wrap.appendChild(exp);
+
+    // Date + complete
+    const ca=document.createElement('div');ca.className='carea';
+    const dr=document.createElement('div');dr.className='date-row';
+    const dl=document.createElement('span');dl.className='date-lbl';dl.textContent='Session date';
+    const di=document.createElement('input');di.type='date';di.className='date-inp';
+    di.max=isoToday();di.value=extra.date||isoToday();
+    di.onchange=(e)=>{extra.date=e.target.value;S.extras=[...S.extras.filter(x=>x.id!==extra.id),extra];save();render();};
+    dr.append(dl,di);ca.appendChild(dr);
+    const cb=document.createElement('button');cb.className='cbtn'+(isDone?' dn':'');
+    cb.style.background=isDone?'':det.color;
+    if(isDone){
+      const dt=extra.completedAt?new Date(extra.completedAt+' ').toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'';
+      cb.innerHTML=`<span style="display:flex;align-items:center;justify-content:center;gap:.5rem"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>COMPLETE${dt?' <span style="color:#525252">· '+dt+'</span>':''}</span>`;
+    }else{cb.textContent='MARK COMPLETE';}
+    cb.onclick=()=>{
+      extra.done=!extra.done;extra.completedAt=extra.done?(extra.date||isoToday()):null;
+      S.extras=[...S.extras.filter(x=>x.id!==extra.id),extra];save();render();
+    };
+    ca.appendChild(cb);wrap.appendChild(ca);
+  }
+  return wrap;
+}
+
+function mkAddSessionBtn(week,day){
+  const btn=document.createElement('button');btn.className='add-sess-btn';
+  btn.innerHTML=`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add session`;
+  btn.onclick=()=>{
+    const id='e'+Date.now();
+    const schAid=getSchedule(week).d[day];
+    // Default to a different activity than scheduled
+    const alts=Object.keys(ACT).filter(a=>a!==schAid&&a!=='rest');
+    const newAid=alts[0]||'run';
+    const newExtra={id,week,day,activityId:newAid,date:isoToday(),done:false,completedAt:null,exercises:{}};
+    S.extras=[...S.extras,newExtra];
+    S.expanded='extra-'+id;
+    save();render();
+  };
+  return btn;
+}
+
+
+function countSunSals(){
+  let total=0;
+  // From main completions — only yoga keys (activity is yoga or companion '-yoga' key)
+  Object.entries(S.completions).forEach(([key,c])=>{
+    if(!c?.exercises?.[0]?.actual)return;
+    // Accept keys ending in '-yoga' (companion) or where the scheduled/overridden activity is yoga
+    const isYogaKey=key.endsWith('-yoga');
+    if(!isYogaKey){
+      // Check if this slot is actually a yoga day
+      const parts=key.split('-'); // ['w1','mon']
+      const w=parseInt(parts[0].slice(1));const d=parts[1];
+      const aid=(S.overrides&&S.overrides[key])||getSchedule(w)?.d[d];
+      if(aid!=='yoga')return;
+    }
+    const n=parseInt(c.exercises[0].actual);
+    if(!isNaN(n))total+=n;
+  });
+  // From extras (yoga type only)
+  (S.extras||[]).forEach(e=>{
+    if((e.activityId==='yoga'||e.activityId==='run-yoga')&&e.exercises?.[0]?.actual){
+      const n=parseInt(e.exercises[0].actual);
+      if(!isNaN(n))total+=n;
+    }
+  });
+  return total;
+}
+
+function mkStepsRow(week,day){
+  const key='w'+week+'-'+day;
+  const val=(S.steps&&S.steps[key])||'';
+  const row=document.createElement('div');row.className='steps-row';
+  row.innerHTML=`
+    <span class="steps-icon">👟</span>
+    <span class="steps-lbl">Steps</span>
+    <input class="steps-inp" type="text" inputmode="numeric" placeholder="—"
+      value="${val}" data-stepskey="${key}">
+    <span class="steps-unit">steps</span>`;
+  row.querySelector('.steps-inp').onchange=(e)=>{
+    if(!S.steps)S.steps={};
+    S.steps[key]=e.target.value;
+    save();
+  };
+  return row;
+}
+
+function mkStepsProgress(){
+  const TARGET=7000;
+  const wrap=document.createElement('div');wrap.className='steps-sect';
+
+  // Collect all step data
+  const entries=[];
+  for(let w=0;w<=12;w++){
+    DAYS.forEach(d=>{
+      const key='w'+w+'-'+d;
+      const raw=(S.steps&&S.steps[key])||'';
+      if(raw){
+        const n=parseInt(raw.replace(/,/g,''));
+        if(!isNaN(n))entries.push({week:w,day:d,steps:n,hit:n>=TARGET});
+      }
+    });
+  }
+
+  // Stats
+  const total=entries.length;
+  const hitCount=entries.filter(e=>e.hit).length;
+  const missCount=total-hitCount;
+  const avg=total?Math.round(entries.reduce((s,e)=>s+e.steps,0)/total):0;
+
+  const secLbl=document.createElement('div');secLbl.className='seclbl mf';secLbl.textContent='STEPS · '+TARGET.toLocaleString()+' DAILY TARGET';
+  wrap.appendChild(secLbl);
+
+  // Stat cards
+  const sg=document.createElement('div');sg.className='steps-stats-grid';
+  [
+    {val:avg?avg.toLocaleString():'—', lbl:'Daily avg', cls:''},
+    {val:hitCount, lbl:'Days hit ✓', cls:'hit'},
+    {val:missCount, lbl:'Days missed', cls:'miss'},
+  ].forEach(({val,lbl,cls})=>{
+    const sc=document.createElement('div');sc.className='steps-stat';
+    sc.innerHTML=`<div class="steps-stat-val ${cls}">${val}</div><div class="steps-stat-lbl">${lbl}</div>`;
+    sg.appendChild(sc);
+  });
+  wrap.appendChild(sg);
+
+  // 12-week grid
+  const mapWrap=document.createElement('div');mapWrap.className='steps-map';
+  // Header row
+  const hdr=document.createElement('div');hdr.className='steps-map-head';
+  hdr.innerHTML='<div class="steps-map-hlbl"></div>'+
+    ['M','T','W','T','F','S','S'].map(d=>`<div class="steps-map-hlbl">${d}</div>`).join('');
+  mapWrap.appendChild(hdr);
+
+  // Week rows
+  for(let w=1;w<=12;w++){
+    const row=document.createElement('div');row.className='steps-map-row';
+    const wlbl=document.createElement('div');wlbl.className='steps-map-wlbl';wlbl.textContent='W'+String(w).padStart(2,'0');
+    row.appendChild(wlbl);
+    DAYS.forEach(d=>{
+      const key='w'+w+'-'+d;
+      const raw=(S.steps&&S.steps[key])||'';
+      const n=raw?parseInt(raw.replace(/,/g,'')):NaN;
+      const hasData=!isNaN(n)&&raw!=='';
+      const hit=hasData&&n>=TARGET;
+      const miss=hasData&&!hit;
+      const dot=document.createElement('div');
+      dot.className='sdot '+(hasData?(hit?'hit':'miss'):'empty');
+      if(hasData){
+        const valEl=document.createElement('div');valEl.className='sdot-val';
+        valEl.textContent=n>=1000?(n/1000).toFixed(1)+'k':String(n);
+        dot.appendChild(valEl);
+        dot.title=DAY_NAMES[d]+' Wk'+w+': '+n.toLocaleString()+' steps '+(hit?'✓':'✗ below target');
+      }
+      row.appendChild(dot);
+    });
+    mapWrap.appendChild(row);
+  }
+
+  // Legend
+  const leg=document.createElement('div');leg.className='steps-legend';
+  leg.innerHTML=`
+    <div class="steps-leg-item"><div class="steps-leg-dot" style="background:rgba(52,211,153,.4)"></div>≥ 7,000</div>
+    <div class="steps-leg-item"><div class="steps-leg-dot" style="background:rgba(251,146,60,.35)"></div>< 7,000</div>
+    <div class="steps-leg-item"><div class="steps-leg-dot" style="background:rgba(38,38,38,.5)"></div>No data</div>`;
+  mapWrap.appendChild(leg);
+  wrap.appendChild(mapWrap);
+  return wrap;
+}
+
+
+const WK0_START='2026-05-13';// Wed 13 May — getting started
+const WK1_START='2026-05-18';// Mon 18 May — programme begins
+function weekStartDate(w){
+  if(w===0)return new Date(WK0_START+'T00:00:00');
+  const d=new Date(WK1_START+'T00:00:00');
+  d.setDate(d.getDate()+(w-1)*7);return d;
+}
+function weekEndDate(w){
+  if(w===0)return new Date('2026-05-17T00:00:00');
+  const d=weekStartDate(w);d.setDate(d.getDate()+6);return d;
+}
+function isWeek13Plus(w){return w>12;}
+function isWeekFuture(w){
+  const ws=weekStartDate(w);
+  const today=new Date();today.setHours(0,0,0,0);ws.setHours(0,0,0,0);
+  return ws>today;
+}
+function fmtWeekRange(w){
+  const s=weekStartDate(w),e=weekEndDate(w);
+  const sm=MONTHS[s.getMonth()],em=MONTHS[e.getMonth()];
+  return s.getDate()+(sm!==em?' '+sm:'')+' – '+e.getDate()+' '+em;
+}
+function getWeekLabel(week){
+  if(isWeekFuture(week))return null;
+  const schd=getSchedule(week).d;
+  let gym=0,run=0,yoga=0,golf=0,walk=0,swim=0;
+  DAYS.forEach(d=>{
+    const key='w'+week+'-'+d;
+    if(!S.completions[key]?.done)return;
+    const aid=(S.overrides&&S.overrides[key])||schd[d];
+    if(aid.startsWith('gym'))gym++;
+    else if(aid==='run')run++;
+    else if(aid==='yoga')yoga++;
+    else if(aid==='golf')golf++;
+    else if(aid==='walk')walk++;
+    else if(aid==='swim')swim++;
+  });
+  (S.extras||[]).filter(e=>e.week===week&&e.done).forEach(e=>{
+    const a=e.activityId;
+    if(a.startsWith('gym'))gym++;else if(a==='run')run++;
+    else if(a==='yoga')yoga++;else if(a==='golf')golf++;
+    else if(a==='walk')walk++;else if(a==='swim')swim++;
+  });
+  const total=gym+run+yoga+golf+walk+swim;
+  const cardio=run+walk;
+  const flex=yoga+golf;
+
+  if(total<=1) return{label:"Death's Door",emoji:'💀',color:'#ef4444',bg:'rgba(239,68,68,.15)',total};
+  if(total<=3) return{label:'Disaster',    emoji:'🔥',color:'#fb923c',bg:'rgba(251,146,60,.15)',total};
+
+  // Balanced: 2-3 gym, 2-3 run, 1-2 yoga, 1+ golf/walk
+  if(gym>=2&&gym<=3&&run>=2&&run<=3&&yoga>=1&&yoga<=2&&(golf+walk)>=1)
+    return{label:'Balanced',emoji:'⚖️',color:'#a3e635',bg:'rgba(163,230,53,.15)',total};
+
+  // Strength: gym ≥3 OR (gym≥2 and yoga≥2) with low cardio
+  if((gym>=3||(gym>=2&&yoga>=2))&&cardio<=1)
+    return{label:'Strength',emoji:'💪',color:'#f59e0b',bg:'rgba(245,158,11,.15)',total};
+
+  // Cardio: run+walk dominant
+  if(cardio>=3||(cardio>=2&&cardio>gym&&cardio>=flex))
+    return{label:'Cardio',emoji:'🏃',color:'#60a5fa',bg:'rgba(96,165,250,.15)',total};
+
+  // Flexibility: yoga+golf dominant
+  if(flex>=3||(flex>=2&&flex>gym&&flex>=cardio))
+    return{label:'Flexibility',emoji:'🧘',color:'#c084fc',bg:'rgba(192,132,252,.15)',total};
+
+  // Fallback: pick dominant category
+  if(gym>=cardio&&gym>=flex&&gym>=1) return{label:'Strength',emoji:'💪',color:'#f59e0b',bg:'rgba(245,158,11,.15)',total};
+  if(cardio>flex) return{label:'Cardio',emoji:'🏃',color:'#60a5fa',bg:'rgba(96,165,250,.15)',total};
+  return{label:'Flexibility',emoji:'🧘',color:'#c084fc',bg:'rgba(192,132,252,.15)',total};
+}
+
+function mkOptionalYogaCard(week, day){
+  const compKey='w'+week+'-'+day+'-yoga';
+  const comp=S.completions[compKey]||{};
+  const isDone=!!comp.done;
+  const expKey='optyoga-'+week+'-'+day;
+  const expanded=S.expanded===expKey;
+  const yogaColor='#a3e635';
+
+  const wrap=document.createElement('div');
+  wrap.className='opt-yoga-wrap'+(isDone?' dn':'');
+
+  const top=document.createElement('button');top.className='opt-yoga-top';
+  top.innerHTML=`
+    <span style="font-size:1.125rem;line-height:1">🧘</span>
+    <div style="flex:1;min-width:0">
+      <div class="opt-yoga-lbl">${DAY_NAMES[day]}</div>
+      <div class="opt-yoga-name">Yoga / Mobility</div>
+      <div class="opt-yoga-sub">40–45 min flow</div>
+    </div>
+    <span class="extra-chev${expanded?' op':''}" style="color:#525252">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </span>`;
+  top.onclick=()=>{S.expanded=(expanded?null:expKey);save();render();};
+  wrap.appendChild(top);
+
+  if(expanded){
+    const exp=document.createElement('div');exp.className='cexp fade';
+    const inner=document.createElement('div');inner.className='cein';
+
+    YOGA.forEach((item,ii)=>{
+      const es=exState(comp,ii);
+      if(item.isSunSal){
+        const totalSS=countSunSals();const pct=Math.min(100,(totalSS/100)*100);
+        const ssRow=document.createElement('div');ssRow.className='sunsal-row';
+        const ssHdr=document.createElement('div');ssHdr.className='sunsal-hdr';
+        const ck=document.createElement('button');ck.className='ck'+(es.done?' on':'');
+        ck.style.background=es.done?yogaColor:'transparent';
+        ck.innerHTML=es.done?'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>':'';
+        ck.onclick=(e)=>{e.stopPropagation();
+          const c=S.completions[compKey]||{exercises:{}};
+          const exs={...c.exercises};const cur=exState({exercises:exs},ii);
+          exs[ii]={done:!cur.done,sets:cur.sets,actual:cur.actual};
+          S.completions={...S.completions,[compKey]:{...c,exercises:exs}};save();render();};
+        const t=document.createElement('span');t.className='sunsal-title';t.textContent='Sun Salutations';
+        const tg=document.createElement('span');tg.className='sunsal-target';tg.textContent='Goal: 100 reps / year';
+        ssHdr.append(ck,t,tg);
+        const ir=document.createElement('div');ir.className='sunsal-inp-row';
+        const lb=document.createElement('span');lb.className='sunsal-inp-lbl';lb.textContent='Reps today';
+        const inp=document.createElement('input');inp.className='sunsal-inp';
+        inp.type='text';inp.inputMode='numeric';inp.placeholder='0';inp.value=es.actual||'';
+        inp.setAttribute('data-compkey',compKey);inp.setAttribute('data-yogi',ii);
+        inp.onclick=(e)=>e.stopPropagation();inp.onfocus=(e)=>e.target.select();
+        ir.append(lb,inp);
+        const pw=document.createElement('div');pw.className='sunsal-prog-wrap';
+        pw.innerHTML=`<div class="sunsal-prog-lbl"><span class="sunsal-prog-txt">${totalSS} total · ${Math.max(0,100-totalSS)} to go</span><span class="sunsal-prog-pct">${pct.toFixed(0)}%</span></div><div class="sunsal-bar"><div class="sunsal-bar-fill" style="width:${pct}%"></div></div>`;
+        ssRow.append(ssHdr,ir,pw);inner.appendChild(ssRow);
+        return;
+      }
+      const row=document.createElement('div');row.className='irow';row.style.cursor='pointer';
+      const ck=document.createElement('button');ck.className='ck'+(es.done?' on':'');
+      ck.style.background=es.done?yogaColor:'transparent';
+      ck.innerHTML=es.done?'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>':'';
+      const nm=document.createElement('span');nm.className='inm'+(es.done?' dn':'');nm.textContent=item.n;
+      const aw=document.createElement('div');aw.className='actual-wrap';
+      const al=document.createElement('span');al.className='actual-lbl';al.textContent=item.d||'';
+      const ai=document.createElement('input');ai.className='actual-inp';
+      ai.type='text';ai.placeholder='actual';ai.value=es.actual||'';
+      ai.setAttribute('data-compkey',compKey);ai.setAttribute('data-yogi',ii);
+      ai.onclick=(e)=>e.stopPropagation();
+      aw.append(al,ai);
+      ck.onclick=(e)=>{e.stopPropagation();
+        const c=S.completions[compKey]||{exercises:{}};
+        const exs={...c.exercises};const cur=exState({exercises:exs},ii);
+        exs[ii]={done:!cur.done,sets:cur.sets,actual:cur.actual};
+        S.completions={...S.completions,[compKey]:{...c,exercises:exs}};save();render();};
+      row.append(ck,nm,aw);row.onclick=()=>ck.onclick(new Event('c'));
+      inner.appendChild(row);
+    });
+
+    exp.appendChild(inner);wrap.appendChild(exp);
+
+    // Complete button
+    const ca=document.createElement('div');ca.className='carea';
+    const cb=document.createElement('button');
+    cb.className='cbtn'+(isDone?' dn':'');
+    cb.style.background=isDone?'':yogaColor;
+    cb.style.color=isDone?'':'#0a0a0a';
+    cb.textContent=isDone?'✓ COMPLETE':'MARK COMPLETE';
+    cb.onclick=()=>{
+      const c=S.completions[compKey]||{};
+      S.completions={...S.completions,[compKey]:{...c,done:!c.done,completedAt:!c.done?isoToday():null}};
+      save();render();
+    };
+    ca.appendChild(cb);wrap.appendChild(ca);
+  }
+  return wrap;
+}
+
+// ── Total weight lifted calculation ──────────────────────────────────────────
+function calcWeeklyLift(week){
+  let total=0;
+  DAYS.forEach(d=>{
+    const key='w'+week+'-'+d;
+    const c=S.completions[key];
+    if(!c?.exercises)return;
+    const aid=(S.overrides&&S.overrides[key])||getSchedule(week)?.d[d];
+    if(!aid?.startsWith('gym'))return;
+    const g=GYM[aid];if(!g)return;
+    g.ex.forEach((ex,ei)=>{
+      const es=exState(c,ei);
+      es.sets.forEach(s=>{
+        const w=parseFloat(s?.weight),r=parseFloat(s?.reps);
+        if(!isNaN(w)&&!isNaN(r)&&w>0&&r>0)total+=w*r;
+      });
+    });
+  });
+  (S.extras||[]).filter(e=>e.week===week&&e.activityId?.startsWith('gym')).forEach(e=>{
+    const g=GYM[e.activityId];if(!g)return;
+    g.ex.forEach((ex,ei)=>{
+      const es=exState({exercises:e.exercises||{}},ei);
+      es.sets.forEach(s=>{
+        const w=parseFloat(s?.weight),r=parseFloat(s?.reps);
+        if(!isNaN(w)&&!isNaN(r)&&w>0&&r>0)total+=w*r;
+      });
+    });
+  });
+  return total>0?Math.round(total):null;
+}
+
+// ── SVG line chart ────────────────────────────────────────────────────────────
+function mkLineChart(points,opts={}){
+  const{color='#fb923c',unit='',target,label=''}=opts;
+  const filled=points.filter(p=>p.v!==''&&p.v!==null&&p.v!==undefined&&!isNaN(parseFloat(p.v)));
+  if(filled.length<1){
+    const empty=document.createElement('div');empty.className='chart-empty';
+    empty.textContent='No data logged yet';return empty;
+  }
+  const vals=filled.map(p=>parseFloat(p.v));
+  const tgtVal=target?parseFloat(target):null;
+  const allVals=tgtVal?[...vals,tgtVal]:vals;
+  const minV=Math.min(...allVals);const maxV=Math.max(...allVals);
+  const pad2=Math.max((maxV-minV)*0.12,0.5);
+  const lo=minV-pad2,hi=maxV+pad2,range=hi-lo||1;
+  const W=320,H=90,pL=36,pR=8,pT=8,pB=22;
+  const iW=W-pL-pR,iH=H-pT-pB;
+  const xOf=i=>pL+(i/(Math.max(filled.length-1,1)))*iW;
+  const yOf=v=>pT+iH-((v-lo)/range)*iH;
+  const ns='http://www.w3.org/2000/svg';
+  const svg=document.createElementNS(ns,'svg');
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  svg.style.cssText='width:100%;height:75px;overflow:visible;display:block';
+  // Grid lines + y labels
+  [0,1,2,3].forEach(i=>{
+    const y=pT+(i*iH/3);
+    const gl=document.createElementNS(ns,'line');
+    gl.setAttribute('x1',pL);gl.setAttribute('x2',pL+iW);
+    gl.setAttribute('y1',y);gl.setAttribute('y2',y);
+    gl.setAttribute('stroke','#262626');gl.setAttribute('stroke-width','0.5');
+    svg.appendChild(gl);
+    const v=hi-(i*(hi-lo)/3);
+    const txt=document.createElementNS(ns,'text');
+    txt.setAttribute('x',pL-3);txt.setAttribute('y',y+3);
+    txt.setAttribute('text-anchor','end');txt.setAttribute('font-size','6.5');
+    txt.setAttribute('fill','#525252');txt.setAttribute('font-family','JetBrains Mono,monospace');
+    txt.textContent=v>=1000?Math.round(v/100)/10+'k':v.toFixed(v<10?1:0);
+    svg.appendChild(txt);
+  });
+  // Target line
+  if(tgtVal!==null&&!isNaN(tgtVal)){
+    const ty=yOf(tgtVal);
+    const tl=document.createElementNS(ns,'line');
+    tl.setAttribute('x1',pL);tl.setAttribute('x2',pL+iW);
+    tl.setAttribute('y1',ty);tl.setAttribute('y2',ty);
+    tl.setAttribute('stroke',color);tl.setAttribute('stroke-width','1');
+    tl.setAttribute('stroke-dasharray','4,3');tl.setAttribute('opacity','0.4');
+    svg.appendChild(tl);
+    const tlbl=document.createElementNS(ns,'text');
+    tlbl.setAttribute('x',pL+iW+2);tlbl.setAttribute('y',ty+3);
+    tlbl.setAttribute('font-size','6');tlbl.setAttribute('fill',color);
+    tlbl.setAttribute('font-family','JetBrains Mono,monospace');tlbl.setAttribute('opacity','0.7');
+    tlbl.textContent='TGT';svg.appendChild(tlbl);
+  }
+  // Area
+  if(filled.length>1){
+    const aD='M '+filled.map((p,i)=>`${xOf(i)},${yOf(parseFloat(p.v))}`).join(' L ')+
+      ` L ${xOf(filled.length-1)},${pT+iH} L ${xOf(0)},${pT+iH} Z`;
+    const area=document.createElementNS(ns,'path');
+    area.setAttribute('d',aD);area.setAttribute('fill',color);area.setAttribute('opacity','0.1');
+    svg.appendChild(area);
+    // Line
+    const lD='M '+filled.map((p,i)=>`${xOf(i)},${yOf(parseFloat(p.v))}`).join(' L ');
+    const lp=document.createElementNS(ns,'path');
+    lp.setAttribute('d',lD);lp.setAttribute('fill','none');
+    lp.setAttribute('stroke',color);lp.setAttribute('stroke-width','1.75');
+    lp.setAttribute('stroke-linejoin','round');lp.setAttribute('stroke-linecap','round');
+    svg.appendChild(lp);
+  }
+  // Dots + x labels (show every other label if many points)
+  const showEvery=filled.length>8?3:filled.length>5?2:1;
+  filled.forEach((p,i)=>{
+    const cx=xOf(i),cy=yOf(parseFloat(p.v));
+    const isLast=i===filled.length-1;
+    const dot=document.createElementNS(ns,'circle');
+    dot.setAttribute('cx',cx);dot.setAttribute('cy',cy);
+    dot.setAttribute('r',isLast?3.5:2.5);
+    dot.setAttribute('fill',isLast?color:'rgba(255,255,255,0.7)');
+    dot.setAttribute('stroke',color);dot.setAttribute('stroke-width','1.5');
+    svg.appendChild(dot);
+    if(i%showEvery===0||isLast){
+      const xt=document.createElementNS(ns,'text');
+      xt.setAttribute('x',cx);xt.setAttribute('y',H-5);
+      xt.setAttribute('text-anchor','middle');xt.setAttribute('font-size','6.5');
+      xt.setAttribute('fill','#525252');xt.setAttribute('font-family','JetBrains Mono,monospace');
+      xt.textContent='W'+String(p.w).padStart(2,'0');
+      svg.appendChild(xt);
+    }
+  });
+  return svg;
+}
+
+// ── Measurements section ──────────────────────────────────────────────────────
+function mkMeasurementsSection(selectedWeek){
+  const wrap=document.createElement('div');wrap.className='meas-section';
+  wrap.innerHTML='<div class="seclbl mf">WEEKLY MEASUREMENTS</div>';
+
+  // Week selector
+  const wsel=document.createElement('div');wsel.className='meas-week-sel';
+  wsel.innerHTML='<span class="meas-week-lbl">Week</span>';
+  [-2,-1,0].forEach(offset=>{
+    const w=selectedWeek+offset;
+    if(w<0||w>24)return;
+    const btn=document.createElement('button');btn.className='meas-week-btn'+(w===selectedWeek?' active':'');
+    btn.textContent='W'+String(w).padStart(2,'0');
+    btn.onclick=()=>{S._measWeek=w;save();render();};
+    wsel.appendChild(btn);
+  });
+  if(selectedWeek<24){
+    const nBtn=document.createElement('button');nBtn.className='meas-week-btn'+(selectedWeek===S.week?' active':'');
+    nBtn.textContent='W'+String(S.week).padStart(2,'0');
+    if(S.week!==selectedWeek-2&&S.week!==selectedWeek-1&&S.week!==selectedWeek){
+      nBtn.onclick=()=>{S._measWeek=S.week;save();render();};
+      wsel.appendChild(nBtn);
+    }
+  }
+  wrap.appendChild(wsel);
+
+  // Auto-calculated lift
+  const liftTotal=calcWeeklyLift(selectedWeek);
+  const m=S.measurements['w'+selectedWeek]||{};
+
+  const card=document.createElement('div');card.className='meas-card';
+  const wkDate=fmtWeekRange(selectedWeek);
+  card.innerHTML=`<div style="font-size:.5rem;font-family:'JetBrains Mono',monospace;color:#525252;letter-spacing:.15em;text-transform:uppercase;margin-bottom:.75rem">W${String(selectedWeek).padStart(2,'0')} · ${wkDate}</div>`;
+
+  const FIELDS=[
+    {key:'weight',    label:'Body Weight',  unit:'kg',   group:'body'},
+    {key:'bodyFat',   label:'Body Fat',     unit:'%',    group:'body'},
+    {key:'waist',     label:'Waist',        unit:'cm',   group:'body'},
+    {key:'chest',     label:'Chest',        unit:'cm',   group:'body'},
+    {key:'hips',      label:'Hips',         unit:'cm',   group:'body'},
+    {key:'thigh',     label:'Thigh',        unit:'cm',   group:'body'},
+    {key:'arm',       label:'Arm',          unit:'cm',   group:'body'},
+    {key:'runDist',   label:'Run Distance', unit:'km',   group:'perf'},
+    {key:'golfHcp',   label:'Golf Handicap',unit:'',     group:'perf'},
+  ];
+
+  const grid=document.createElement('div');grid.className='meas-grid';
+  FIELDS.forEach(f=>{
+    const fld=document.createElement('div');fld.className='meas-field';
+    const lbl=document.createElement('div');lbl.className='meas-field-lbl';lbl.textContent=f.label+(f.unit?' ('+f.unit+')':'');
+    const inp=document.createElement('input');inp.className='meas-inp';
+    inp.type='text';inp.inputMode='decimal';
+    inp.placeholder='—';inp.value=m[f.key]||'';
+    inp.setAttribute('data-measweek','w'+selectedWeek);
+    inp.setAttribute('data-measkey',f.key);
+    fld.append(lbl,inp);grid.appendChild(fld);
+  });
+
+  // Auto-calculated lift field
+  const liftFld=document.createElement('div');liftFld.className='meas-field';
+  const liftLbl=document.createElement('div');liftLbl.className='meas-field-lbl';liftLbl.textContent='Total Lifted (kg)';
+  const liftInp=document.createElement('input');liftInp.className='meas-inp readonly';
+  liftInp.readOnly=true;
+  liftInp.value=liftTotal?liftTotal.toLocaleString():'— (log weights first)';
+  liftFld.append(liftLbl,liftInp);grid.appendChild(liftFld);
+
+  card.appendChild(grid);
+
+  // Save button
+  const saveBtn=document.createElement('button');
+  saveBtn.className='cbtn';saveBtn.style.cssText='margin-top:.875rem;background:var(--ac);color:#0a0a0a;width:100%';
+  saveBtn.textContent='Save Measurements';
+  saveBtn.onclick=()=>{
+    const wk='w'+selectedWeek;
+    const meas=S.measurements[wk]||{};
+    grid.querySelectorAll('.meas-inp:not(.readonly)').forEach(inp=>{
+      if(inp.value.trim())meas[inp.getAttribute('data-measkey')]=inp.value.trim();
+    });
+    // Store auto-calculated lift
+    if(liftTotal)meas.totalLift=liftTotal;
+    S.measurements={...S.measurements,[wk]:meas};
+    save();render();
+  };
+  card.appendChild(saveBtn);
+  wrap.appendChild(card);
+  return wrap;
+}
+
+// ── Charts section ────────────────────────────────────────────────────────────
+function mkChartsSection(){
+  const wrap=document.createElement('div');wrap.className='chart-wrap';
+  wrap.innerHTML='<div class="seclbl mf">PROGRESS CHARTS</div>';
+
+  const METRICS=[
+    {key:'weight',    label:'BODY WEIGHT',   unit:'kg',  color:'#fb923c', targetKey:null},
+    {key:'bodyFat',   label:'BODY FAT',      unit:'%',   color:'#f87171', targetKey:null},
+    {key:'waist',     label:'WAIST',         unit:'cm',  color:'#c084fc', targetKey:null},
+    {key:'chest',     label:'CHEST',         unit:'cm',  color:'#a78bfa', targetKey:null},
+    {key:'arm',       label:'ARM',           unit:'cm',  color:'#60a5fa', targetKey:null},
+    {key:'runDist',   label:'RUN DISTANCE',  unit:'km',  color:'#60a5fa', targetKey:'runDist'},
+    {key:'golfHcp',   label:'GOLF HANDICAP', unit:'hcp', color:'#c084fc', targetKey:'golfHcp'},
+    {key:'totalLift', label:'TOTAL LIFTED',  unit:'kg',  color:'#f59e0b', targetKey:'totalLift'},
+  ];
+
+  METRICS.forEach(m=>{
+    const points=[];
+    for(let w=0;w<=24;w++){
+      const meas=S.measurements['w'+w];
+      if(!meas)continue;
+      // For totalLift, use stored or calculate
+      const rawVal=m.key==='totalLift'?(meas.totalLift||calcWeeklyLift(w)):meas[m.key];
+      if(rawVal!==undefined&&rawVal!==''&&rawVal!==null){
+        points.push({w,v:parseFloat(rawVal)});
+      }
+    }
+
+    const latest=points.length?points[points.length-1]:null;
+    const target=m.targetKey&&S.targets&&S.targets[m.targetKey]?parseFloat(S.targets[m.targetKey]):null;
+
+    const card=document.createElement('div');card.className='chart-card';
+    const hdr=document.createElement('div');hdr.className='chart-header';
+    hdr.innerHTML=`<span class="chart-lbl" style="color:${m.color}">${m.label}</span>
+      <span>
+        ${latest?`<span class="chart-latest" style="color:${m.color}">${latest.v} <span style="font-size:.6rem;color:#525252">${m.unit}</span></span>`:'<span class="chart-tgt">no data</span>'}
+        ${target?`<span class="chart-tgt"> / tgt ${target}${m.unit}</span>`:''}
+      </span>`;
+    card.appendChild(hdr);
+
+    const chart=mkLineChart(points,{color:m.color,unit:m.unit,target});
+    card.appendChild(chart);
+    wrap.appendChild(card);
+  });
+  return wrap;
+}
+
+// ── Targets section ───────────────────────────────────────────────────────────
+function mkTargetsSection(){
+  const wrap=document.createElement('div');
+  wrap.innerHTML='<div class="seclbl mf">WEEK 12 TARGETS</div>';
+  const sub=document.createElement('div');
+  sub.style.cssText='font-size:.6875rem;color:#525252;font-family:JetBrains Mono,monospace;margin-bottom:.75rem';
+  sub.textContent='Set what you want to achieve by end of Week 12';
+  wrap.appendChild(sub);
+  const card=document.createElement('div');card.className='target-card';
+  const TFIELDS=[
+    {key:'weight',   label:'Body Weight',   unit:'kg',   mode:'decimal'},
+    {key:'bodyFat',  label:'Body Fat',      unit:'%',    mode:'decimal'},
+    {key:'waist',    label:'Waist',         unit:'cm',   mode:'decimal'},
+    {key:'chest',    label:'Chest',         unit:'cm',   mode:'decimal'},
+    {key:'hips',     label:'Hips',          unit:'cm',   mode:'decimal'},
+    {key:'thigh',    label:'Thigh',         unit:'cm',   mode:'decimal'},
+    {key:'arm',      label:'Arm',           unit:'cm',   mode:'decimal'},
+    {key:'runDist',  label:'Run Distance',  unit:'km',   mode:'decimal'},
+    {key:'golfHcp',  label:'Golf Handicap', unit:'hcp',  mode:'decimal'},
+    {key:'totalLift',label:'Weekly Lift',   unit:'kg',   mode:'numeric'},
+  ];
+  if(!S.targets)S.targets={};
+  TFIELDS.forEach(t=>{
+    const row=document.createElement('div');row.className='target-row';
+    const lbl=document.createElement('span');lbl.className='target-lbl';lbl.textContent=t.label;
+    const inp=document.createElement('input');inp.className='target-inp';
+    inp.type='text';inp.inputMode=t.mode;
+    inp.placeholder='—';inp.value=S.targets[t.key]||'';
+    inp.setAttribute('data-targetkey',t.key);
+    inp.onchange=(e)=>{
+      if(!S.targets)S.targets={};
+      S.targets[t.key]=e.target.value;save();
+    };
+    const unit=document.createElement('span');unit.className='target-unit';unit.textContent=t.unit;
+    row.append(lbl,inp,unit);card.appendChild(row);
+  });
+  wrap.appendChild(card);
+  return wrap;
+}
+
+
+// Direction: true = higher is better, false = lower is better
+const METRIC_DIR={weight:false,bodyFat:false,waist:false,chest:true,hips:false,thigh:false,arm:true,runDist:true,golfHcp:false,totalLift:true};
+const METRIC_META={
+  weight:{label:'Body Weight',unit:'kg'},bodyFat:{label:'Body Fat',unit:'%'},
+  waist:{label:'Waist',unit:'cm'},chest:{label:'Chest',unit:'cm'},
+  hips:{label:'Hips',unit:'cm'},thigh:{label:'Thigh',unit:'cm'},
+  arm:{label:'Arm',unit:'cm'},runDist:{label:'Run Distance',unit:'km'},
+  golfHcp:{label:'Golf Handicap',unit:''},totalLift:{label:'Weekly Lift',unit:'kg'},
+};
+
+function mkWeek12Comparison(){
+  const wrap=document.createElement('div');
+  wrap.innerHTML='<div class="seclbl mf" style="margin-bottom:.625rem">WEEK 12 — TARGET vs ACTUAL</div>';
+
+  const tgts=S.targets||{};
+  const w12=S.measurements['w12']||{};
+  // Get week 12 total lift
+  const w12Lift=w12.totalLift||calcWeeklyLift(12);
+  if(w12Lift)w12.totalLift=w12Lift;
+  // Week 0 baseline
+  const w0=S.measurements['w0']||{};
+
+  const hasAnyTarget=Object.values(tgts).some(v=>v!==''&&v!==null&&v!==undefined);
+  const hasAnyActual=Object.keys(w12).length>0;
+
+  if(!hasAnyTarget&&!hasAnyActual){
+    const empty=document.createElement('div');
+    empty.style.cssText='border-radius:1rem;border:1px solid #262626;background:rgba(23,23,23,.4);padding:1.25rem;text-align:center;font-size:.75rem;color:#525252;font-family:JetBrains Mono,monospace;margin-bottom:1.25rem';
+    empty.textContent='Set targets above and log Week 12 measurements to see comparison';
+    wrap.appendChild(empty);return wrap;
+  }
+
+  const card=document.createElement('div');
+  card.style.cssText='border-radius:1rem;border:1px solid rgba(38,38,38,.6);background:rgba(23,23,23,.4);overflow:hidden;margin-bottom:1.25rem';
+
+  // Header row
+  const hdr=document.createElement('div');
+  hdr.style.cssText='display:grid;grid-template-columns:1fr .8fr .8fr .8fr;gap:.5rem;padding:.625rem .875rem;border-bottom:1px solid #262626;background:rgba(23,23,23,.6)';
+  hdr.innerHTML='<span style="font-size:.5rem;font-family:JetBrains Mono,monospace;color:#525252;letter-spacing:.1em;text-transform:uppercase">Metric</span>'+
+    '<span style="font-size:.5rem;font-family:JetBrains Mono,monospace;color:#525252;letter-spacing:.1em;text-transform:uppercase;text-align:right">Target</span>'+
+    '<span style="font-size:.5rem;font-family:JetBrains Mono,monospace;color:#525252;letter-spacing:.1em;text-transform:uppercase;text-align:right">Wk 12</span>'+
+    '<span style="font-size:.5rem;font-family:JetBrains Mono,monospace;color:#525252;letter-spacing:.1em;text-transform:uppercase;text-align:right">Δ</span>';
+  card.appendChild(hdr);
+
+  Object.entries(METRIC_META).forEach(([key,meta])=>{
+    const tgt=tgts[key];
+    const actual=w12[key];
+    if(!tgt&&!actual)return;
+
+    const tgtVal=tgt?parseFloat(tgt):null;
+    const actVal=actual?parseFloat(actual):null;
+    const delta=(tgtVal!==null&&actVal!==null)?actVal-tgtVal:null;
+    const higherBetter=METRIC_DIR[key];
+
+    // Met target?
+    let status='';let statusColor='';
+    if(delta!==null){
+      const met=higherBetter?(actVal>=tgtVal):(actVal<=tgtVal);
+      const close=Math.abs(delta/tgtVal)<0.05;
+      status=met?'✓':(close?'~':'✗');
+      statusColor=met?'#a3e635':(close?'#f59e0b':'#fb923c');
+    }
+
+    const row=document.createElement('div');
+    row.style.cssText='display:grid;grid-template-columns:1fr .8fr .8fr .8fr;gap:.5rem;padding:.5rem .875rem;border-bottom:1px solid rgba(38,38,38,.3);align-items:center';
+
+    row.innerHTML=`
+      <span style="font-size:.75rem;color:#a3a3a3">${meta.label}</span>
+      <span style="font-size:.75rem;font-family:'JetBrains Mono',monospace;color:#737373;text-align:right">${tgt?tgt+meta.unit:'—'}</span>
+      <span style="font-size:.875rem;font-family:'JetBrains Mono',monospace;color:${actVal?'#fafaf9':'#525252'};text-align:right;font-weight:500">${actVal!==null?actVal+meta.unit:'—'}</span>
+      <span style="font-size:.75rem;font-family:'JetBrains Mono',monospace;text-align:right;color:${statusColor||'#525252'}">
+        ${delta!==null?(delta>0?'+':'')+delta.toFixed(1):''} ${status}
+      </span>`;
+    card.appendChild(row);
+  });
+
+  // Overall score
+  let met=0,total=0;
+  Object.entries(METRIC_META).forEach(([key])=>{
+    const tgt=tgts[key];const actual=w12[key];
+    if(!tgt||!actual)return;
+    total++;
+    const tgtV=parseFloat(tgt),actV=parseFloat(actual);
+    if(METRIC_DIR[key]?actV>=tgtV:actV<=tgtV)met++;
+  });
+  if(total>0){
+    const score=document.createElement('div');
+    score.style.cssText='padding:.75rem .875rem;background:rgba(23,23,23,.6);display:flex;justify-content:space-between;align-items:center';
+    const pct=Math.round((met/total)*100);
+    const c=pct>=80?'#a3e635':pct>=50?'#f59e0b':'#fb923c';
+    score.innerHTML=`<span style="font-size:.75rem;color:#a3a3a3;font-family:'JetBrains Mono',monospace">Targets hit</span>
+      <span style="font-family:'Fraunces',Georgia,serif;font-size:1.25rem;font-weight:500;color:${c}">${met}/${total} <span style="font-size:.75rem">(${pct}%)</span></span>`;
+    card.appendChild(score);
+  }
+  wrap.appendChild(card);
+  return wrap;
+}
+// ── Week 12 continuation prompt ───────────────────────────────────────────────
+function mkContinuationPrompt(){
+  const card=document.createElement('div');card.className='cont-card';
+  card.innerHTML=`
+    <div class="cont-title">🎉 Week 12 Complete!</div>
+    <div class="cont-sub">You've finished the programme. What next?</div>`;
+  const btns=document.createElement('div');btns.className='cont-btns';
+  const contBtn=document.createElement('button');contBtn.className='cont-btn primary';
+  contBtn.textContent='Continue → Phase 4';
+  contBtn.onclick=()=>{S.week=13;S.swapping=null;save();render();};
+  const rstBtn=document.createElement('button');rstBtn.className='cont-btn secondary';
+  rstBtn.textContent='Restart Week 1';
+  rstBtn.onclick=()=>{
+    if(confirm('Restart at Week 1? Your measurements and history are kept.')){
+      S.week=1;S.swapping=null;save();render();
+    }
+  };
+  btns.append(contBtn,rstBtn);card.appendChild(btns);
+  return card;
+}
+
+// ── Monday measurement prompt in Today view ───────────────────────────────────
+function mkMondayPrompt(week){
+  const card=document.createElement('div');card.className='monday-card';
+  const m=S.measurements['w'+week]||{};
+  const hasData=Object.keys(m).length>0;
+  card.innerHTML=`
+    <div class="monday-title">📏 Monday Check-in</div>
+    <div class="monday-sub">${hasData?'Measurements logged for this week — update in Progress tab.':'Log your weekly measurements to track progress.'}</div>`;
+  const btn=document.createElement('button');
+  btn.className='cbtn';
+  btn.style.cssText=`background:${hasData?'rgba(38,38,38,.7)':'var(--ac)'};color:${hasData?'var(--t2)':'#0a0a0a'};width:100%;border:${hasData?'1px solid #3d3d3d':'none'}`;
+  btn.textContent=hasData?'✓ Measurements logged':'Log Measurements →';
+  btn.onclick=()=>{S.tab='progress';S._measWeek=week;save();render();};
+  card.appendChild(btn);
+  return card;
+}
 // =========================================================
 // RENDER ENGINE — targeted updates to avoid destroying inputs
 // =========================================================
@@ -510,7 +1546,7 @@ function render(){
 // HEADER
 // =========================================================
 function mkHeader(){
-  const ph=SCHED[S.week].ph, pi=PHASES[ph];
+  const ph=getSchedule(S.week).ph, pi=PHASES[ph]||PHASES[3];
   const d=document.createElement('div');d.className='hdr';
   d.innerHTML=`
     <div class="hdr-row">
@@ -521,29 +1557,17 @@ function mkHeader(){
     <div class="prow">
       <span class="plbl mf">Phase ${ph} · ${pi.name}</span>
       <div class="nbts">
-        <button class="nbt" id="btnPrev" ${S.week<=1?'disabled':''}>
+        <button class="nbt" id="btnPrev" ${S.week<=0?'disabled':''}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
         </button>
-        <button class="nbt" id="btnNext" ${S.week>=12?'disabled':''}>
+        <button class="nbt" id="btnNext" ${S.week>=24?'disabled':''}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
       </div>
     </div>`;
-  d.querySelector('#btnPrev').onclick=()=>{if(S.week>1){S.week--;save();render();}}
+  d.querySelector('#btnPrev').onclick=()=>{if(S.week>0){S.week--;S.swapping=null;save();render();}}
 
-  // Start date setting (small, below nav)
-  if (!S.startDate) S.startDate = isoToday();
-  const sdRow = document.createElement('div');
-  sdRow.className = 'startdate-row';
-  sdRow.innerHTML = `<label>START DATE</label>
-    <input type="date" id="startDateInp" value="${S.startDate}" style="margin-left:auto">`;
-  d.appendChild(sdRow);
-  d.querySelector('#startDateInp').onchange = (e) => {
-    S.startDate = e.target.value;
-    save();
-    // Don't full re-render on date change to keep focus
-  };;
-  d.querySelector('#btnNext').onclick=()=>{if(S.week<12){S.week++;save();render();}};
+  d.querySelector('#btnNext').onclick=()=>{if(S.week<24){S.week++;S.swapping=null;save();render();}};
   return d;
 }
 
@@ -566,8 +1590,9 @@ function mkTabs(){
 // =========================================================
 function mkCard(day,week,isToday){
   const _sk='w'+week+'-'+day;
-  const aid=(S.overrides&&S.overrides[_sk])||SCHED[week].d[day];
+  const aid=(S.overrides&&S.overrides[_sk])||getSchedule(week).d[day];
   const isCustom=!!(S.overrides&&S.overrides[_sk]);
+  const ph=getSchedule(week).ph;
   const det=getDetail(aid,week);
   const compKey='w'+week+'-'+day;
   const comp=S.completions[compKey]||{};
@@ -614,7 +1639,7 @@ function mkCard(day,week,isToday){
       pill.style.cssText=`border-color:${m.border};background:${isCur?m.color:m.tint};color:${isCur?'#0a0a0a':'var(--t1)'}`;
       pill.innerHTML=`${m.icon} ${m.label}`;
       pill.onclick=()=>{
-        if(id===SCHED[week].d[day]){if(S.overrides)delete S.overrides[_sk];}
+        if(id===getSchedule(week).d[day]){if(S.overrides)delete S.overrides[_sk];}
         else{if(!S.overrides)S.overrides={};S.overrides[_sk]=id;}
         S.swapping=null;save();render();
       };
@@ -701,6 +1726,46 @@ function mkCard(day,week,isToday){
         const es=exState(comp,ii);
         const isYoga=aid==='yoga';
         const tgt=item.d||item.duration||'';
+
+        // Sun Salutations — special reps tracking
+        if(item.isSunSal){
+          const totalSS=countSunSals();
+          const pct=Math.min(100,(totalSS/100)*100);
+          const ssRow=document.createElement('div');ssRow.className='sunsal-row';
+          // Header
+          const ssHdr=document.createElement('div');ssHdr.className='sunsal-hdr';
+          const ckBtn=document.createElement('button');ckBtn.className='ck'+(es.done?' on':'');
+          ckBtn.style.background=es.done?det.color:'transparent';
+          ckBtn.innerHTML=es.done?'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>':'';
+          ckBtn.onclick=(e)=>{e.stopPropagation();
+            const c=S.completions[compKey]||{exercises:{}};
+            const exs={...c.exercises};const cur=exState({exercises:exs},ii);
+            exs[ii]={done:!cur.done,sets:cur.sets,actual:cur.actual};
+            S.completions={...S.completions,[compKey]:{...c,exercises:exs}};save();render();};
+          const ssTitle=document.createElement('span');ssTitle.className='sunsal-title';ssTitle.textContent='Sun Salutations';
+          const ssTarget=document.createElement('span');ssTarget.className='sunsal-target';ssTarget.textContent='Goal: 100 reps / year';
+          ssHdr.append(ckBtn,ssTitle,ssTarget);
+          // Reps input
+          const ssInpRow=document.createElement('div');ssInpRow.className='sunsal-inp-row';
+          const ssLbl=document.createElement('span');ssLbl.className='sunsal-inp-lbl';ssLbl.textContent='Reps today';
+          const ssInp=document.createElement('input');ssInp.className='sunsal-inp';
+          ssInp.type='text';ssInp.inputMode='numeric';ssInp.placeholder='0';ssInp.value=es.actual||'';
+          ssInp.setAttribute('data-compkey',compKey);ssInp.setAttribute('data-yogi',ii);
+          ssInp.onclick=(e)=>e.stopPropagation();ssInp.onfocus=(e)=>e.target.select();
+          ssInpRow.append(ssLbl,ssInp);
+          // Progress bar
+          const progWrap=document.createElement('div');progWrap.className='sunsal-prog-wrap';
+          progWrap.innerHTML=`
+            <div class="sunsal-prog-lbl">
+              <span class="sunsal-prog-txt">${totalSS} total reps · ${Math.max(0,100-totalSS)} to go</span>
+              <span class="sunsal-prog-pct">${pct.toFixed(0)}%</span>
+            </div>
+            <div class="sunsal-bar"><div class="sunsal-bar-fill" style="width:${pct}%"></div></div>`;
+          ssRow.append(ssHdr,ssInpRow,progWrap);
+          inner.appendChild(ssRow);
+          return;
+        }
+
         const row=document.createElement('div');row.className='irow';row.style.cursor='pointer';
         const ckBtn=document.createElement('button');
         ckBtn.className='ck'+(es.done?' on':'');
@@ -728,8 +1793,32 @@ function mkCard(day,week,isToday){
       });
     }
 
+    // Walk log
+    if(aid==='walk'){
+      const wl=comp.walkLog||{};
+      const ls=document.createElement('div');ls.className='log-sect';
+      ls.innerHTML='<div class="log-lbl">Log your walk</div>';
+      const rows=[
+        {label:'Steps',    field:'steps',    mode:'numeric', placeholder:'e.g. 8000'},
+        {label:'Distance', field:'distance', mode:'decimal', placeholder:'km'},
+        {label:'Duration', field:'minutes',  mode:'numeric', placeholder:'mins'},
+      ];
+      rows.forEach(({label,field,mode,placeholder})=>{
+        const r=document.createElement('div');r.className='log-row';
+        r.innerHTML=`<span class="log-key">${label}</span>
+          <input class="log-inp" type="text" inputmode="${mode}" placeholder="${placeholder}" value="${wl[field]||''}" data-logkey="${compKey}" data-logf="${field}">`;
+        ls.appendChild(r);
+      });
+      const r3=document.createElement('div');r3.className='log-row';
+      r3.innerHTML='<span class="log-key">Notes</span>';
+      const ta=document.createElement('textarea');ta.className='log-textarea';ta.rows=2;
+      ta.placeholder='Where did you walk?';ta.value=wl.notes||'';
+      ta.setAttribute('data-logkey',compKey);ta.setAttribute('data-logf','notes');
+      r3.appendChild(ta);ls.appendChild(r3);
+      inner.appendChild(ls);
+    }
     // Run log
-    if(aid==='run'){
+    if(aid==='run'||aid==='run-yoga'){
       const rl=comp.runLog||{};
       const plan=RUN[week]||'';
       const parts=plan.match(/×\s*(\d+)/);
@@ -758,6 +1847,21 @@ function mkCard(day,week,isToday){
     // Complete button
     if(aid!=='rest'){
       const ca=document.createElement('div');ca.className='carea';
+      // Date picker row
+      const dr=document.createElement('div');dr.className='date-row';
+      const dl=document.createElement('span');dl.className='date-lbl';dl.textContent='Session date';
+      const di=document.createElement('input');di.type='date';di.className='date-inp';
+      di.max=isoToday();
+      const storedDate=comp.sessionDate||isoToday();
+      di.value=storedDate;
+      di.setAttribute('data-dpkey',compKey);
+      di.onchange=(e)=>{
+        const c=S.completions[compKey]||{};
+        S.completions={...S.completions,[compKey]:{...c,sessionDate:e.target.value}};
+        save();
+      };
+      dr.append(dl,di);ca.appendChild(dr);
+      // Complete button
       const cb=document.createElement('button');
       cb.className='cbtn'+(isDone?' dn':'');
       cb.style.background=isDone?'':det.color;
@@ -770,7 +1874,8 @@ function mkCard(day,week,isToday){
       }else{cb.textContent='MARK COMPLETE';}
       cb.onclick=()=>{
         const c=S.completions[compKey]||{};
-        S.completions={...S.completions,[compKey]:{...c,done:!c.done,completedAt:!c.done?isoToday():null}};
+        const useDate=c.sessionDate||isoToday();
+        S.completions={...S.completions,[compKey]:{...c,done:!c.done,completedAt:!c.done?useDate:null}};
         save();render();
       };
       ca.appendChild(cb);card.appendChild(ca);
@@ -872,7 +1977,7 @@ function mkToday(){
   sw.innerHTML='<div class="slbl mf">THIS WEEK</div>';
   const strip=document.createElement('div');strip.className='strip';
   DAYS.forEach(d=>{
-    const aid=(S.overrides&&S.overrides['w'+S.week+'-'+d])||SCHED[S.week].d[d];const m=ACT[aid];
+    const aid=(S.overrides&&S.overrides['w'+S.week+'-'+d])||getSchedule(S.week).d[d];const m=ACT[aid];
     const done=S.completions['w'+S.week+'-'+d]?.done;
     const isTod=d===today;
     const day=document.createElement('div');day.className='sday';
@@ -891,7 +1996,38 @@ function mkToday(){
     <div class="rs">Miss a day, fine. The next session is non-negotiable.</div>
   </div>`;
 
-  div.append(dl,cw,sw,rw);
+  // Optional yoga after run in Phase 3
+  const _todayAid=(S.overrides&&S.overrides['w'+S.week+'-'+today])||getSchedule(S.week).d[today];
+  if(_todayAid==='run'&&getSchedule(S.week).ph>=3){
+    const oyw=document.createElement('div');oyw.style.cssText='padding:0 1.25rem';
+    oyw.appendChild(mkOptionalYogaCard(S.week,today));
+    div.appendChild(oyw);
+  }
+  // Monday measurement prompt
+  if(todayDayKey()==='mon'){
+    const mpW=document.createElement('div');mpW.style.cssText='padding:0 1.25rem;margin-top:.375rem';
+    mpW.appendChild(mkMondayPrompt(S.week));
+    div.appendChild(mpW);
+  }
+  // Steps row for today
+  const stepsW=document.createElement('div');stepsW.style.cssText='padding:0 1.25rem;margin-top:0';
+  stepsW.appendChild(mkStepsRow(S.week,today));
+  // Today's extras
+  const todayExtras=(S.extras||[]).filter(e=>{
+    const d=e.date||'';return d===isoToday();
+  });
+  todayExtras.sort((a,b)=>new Date(a.date)-new Date(b.date));
+  if(todayExtras.length>0){
+    const ew=document.createElement('div');ew.style.cssText='padding:0 1.25rem';
+    todayExtras.forEach(ex=>{const ec=mkExtraCard(ex);if(ec)ew.appendChild(ec);});
+    div.append(dl,cw,stepsW,ew,sw,rw);
+  } else {
+    div.append(dl,cw,stepsW,sw,rw);
+  }
+  // Add session button for today
+  const addW=document.createElement('div');addW.style.cssText='padding:0 1.25rem';
+  addW.appendChild(mkAddSessionBtn(S.week,todayDayKey()));
+  div.appendChild(addW);
   return div;
 }
 
@@ -903,6 +2039,18 @@ function mkWeek(){
   const today=todayDayKey();
   DAYS.forEach(d=>{
     div.appendChild(mkCard(d,S.week,d===today));
+    // Optional yoga after run in Phase 3
+    const _aid=(S.overrides&&S.overrides['w'+S.week+'-'+d])||getSchedule(S.week).d[d];
+    if(_aid==='run'&&getSchedule(S.week).ph>=3) div.appendChild(mkOptionalYogaCard(S.week,d));
+    div.appendChild(mkStepsRow(S.week,d));
+    // Show extras for this week+day
+    const dayExtras=(S.extras||[]).filter(e=>e.week===S.week&&e.day===d);
+    // Sort extras by date
+    dayExtras.sort((a,b)=>new Date(a.date)-new Date(b.date));
+    dayExtras.forEach(ex=>{
+      const ec=mkExtraCard(ex);if(ec)div.appendChild(ec);
+    });
+    div.appendChild(mkAddSessionBtn(S.week,d));
   });
   return div;
 }
@@ -931,7 +2079,7 @@ function mkProgress(){
   allDone.forEach(([k])=>{
     const[wk,dy]=k.split('-');
     const w=parseInt(wk.slice(1));
-    const aid=SCHED[w]?.d[dy];
+    const aid=getSchedule(w)?.d[dy];
     if(aid){const t=aid.startsWith('gym')?'gym':aid;byType[t]=(byType[t]||0)+1;}
   });
 
@@ -976,16 +2124,20 @@ function mkProgress(){
   wmEl.innerHTML='<div class="seclbl mf">12-WEEK MAP</div>';
   const wmcard=document.createElement('div');wmcard.className='wmcard';
   const wmap=document.createElement('div');wmap.className='wmap';
-  for(let w=1;w<=12;w++){
-    const schd=SCHED[w].d;
+  for(let w=0;w<=24;w++){
+    const schd=getSchedule(w).d;
     const total2=DAYS.filter(d=>(S.overrides&&S.overrides['w'+w+'-'+d]?S.overrides['w'+w+'-'+d]:schd[d])!=='rest').length;
     const done2=DAYS.filter(d=>{const a=(S.overrides&&S.overrides['w'+w+'-'+d])||schd[d];return a!=='rest'&&S.completions['w'+w+'-'+d]?.done;}).length;
     const pct=total2?done2/total2:0;
+    const wkLbl=getWeekLabel(w);
+    const isFuture=isWeekFuture(w);
     const cell=document.createElement('button');
     cell.className='wcel'+(w===S.week?' cur':'');
-    cell.innerHTML=`<div class="wctp"><span class="wcwk mf">W${String(w).padStart(2,'0')}</span><span class="wcph mf">P${SCHED[w].ph}</span></div>
+    cell.style.borderColor=w===S.week?'var(--ac)':(wkLbl&&done2>0?wkLbl.color+'60':'');
+    cell.innerHTML=`<div class="wctp"><span class="wcwk mf">W${String(w).padStart(2,'0')}</span><span class="wcph mf">P${getSchedule(w).ph}</span></div>
       <div class="wcct sf">${done2}<span class="dm">/${total2}</span></div>
-      <div class="wcbar"><div class="wcbf" style="width:${(pct*100).toFixed(0)}%"></div></div>`;
+      <div class="wcbar"><div class="wcbf" style="width:${(pct*100).toFixed(0)}%;background:${wkLbl?wkLbl.color:'#fb923c'}"></div></div>
+      ${(wkLbl&&done2>0)?`<div class="wk-badge" style="color:${wkLbl.color};background:${wkLbl.bg}">${wkLbl.emoji} ${wkLbl.label}</div>`:''}`;
     cell.onclick=()=>{S.week=w;save();render();};
     wmap.appendChild(cell);
   }
@@ -993,8 +2145,8 @@ function mkProgress(){
 
   // Phases
   div.innerHTML+='<div class="seclbl mf" style="margin-top:1.25rem">PHASES</div>';
-  const curPh=SCHED[S.week].ph;
-  [1,2,3].forEach(p=>{
+  const curPh=getSchedule(S.week).ph;
+  [0,1,2,3,4].forEach(p=>{
     const pi=PHASES[p];
     const phc=document.createElement('div');phc.className='phcard'+(p===curPh?' cur':'');
     phc.innerHTML=`<div class="phctp">
@@ -1018,7 +2170,59 @@ function mkProgress(){
 
   // ---- Apple Health Import ----
   const rst=document.createElement('button');rst.className='rstbtn mf';rst.textContent='Reset all progress';
-  rst.onclick=()=>{if(confirm('Reset all completions? Cannot be undone.')){S.completions={};save();render();}};
+    // Continuation prompt at week 12
+  if(S.week>=12) div.appendChild(mkContinuationPrompt());
+
+  // Targets
+  div.appendChild(mkTargetsSection());
+
+  // Week 12 comparison
+  div.appendChild(mkWeek12Comparison());
+
+  // Measurements
+  const measWeek=S._measWeek!==undefined?S._measWeek:S.week;
+  div.appendChild(mkMeasurementsSection(measWeek));
+
+  // Charts
+  div.appendChild(mkChartsSection());
+
+  // Steps progress
+  div.appendChild(mkStepsProgress());
+
+  // Week Profile list
+  const wpEl=document.createElement('div');
+  wpEl.innerHTML='<div class="seclbl mf" style="margin-top:1.25rem">WEEK PROFILE</div>';
+  const wpCard=document.createElement('div');wpCard.className='wk-profile-card';
+  for(let w=0;w<=24;w++){
+    const lbl=getWeekLabel(w);
+    const schd=getSchedule(w).d;
+    let gym=0,run=0,yoga=0,golf=0,walk=0;
+    DAYS.forEach(d=>{
+      const key='w'+w+'-'+d;if(!S.completions[key]?.done)return;
+      const aid=(S.overrides&&S.overrides[key])||schd[d];
+      if(aid.startsWith('gym'))gym++;else if(aid==='run')run++;
+      else if(aid==='yoga')yoga++;else if(aid==='golf')golf++;else if(aid==='walk')walk++;
+    });
+    (S.extras||[]).filter(e=>e.week===w&&e.done).forEach(e=>{
+      const a=e.activityId;
+      if(a.startsWith('gym'))gym++;else if(a==='run')run++;
+      else if(a==='yoga')yoga++;else if(a==='golf')golf++;else if(a==='walk')walk++;
+    });
+    const row=document.createElement('div');row.className='wk-profile-row';
+    const parts=[];
+    if(gym)parts.push(gym+'× gym');if(run)parts.push(run+'× run');
+    if(yoga)parts.push(yoga+'× yoga');if(golf)parts.push(golf+'× golf');
+    if(walk)parts.push(walk+'× walk');
+    const isFut=isWeekFuture(w);
+    row.innerHTML=`
+      <span class="wk-profile-num mf" style="width:3.5rem">W${String(w).padStart(2,'0')} <span style="color:#3d3d3d;font-size:.45rem">${fmtWeekRange(w)}</span></span>
+      ${lbl?`<span class="wk-profile-badge" style="color:${lbl.color};background:${lbl.bg}">${lbl.emoji} ${lbl.label}</span>`:'<span class="wk-profile-badge" style="color:#525252;background:rgba(38,38,38,.4)">Upcoming</span>'}
+      <span class="wk-profile-detail">${isFut?'':(parts.join(' · ')||'No sessions yet')}</span>`;
+    wpCard.appendChild(row);
+  }
+  wpEl.appendChild(wpCard);div.appendChild(wpEl);
+
+rst.onclick=()=>{if(confirm('Reset all completions? Cannot be undone.')){S.completions={};save();render();}};
   div.appendChild(rst);
 
   return div;
