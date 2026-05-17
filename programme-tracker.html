@@ -358,6 +358,84 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 .monday-card{border-radius:1rem;border:1px solid rgba(251,146,60,.3);background:rgba(251,146,60,.06);padding:1rem;margin-bottom:.625rem}
 .monday-title{font-family:'Fraunces',Georgia,serif;font-size:1.125rem;font-weight:500;color:var(--t1);margin-bottom:.25rem}
 .monday-sub{font-size:.75rem;color:#a3a3a3;margin-bottom:.75rem}
+
+.steps-week-wrap{padding:.75rem 1.25rem 0}
+.steps-week-hdr{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.5rem}
+.steps-week-lbl{font-size:.625rem;font-family:'JetBrains Mono',monospace;color:var(--t3);letter-spacing:.2em;text-transform:uppercase}
+.steps-week-total{font-size:.75rem;font-family:'JetBrains Mono',monospace;color:var(--t2)}
+.steps-week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:.375rem;margin-bottom:.5rem}
+.steps-day-col{display:flex;flex-direction:column;align-items:center;gap:.25rem}
+.steps-day-lbl{font-size:.5rem;font-family:'JetBrains Mono',monospace;color:var(--t4)}
+.steps-day-bar-wrap{width:100%;height:2.5rem;display:flex;flex-direction:column;justify-content:flex-end;position:relative}
+.steps-day-bar{width:100%;border-radius:.25rem .25rem 0 0;min-height:2px;transition:height .3s}
+.steps-day-val{font-size:.45rem;font-family:'JetBrains Mono',monospace;color:var(--t3);text-align:center;margin-top:.125rem;line-height:1}
+.steps-prog-bar-wrap{height:4px;background:rgba(38,38,38,.6);border-radius:999px;overflow:hidden;margin-top:.375rem}
+.steps-prog-bar{height:100%;border-radius:999px;transition:width .5s}
+.steps-prog-lbl{display:flex;justify-content:space-between;margin-top:.25rem}
+.steps-prog-txt{font-size:.5625rem;font-family:'JetBrains Mono',monospace;color:var(--t3)}
+
+.past-nav{display:flex;align-items:center;justify-content:space-between;
+  padding:.5rem 1.25rem .25rem;gap:.5rem}
+.past-nav-btn{flex:1;padding:.5rem;border-radius:.625rem;border:1px solid var(--b1);
+  background:rgba(23,23,23,.5);font-size:.6875rem;font-family:'JetBrains Mono',monospace;
+  color:var(--t2);cursor:pointer;text-align:center;letter-spacing:.05em;transition:all .15s}
+.past-nav-btn:active{background:rgba(38,38,38,.6);color:var(--t1)}
+.past-nav-btn.accent{border-color:rgba(251,146,60,.3);color:var(--ac);background:rgba(251,146,60,.06)}
+
+.yt-btn{display:inline-flex;align-items:center;gap:.2rem;padding:.15rem .35rem;
+  border-radius:.3rem;background:rgba(255,0,0,.15);border:1px solid rgba(255,0,0,.25);
+  color:#ff4444;text-decoration:none;font-size:.5rem;font-family:'JetBrains Mono',monospace;
+  letter-spacing:.05em;flex-shrink:0;transition:background .15s;vertical-align:middle;margin-left:.375rem}
+.yt-btn:active{background:rgba(255,0,0,.3)}
+
+/* Welcome / setup screen */
+.setup-screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:2rem 1.5rem;text-align:center}
+.setup-logo{font-family:'Fraunces',Georgia,serif;font-size:4rem;font-style:italic;
+  color:var(--ac);margin-bottom:.5rem;line-height:1}
+.setup-title{font-family:'Fraunces',Georgia,serif;font-size:1.75rem;font-weight:500;
+  color:var(--t1);margin-bottom:.5rem}
+.setup-sub{font-size:.875rem;color:var(--t3);margin-bottom:2rem;line-height:1.5;max-width:20rem}
+.setup-label{font-size:.625rem;font-family:'JetBrains Mono',monospace;color:var(--t3);
+  letter-spacing:.2em;text-transform:uppercase;margin-bottom:.5rem;text-align:left;width:100%;max-width:22rem}
+.setup-inp{width:100%;max-width:22rem;background:rgba(23,23,23,.8);border:1px solid #3d3d3d;
+  border-radius:.75rem;padding:.875rem 1rem;font-size:1.125rem;color:var(--t1);
+  outline:none;text-align:center;margin-bottom:1rem}
+.setup-inp:focus{border-color:var(--ac)}
+.setup-inp::placeholder{color:#3a3a3a}
+.setup-btn{width:100%;max-width:22rem;padding:.875rem;border-radius:.75rem;
+  background:var(--ac);color:#0a0a0a;font-weight:600;font-size:.9375rem;
+  letter-spacing:.05em;border:none;cursor:pointer;transition:transform .1s}
+.setup-btn:active{transform:scale(.97)}
+/* Name in header */
+.name-row{display:flex;align-items:center;gap:.5rem;margin-top:.625rem}
+.user-name{font-size:.875rem;color:var(--t2);flex:1;font-family:'JetBrains Mono',monospace;letter-spacing:.05em}
+.edit-name-btn{background:transparent;border:none;color:var(--t4);cursor:pointer;
+  padding:.25rem;font-size:.875rem;line-height:1;flex-shrink:0}
+.edit-name-btn:active{color:var(--ac)}
+.name-edit-row{display:flex;gap:.5rem;align-items:center;padding:.5rem 0 0}
+.name-edit-inp{flex:1;background:rgba(23,23,23,.8);border:1px solid #3d3d3d;border-radius:.5rem;
+  padding:.4rem .625rem;font-size:1rem;color:var(--t1);outline:none;font-family:'JetBrains Mono',monospace}
+.name-edit-inp:focus{border-color:var(--ac)}
+.name-save-btn{padding:.4rem .75rem;border-radius:.5rem;background:var(--ac);color:#0a0a0a;
+  font-size:.75rem;font-weight:600;border:none;cursor:pointer;white-space:nowrap}
+
+.user-list{width:100%;max-width:22rem;margin-bottom:1.25rem}
+.user-list-lbl{font-size:.625rem;font-family:'JetBrains Mono',monospace;color:var(--t3);
+  letter-spacing:.2em;text-transform:uppercase;margin-bottom:.625rem;text-align:left}
+.user-btn{width:100%;padding:.75rem 1rem;border-radius:.75rem;border:1px solid var(--b1);
+  background:rgba(23,23,23,.6);color:var(--t1);font-size:.9375rem;text-align:left;
+  cursor:pointer;margin-bottom:.375rem;display:flex;align-items:center;justify-content:space-between;
+  transition:all .15s}
+.user-btn:active{background:rgba(38,38,38,.7);border-color:var(--ac)}
+.user-btn-name{font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--t2)}
+.user-btn-arrow{color:var(--t4);font-size:1rem}
+.setup-divider{display:flex;align-items:center;gap:.75rem;width:100%;max-width:22rem;margin:.75rem 0}
+.setup-divider-line{flex:1;height:1px;background:var(--b1)}
+.setup-divider-txt{font-size:.625rem;font-family:'JetBrains Mono',monospace;color:var(--t4);letter-spacing:.1em}
+.del-user-btn{background:transparent;border:none;color:var(--t4);cursor:pointer;
+  padding:.25rem .5rem;font-size:.75rem;border-radius:.375rem}
+.del-user-btn:active{color:#ef4444}
 </style>
 </head>
 <body>
@@ -421,6 +499,9 @@ const GYM={
     {n:'Front Foot Elev. Split Squat',s:2,r:'8–12/sd',rest:'60s'},
     {n:'Bicep Curl',                  s:4,r:'12',     rest:'45s'},
     {n:'Abdominal Crunch',            s:3,r:'12–15',  rest:'45s',bw:1},
+    {n:'Face Pulls (cable rope)',      s:3,r:'15–20',  rest:'45s'},
+    {n:'Band Pull-Aparts',            s:3,r:'20',     rest:'30s',bw:1},
+    {n:'McGill Side Plank',           s:3,r:'20s/sd', rest:'30s',bw:1},
   ]},
   'gym-b':{name:'Session B',focus:'Hinge · Push · Posterior · Arms',ex:[
     {n:'Trap Bar Romanian Deadlift',      s:4,r:'8–12',    rest:'90s'},
@@ -431,6 +512,8 @@ const GYM={
     {n:'Tricep Pushdown w/Forward Lean',  s:4,r:'12–15',   rest:'45s'},
     {n:'Facing Cable Bicep Curl',         s:4,r:'12–15',   rest:'45s'},
     {n:'Kneeling Chin Dip',               s:3,r:'12–15',   rest:'60s'},
+    {n:'Bird Dog (10s hold)',          s:5,r:'10s/sd', rest:'20s',bw:1},
+    {n:'McGill Modified Curl-up',     s:5,r:'10s hold',rest:'20s',bw:1},
   ]},
   'gym-c':{name:'Session C',focus:'Full Body Conditioning',ex:[
     {n:'Suitcase Squat',              s:3,r:'12',   rest:'60s'},
@@ -440,6 +523,8 @@ const GYM={
     {n:'Tricep Pushdown w/Forward Lean',s:3,r:'12', rest:'45s'},
     {n:'Bicep Curl',                  s:3,r:'12',   rest:'45s'},
     {n:'Plank',                       s:3,r:'45s',  rest:'45s',bw:1},
+    {n:'Face Pulls (cable rope)',      s:3,r:'15–20',  rest:'45s'},
+    {n:'Band Pull-Aparts',            s:3,r:'20',     rest:'30s',bw:1},
   ]},
 };
 
@@ -546,6 +631,10 @@ const YOGA=[
   {n:'Pigeon Pose',d:'60s/sd'},{n:'Downward Dog',d:'30s × 3'},
   {n:'Supine Twist',d:'45s/sd'},{n:'Bridge Pose',d:'10 reps + 30s'},
   {n:'Seated Forward Fold',d:'60s'},{n:'Legs Up the Wall',d:'3 min'},
+  {n:'Thoracic Extension',d:'90s — lie on rolled towel, shoulders drop back'},
+  {n:'Wall Angels',d:'3 × 10 — back to wall, arms slide up and down'},
+  {n:'Deep Squat Hold',d:'3 × 60s — hold doorframe, heels flat, chest up'},
+  {n:'Chin Tucks',d:'10 × 5s — pull chin straight back'},
 ];
 const SWIM=[
   {n:'Warm-up',d:'2 lengths easy'},{n:'Main Set × 4',d:'4 lengths · 60s rest'},
@@ -562,24 +651,99 @@ function getSchedule(w){
   // Phase 4 (weeks 13-24): same structure as Phase 3
   return{ph:4,d:{mon:'gym-a',tue:'run',wed:'gym-b',thu:'run',fri:'gym-c',sat:'golf',sun:'run'}};
 }
+
+const VIDEO_URLS={
+  // Session A
+  'Suitcase Squat':               'https://www.youtube.com/results?search_query=suitcase+squat+dumbbell+technique',
+  'Incline Arnold Press':         'https://www.youtube.com/results?search_query=incline+arnold+press+dumbbell+tutorial',
+  'Half-Prone DB Row':            'https://www.youtube.com/results?search_query=half+prone+dumbbell+row+technique',
+  'Glute Bridge Knee→Chest': 'https://www.youtube.com/results?search_query=glute+bridge+knee+to+chest+exercise',
+  'Neutral Grip Lat Pulldown':    'https://www.youtube.com/results?search_query=neutral+grip+lat+pulldown+form',
+  'One-Arm Cable Lat Raise':      'https://www.youtube.com/results?search_query=one+arm+cable+lateral+raise+tutorial',
+  'Lying Cable Shoulder Pull':    'https://www.youtube.com/results?search_query=lying+cable+shoulder+pull+exercise',
+  'Front Foot Elev. Split Squat': 'https://www.youtube.com/results?search_query=front+foot+elevated+split+squat+tutorial',
+  'Bicep Curl':                   'https://www.youtube.com/results?search_query=dumbbell+bicep+curl+proper+form',
+  'Abdominal Crunch':             'https://www.youtube.com/results?search_query=abdominal+crunch+proper+form',
+  'Face Pulls (cable rope)':      'https://www.youtube.com/results?search_query=cable+face+pulls+technique+posture',
+  'Band Pull-Aparts':             'https://www.youtube.com/results?search_query=band+pull+aparts+posture+exercise',
+  'McGill Side Plank':            'https://www.youtube.com/results?search_query=McGill+side+plank+core+tutorial',
+  // Session B
+  'Trap Bar Romanian Deadlift':           'https://www.youtube.com/results?search_query=trap+bar+romanian+deadlift+tutorial',
+  'DB Bench Press':                        'https://www.youtube.com/results?search_query=dumbbell+bench+press+proper+form',
+  'One-leg Foot Elev. Glute Bridge':       'https://www.youtube.com/results?search_query=single+leg+foot+elevated+glute+bridge',
+  'DB Fly':                                'https://www.youtube.com/results?search_query=dumbbell+fly+chest+proper+form',
+  'One-leg Calf Raise':                    'https://www.youtube.com/results?search_query=single+leg+calf+raise+technique',
+  'Tricep Pushdown w/Forward Lean':        'https://www.youtube.com/results?search_query=tricep+pushdown+forward+lean+technique',
+  'Facing Cable Bicep Curl':               'https://www.youtube.com/results?search_query=facing+cable+bicep+curl+tutorial',
+  'Kneeling Chin Dip':                     'https://www.youtube.com/results?search_query=kneeling+chin+dip+assisted+technique',
+  'Bird Dog (10s hold)':                   'https://www.youtube.com/results?search_query=bird+dog+exercise+hold+core+tutorial',
+  'McGill Modified Curl-up':               'https://www.youtube.com/results?search_query=McGill+modified+curl+up+core+tutorial',
+  // Session C
+  'Walking Lunge':   'https://www.youtube.com/results?search_query=walking+lunge+proper+form',
+  'Plank':           'https://www.youtube.com/results?search_query=plank+exercise+proper+form+tutorial',
+  // Yoga
+  'Sun Salutations':                         'https://www.youtube.com/results?search_query=sun+salutations+beginners+step+by+step',
+  'Cat-Cow':                                 'https://www.youtube.com/results?search_query=cat+cow+stretch+yoga+tutorial',
+  'Low Lunge / Crescent':                    'https://www.youtube.com/results?search_query=low+lunge+crescent+pose+yoga+tutorial',
+  'Pigeon Pose':                             'https://www.youtube.com/results?search_query=pigeon+pose+yoga+tutorial+beginners',
+  'Downward Dog':                            'https://www.youtube.com/results?search_query=downward+dog+proper+form+yoga',
+  'Supine Twist':                            'https://www.youtube.com/results?search_query=supine+spinal+twist+yoga+tutorial',
+  'Bridge Pose':                             'https://www.youtube.com/results?search_query=bridge+pose+yoga+tutorial',
+  'Seated Forward Fold':                     'https://www.youtube.com/results?search_query=seated+forward+fold+yoga+tutorial',
+  'Legs Up the Wall':                        'https://www.youtube.com/results?search_query=legs+up+the+wall+yoga+tutorial',
+  'Thoracic Extension':                      'https://www.youtube.com/results?search_query=thoracic+extension+foam+roller+posture',
+  'Wall Angels':                             'https://www.youtube.com/results?search_query=wall+angels+posture+exercise+tutorial',
+  'Deep Squat Hold':                         'https://www.youtube.com/results?search_query=deep+squat+hold+hip+flexor+mobility',
+  'Chin Tucks':                              'https://www.youtube.com/results?search_query=chin+tucks+posture+neck+exercise',
+};
+
+function ytBtn(name){
+  const url=VIDEO_URLS[name];
+  if(!url)return null;
+  const a=document.createElement('a');
+  a.href=url;a.target='_blank';a.rel='noopener';a.className='yt-btn';
+  a.onclick=(e)=>e.stopPropagation();
+  a.innerHTML='<svg width="8" height="8" viewBox="0 0 24 24" fill="#ff4444"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.6 3.5 12 3.5 12 3.5s-7.6 0-9.4.5A3 3 0 0 0 .5 6.2C0 8 0 12 0 12s0 4 .5 5.8a3 3 0 0 0 2.1 2.1C4.4 20.5 12 20.5 12 20.5s7.6 0 9.4-.6a3 3 0 0 0 2.1-2.1C24 16 24 12 24 12s0-4-.5-5.8zM9.5 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg> YT';
+  return a;
+}
 // =========================================================
 // STATE & STORAGE
 // =========================================================
-const KEY='prgm-v2';
-function defState(){return{week:0,tab:'today',expanded:todayDayKey(),completions:{},overrides:{},swapping:null,extras:[],steps:{},startDate:'2026-05-18',measurements:{},targets:{weight:'',bodyFat:'',waist:'',chest:'',hips:'',thigh:'',arm:'',runDist:5,golfHcp:'',totalLift:''},_measWeek:undefined};}
+const BASE_KEY='prgm-v2';
+const USERS_KEY='prgm-users';
+function slugify(n){return n.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'');}
+function userKey(n){return n?BASE_KEY+'-'+slugify(n):BASE_KEY;}
+function getUsers(){try{return JSON.parse(localStorage.getItem(USERS_KEY))||[];}catch{return[];}}
+function saveUsers(u){try{localStorage.setItem(USERS_KEY,JSON.stringify(u));}catch{}}
+function defState(){return{week:0,tab:'today',expanded:todayDayKey(),completions:{},overrides:{},swapping:null,extras:[],steps:{},measurements:{},targets:{weight:'',bodyFat:'',waist:'',chest:'',hips:'',thigh:'',arm:'',runDist:5,golfHcp:'',totalLift:''},_measWeek:undefined,userName:'',editingName:false};}
 let S=defState();
-try{const r=localStorage.getItem(KEY);if(r){S=Object.assign(defState(),JSON.parse(r));}}catch(e){}
-// Auto-correct week: if today is before Week 1 start (18 May 2026), must be Week 0
+// Load: check for a remembered current user, otherwise try legacy key
 (function(){
-  const today=new Date();today.setHours(0,0,0,0);
-  const wk1=new Date('2026-05-18T00:00:00');
-  if(today<wk1&&S.week>=1){S.week=0;localStorage.setItem(KEY,JSON.stringify(S));}
+  try{
+    const cu=localStorage.getItem('prgm-current-user');
+    if(cu){
+      const r=localStorage.getItem(userKey(cu));
+      if(r){S=Object.assign(defState(),JSON.parse(r));return;}
+    }
+    // Legacy migration: old data under BASE_KEY with no userName
+    const old=localStorage.getItem(BASE_KEY);
+    if(old){
+      const parsed=JSON.parse(old);
+      if(parsed&&!parsed.userName){S=Object.assign(defState(),parsed);}
+    }
+  }catch(e){}
+  // Auto-correct week
+  try{
+    const today=new Date();today.setHours(0,0,0,0);
+    const wk1=new Date('2026-05-18T00:00:00');
+    if(today<wk1&&S.week>=1)S.week=0;
+  }catch(e){}
 })();
 
 let _st=null;
 function save(){
   clearTimeout(_st);
-  _st=setTimeout(()=>{try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}},350);
+  _st=setTimeout(()=>{try{const k=S.userName?userKey(S.userName):BASE_KEY;localStorage.setItem(k,JSON.stringify(S));if(S.userName)localStorage.setItem('prgm-current-user',S.userName);}catch(e){}},350);
 }
 function saveNow(){clearTimeout(_st);try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
 
@@ -713,6 +877,7 @@ function mkExtraCard(extra){
           save();render();
         };
         const nmEl=document.createElement('span');nmEl.className='exnm'+(es.done?' dn':'');nmEl.textContent=ex.n;
+        const ytB=ytBtn(ex.n);if(ytB)nmEl.appendChild(ytB);
         const mtEl=document.createElement('span');mtEl.className='exmt mf';
         mtEl.innerHTML=`${ex.s} × ${ex.r}<span class="exrs">${ex.rest}</span>`;
         rowHdr.append(ckBtn,nmEl,mtEl);
@@ -804,6 +969,35 @@ function mkAddSessionBtn(week,day){
 }
 
 
+
+const WK0_START='2026-05-13';
+const WK1_START='2026-05-18';
+
+function weekStartDate(w){
+  if(w===0)return new Date(WK0_START+'T00:00:00');
+  const d=new Date(WK1_START+'T00:00:00');
+  d.setDate(d.getDate()+(w-1)*7);return d;
+}
+function weekEndDate(w){
+  if(w===0)return new Date('2026-05-17T00:00:00');
+  const d=weekStartDate(w);d.setDate(d.getDate()+6);return d;
+}
+function isWeekFuture(w){
+  const ws=weekStartDate(w);
+  const today=new Date();today.setHours(0,0,0,0);ws.setHours(0,0,0,0);
+  return ws>today;
+}
+function fmtWeekRange(w){
+  const s=weekStartDate(w),e=weekEndDate(w);
+  const sm=MONTHS[s.getMonth()],em=MONTHS[e.getMonth()];
+  return s.getDate()+(sm!==em?' '+sm:'')+' – '+e.getDate()+' '+em;
+}
+function getExpectedDate(week,day){
+  const ws=weekStartDate(week);
+  ws.setDate(ws.getDate()+DAYS.indexOf(day));
+  return ws.toISOString().slice(0,10);
+}
+
 function countSunSals(){
   let total=0;
   // From main completions — only yoga keys (activity is yoga or companion '-yoga' key)
@@ -850,54 +1044,69 @@ function mkStepsRow(week,day){
 }
 
 function mkStepsProgress(){
-  const TARGET=7000;
+  const WDAY_TGT=7000, WEND_TGT=10000, WEEK_TGT=70000;
+  const WEND_DAYS=new Set(['sat','sun']);
   const wrap=document.createElement('div');wrap.className='steps-sect';
 
   // Collect all step data
   const entries=[];
-  for(let w=0;w<=12;w++){
+  for(let w=0;w<=24;w++){
+    let wkTotal=0,wkDays=0,wkWend=0,wkWendDays=0,wkHits=0,wkDayCount=0;
     DAYS.forEach(d=>{
       const key='w'+w+'-'+d;
       const raw=(S.steps&&S.steps[key])||'';
       if(raw){
         const n=parseInt(raw.replace(/,/g,''));
-        if(!isNaN(n))entries.push({week:w,day:d,steps:n,hit:n>=TARGET});
+        if(!isNaN(n)){
+          const tgt=WEND_DAYS.has(d)?WEND_TGT:WDAY_TGT;
+          entries.push({week:w,day:d,steps:n,hit:n>=tgt,isWend:WEND_DAYS.has(d),tgt});
+          wkTotal+=n;wkDays++;
+          if(WEND_DAYS.has(d)){wkWend+=n;wkWendDays++;}
+          if(n>=tgt)wkHits++;
+          wkDayCount++;
+        }
       }
     });
   }
 
-  // Stats
+  // Overall stats
   const total=entries.length;
   const hitCount=entries.filter(e=>e.hit).length;
   const missCount=total-hitCount;
   const avg=total?Math.round(entries.reduce((s,e)=>s+e.steps,0)/total):0;
+  const wendEntries=entries.filter(e=>e.isWend);
+  const wendAvg=wendEntries.length?Math.round(wendEntries.reduce((s,e)=>s+e.steps,0)/wendEntries.length):0;
 
-  const secLbl=document.createElement('div');secLbl.className='seclbl mf';secLbl.textContent='STEPS · '+TARGET.toLocaleString()+' DAILY TARGET';
+  const secLbl=document.createElement('div');secLbl.className='seclbl mf';
+  secLbl.textContent='STEPS · 7K WEEKDAYS · 10K WEEKENDS · 70K/WEEK';
   wrap.appendChild(secLbl);
 
   // Stat cards
   const sg=document.createElement('div');sg.className='steps-stats-grid';
   [
-    {val:avg?avg.toLocaleString():'—', lbl:'Daily avg', cls:''},
-    {val:hitCount, lbl:'Days hit ✓', cls:'hit'},
-    {val:missCount, lbl:'Days missed', cls:'miss'},
+    {val:avg?avg.toLocaleString():'—',   lbl:'Daily avg',    cls:''},
+    {val:hitCount,                        lbl:'Days hit ✓',   cls:'hit'},
+    {val:wendAvg?wendAvg.toLocaleString():'—', lbl:'Weekend avg', cls: wendAvg>=WEND_TGT?'hit':'miss'},
   ].forEach(({val,lbl,cls})=>{
-    const sc=document.createElement('div');sc.className='steps-stat';
-    sc.innerHTML=`<div class="steps-stat-val ${cls}">${val}</div><div class="steps-stat-lbl">${lbl}</div>`;
+    const sc=document.createElement('div');sc.className='sc';
+    sc.innerHTML=`<div class="slb mf">${lbl}</div>
+      <div class="sv sf" style="font-size:2.5rem;${cls==='hit'?'color:#34d399':cls==='miss'?'color:#fb923c':''}">${val}</div>`;
     sg.appendChild(sc);
   });
   wrap.appendChild(sg);
 
-  // 12-week grid
+  // 12-week grid (now weekend-aware)
+  const wmEl=document.createElement('div');
+  wmEl.innerHTML='<div class="seclbl mf">STEPS MAP</div>';
   const mapWrap=document.createElement('div');mapWrap.className='steps-map';
-  // Header row
-  const hdr=document.createElement('div');hdr.className='steps-map-head';
-  hdr.innerHTML='<div class="steps-map-hlbl"></div>'+
-    ['M','T','W','T','F','S','S'].map(d=>`<div class="steps-map-hlbl">${d}</div>`).join('');
-  mapWrap.appendChild(hdr);
+  const hdr2=document.createElement('div');hdr2.className='steps-map-head';
+  hdr2.innerHTML='<div class="steps-map-hlbl"></div>'+
+    DAYS.map(d=>`<div class="steps-map-hlbl" style="${WEND_DAYS.has(d)?'color:#c084fc':''}">${DAY_SHORT[d]}</div>`).join('');
+  mapWrap.appendChild(hdr2);
 
-  // Week rows
-  for(let w=1;w<=12;w++){
+  let weeksHit70k=0;
+  for(let w=0;w<=12;w++){
+    let wkTotal=0;
     const row=document.createElement('div');row.className='steps-map-row';
     const wlbl=document.createElement('div');wlbl.className='steps-map-wlbl';wlbl.textContent='W'+String(w).padStart(2,'0');
     row.appendChild(wlbl);
@@ -906,203 +1115,62 @@ function mkStepsProgress(){
       const raw=(S.steps&&S.steps[key])||'';
       const n=raw?parseInt(raw.replace(/,/g,'')):NaN;
       const hasData=!isNaN(n)&&raw!=='';
-      const hit=hasData&&n>=TARGET;
+      const isWend=WEND_DAYS.has(d);
+      const tgt=isWend?WEND_TGT:WDAY_TGT;
+      const hit=hasData&&n>=tgt;
       const miss=hasData&&!hit;
+      if(hasData)wkTotal+=n;
       const dot=document.createElement('div');
       dot.className='sdot '+(hasData?(hit?'hit':'miss'):'empty');
+      // Weekend misses use a different color
+      if(miss&&isWend)dot.style.cssText='background:rgba(192,132,252,0.2);border:1px solid rgba(192,132,252,0.4)';
       if(hasData){
         const valEl=document.createElement('div');valEl.className='sdot-val';
         valEl.textContent=n>=1000?(n/1000).toFixed(1)+'k':String(n);
+        if(miss&&isWend)valEl.style.color='#c084fc';
         dot.appendChild(valEl);
-        dot.title=DAY_NAMES[d]+' Wk'+w+': '+n.toLocaleString()+' steps '+(hit?'✓':'✗ below target');
+        dot.title=DAY_NAMES[d]+' Wk'+w+': '+n.toLocaleString()+' / '+tgt.toLocaleString()+' target '+(hit?'✓':'✗');
       }
       row.appendChild(dot);
     });
-    mapWrap.appendChild(row);
+    // Weekly total badge
+    if(wkTotal>0){
+      const badge=document.createElement('div');
+      badge.style.cssText='grid-column:1/-1;font-size:.5rem;font-family:JetBrains Mono,monospace;padding:.125rem 0 .25rem;display:flex;justify-content:space-between;align-items:center';
+      const hitWk=wkTotal>=WEEK_TGT;
+      if(hitWk)weeksHit70k++;
+      badge.innerHTML=`<span style="color:${hitWk?'#34d399':'#737373'}">W${String(w).padStart(2,'0')} total: ${wkTotal.toLocaleString()} ${hitWk?'✓':''}</span>
+        <span style="color:#525252">${Math.round((wkTotal/WEEK_TGT)*100)}% of 70k</span>`;
+      // Add as its own row
+      const brow=document.createElement('div');
+      brow.style.cssText='display:flex;justify-content:space-between;padding:.1rem 0 .25rem;border-bottom:1px solid rgba(38,38,38,.3)';
+      brow.innerHTML=`<span style="font-size:.5rem;font-family:JetBrains Mono,monospace;color:${hitWk?'#34d399':'#737373'}">Total: ${wkTotal.toLocaleString()}</span>
+        <span style="font-size:.5rem;font-family:JetBrains Mono,monospace;color:#525252">${Math.round((wkTotal/WEEK_TGT)*100)}% of 70k ${hitWk?'✓':''}</span>`;
+      mapWrap.appendChild(row);
+      mapWrap.appendChild(brow);
+    } else {
+      mapWrap.appendChild(row);
+    }
   }
 
   // Legend
   const leg=document.createElement('div');leg.className='steps-legend';
   leg.innerHTML=`
-    <div class="steps-leg-item"><div class="steps-leg-dot" style="background:rgba(52,211,153,.4)"></div>≥ 7,000</div>
-    <div class="steps-leg-item"><div class="steps-leg-dot" style="background:rgba(251,146,60,.35)"></div>< 7,000</div>
-    <div class="steps-leg-item"><div class="steps-leg-dot" style="background:rgba(38,38,38,.5)"></div>No data</div>`;
+    <div class="steps-leg-item"><div class="steps-leg-dot" style="background:rgba(52,211,153,.4)"></div>Hit target</div>
+    <div class="steps-leg-item"><div class="steps-leg-dot" style="background:rgba(251,146,60,.35)"></div>Wday &lt;7k</div>
+    <div class="steps-leg-item"><div class="steps-leg-dot" style="background:rgba(192,132,252,.35)"></div>Wend &lt;10k</div>`;
   mapWrap.appendChild(leg);
-  wrap.appendChild(mapWrap);
-  return wrap;
-}
+  wmEl.appendChild(mapWrap);wrap.appendChild(wmEl);
 
-
-const WK0_START='2026-05-13';// Wed 13 May — getting started
-const WK1_START='2026-05-18';// Mon 18 May — programme begins
-function weekStartDate(w){
-  if(w===0)return new Date(WK0_START+'T00:00:00');
-  const d=new Date(WK1_START+'T00:00:00');
-  d.setDate(d.getDate()+(w-1)*7);return d;
-}
-function weekEndDate(w){
-  if(w===0)return new Date('2026-05-17T00:00:00');
-  const d=weekStartDate(w);d.setDate(d.getDate()+6);return d;
-}
-function isWeek13Plus(w){return w>12;}
-function isWeekFuture(w){
-  const ws=weekStartDate(w);
-  const today=new Date();today.setHours(0,0,0,0);ws.setHours(0,0,0,0);
-  return ws>today;
-}
-function fmtWeekRange(w){
-  const s=weekStartDate(w),e=weekEndDate(w);
-  const sm=MONTHS[s.getMonth()],em=MONTHS[e.getMonth()];
-  return s.getDate()+(sm!==em?' '+sm:'')+' – '+e.getDate()+' '+em;
-}
-function getWeekLabel(week){
-  if(isWeekFuture(week))return null;
-  const schd=getSchedule(week).d;
-  let gym=0,run=0,yoga=0,golf=0,walk=0,swim=0;
-  DAYS.forEach(d=>{
-    const key='w'+week+'-'+d;
-    if(!S.completions[key]?.done)return;
-    const aid=(S.overrides&&S.overrides[key])||schd[d];
-    if(aid.startsWith('gym'))gym++;
-    else if(aid==='run')run++;
-    else if(aid==='yoga')yoga++;
-    else if(aid==='golf')golf++;
-    else if(aid==='walk')walk++;
-    else if(aid==='swim')swim++;
-  });
-  (S.extras||[]).filter(e=>e.week===week&&e.done).forEach(e=>{
-    const a=e.activityId;
-    if(a.startsWith('gym'))gym++;else if(a==='run')run++;
-    else if(a==='yoga')yoga++;else if(a==='golf')golf++;
-    else if(a==='walk')walk++;else if(a==='swim')swim++;
-  });
-  const total=gym+run+yoga+golf+walk+swim;
-  const cardio=run+walk;
-  const flex=yoga+golf;
-
-  if(total<=1) return{label:"Death's Door",emoji:'💀',color:'#ef4444',bg:'rgba(239,68,68,.15)',total};
-  if(total<=3) return{label:'Disaster',    emoji:'🔥',color:'#fb923c',bg:'rgba(251,146,60,.15)',total};
-
-  // Balanced: 2-3 gym, 2-3 run, 1-2 yoga, 1+ golf/walk
-  if(gym>=2&&gym<=3&&run>=2&&run<=3&&yoga>=1&&yoga<=2&&(golf+walk)>=1)
-    return{label:'Balanced',emoji:'⚖️',color:'#a3e635',bg:'rgba(163,230,53,.15)',total};
-
-  // Strength: gym ≥3 OR (gym≥2 and yoga≥2) with low cardio
-  if((gym>=3||(gym>=2&&yoga>=2))&&cardio<=1)
-    return{label:'Strength',emoji:'💪',color:'#f59e0b',bg:'rgba(245,158,11,.15)',total};
-
-  // Cardio: run+walk dominant
-  if(cardio>=3||(cardio>=2&&cardio>gym&&cardio>=flex))
-    return{label:'Cardio',emoji:'🏃',color:'#60a5fa',bg:'rgba(96,165,250,.15)',total};
-
-  // Flexibility: yoga+golf dominant
-  if(flex>=3||(flex>=2&&flex>gym&&flex>=cardio))
-    return{label:'Flexibility',emoji:'🧘',color:'#c084fc',bg:'rgba(192,132,252,.15)',total};
-
-  // Fallback: pick dominant category
-  if(gym>=cardio&&gym>=flex&&gym>=1) return{label:'Strength',emoji:'💪',color:'#f59e0b',bg:'rgba(245,158,11,.15)',total};
-  if(cardio>flex) return{label:'Cardio',emoji:'🏃',color:'#60a5fa',bg:'rgba(96,165,250,.15)',total};
-  return{label:'Flexibility',emoji:'🧘',color:'#c084fc',bg:'rgba(192,132,252,.15)',total};
-}
-
-function mkOptionalYogaCard(week, day){
-  const compKey='w'+week+'-'+day+'-yoga';
-  const comp=S.completions[compKey]||{};
-  const isDone=!!comp.done;
-  const expKey='optyoga-'+week+'-'+day;
-  const expanded=S.expanded===expKey;
-  const yogaColor='#a3e635';
-
-  const wrap=document.createElement('div');
-  wrap.className='opt-yoga-wrap'+(isDone?' dn':'');
-
-  const top=document.createElement('button');top.className='opt-yoga-top';
-  top.innerHTML=`
-    <span style="font-size:1.125rem;line-height:1">🧘</span>
-    <div style="flex:1;min-width:0">
-      <div class="opt-yoga-lbl">${DAY_NAMES[day]}</div>
-      <div class="opt-yoga-name">Yoga / Mobility</div>
-      <div class="opt-yoga-sub">40–45 min flow</div>
-    </div>
-    <span class="extra-chev${expanded?' op':''}" style="color:#525252">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-    </span>`;
-  top.onclick=()=>{S.expanded=(expanded?null:expKey);save();render();};
-  wrap.appendChild(top);
-
-  if(expanded){
-    const exp=document.createElement('div');exp.className='cexp fade';
-    const inner=document.createElement('div');inner.className='cein';
-
-    YOGA.forEach((item,ii)=>{
-      const es=exState(comp,ii);
-      if(item.isSunSal){
-        const totalSS=countSunSals();const pct=Math.min(100,(totalSS/100)*100);
-        const ssRow=document.createElement('div');ssRow.className='sunsal-row';
-        const ssHdr=document.createElement('div');ssHdr.className='sunsal-hdr';
-        const ck=document.createElement('button');ck.className='ck'+(es.done?' on':'');
-        ck.style.background=es.done?yogaColor:'transparent';
-        ck.innerHTML=es.done?'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>':'';
-        ck.onclick=(e)=>{e.stopPropagation();
-          const c=S.completions[compKey]||{exercises:{}};
-          const exs={...c.exercises};const cur=exState({exercises:exs},ii);
-          exs[ii]={done:!cur.done,sets:cur.sets,actual:cur.actual};
-          S.completions={...S.completions,[compKey]:{...c,exercises:exs}};save();render();};
-        const t=document.createElement('span');t.className='sunsal-title';t.textContent='Sun Salutations';
-        const tg=document.createElement('span');tg.className='sunsal-target';tg.textContent='Goal: 100 reps / year';
-        ssHdr.append(ck,t,tg);
-        const ir=document.createElement('div');ir.className='sunsal-inp-row';
-        const lb=document.createElement('span');lb.className='sunsal-inp-lbl';lb.textContent='Reps today';
-        const inp=document.createElement('input');inp.className='sunsal-inp';
-        inp.type='text';inp.inputMode='numeric';inp.placeholder='0';inp.value=es.actual||'';
-        inp.setAttribute('data-compkey',compKey);inp.setAttribute('data-yogi',ii);
-        inp.onclick=(e)=>e.stopPropagation();inp.onfocus=(e)=>e.target.select();
-        ir.append(lb,inp);
-        const pw=document.createElement('div');pw.className='sunsal-prog-wrap';
-        pw.innerHTML=`<div class="sunsal-prog-lbl"><span class="sunsal-prog-txt">${totalSS} total · ${Math.max(0,100-totalSS)} to go</span><span class="sunsal-prog-pct">${pct.toFixed(0)}%</span></div><div class="sunsal-bar"><div class="sunsal-bar-fill" style="width:${pct}%"></div></div>`;
-        ssRow.append(ssHdr,ir,pw);inner.appendChild(ssRow);
-        return;
-      }
-      const row=document.createElement('div');row.className='irow';row.style.cursor='pointer';
-      const ck=document.createElement('button');ck.className='ck'+(es.done?' on':'');
-      ck.style.background=es.done?yogaColor:'transparent';
-      ck.innerHTML=es.done?'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>':'';
-      const nm=document.createElement('span');nm.className='inm'+(es.done?' dn':'');nm.textContent=item.n;
-      const aw=document.createElement('div');aw.className='actual-wrap';
-      const al=document.createElement('span');al.className='actual-lbl';al.textContent=item.d||'';
-      const ai=document.createElement('input');ai.className='actual-inp';
-      ai.type='text';ai.placeholder='actual';ai.value=es.actual||'';
-      ai.setAttribute('data-compkey',compKey);ai.setAttribute('data-yogi',ii);
-      ai.onclick=(e)=>e.stopPropagation();
-      aw.append(al,ai);
-      ck.onclick=(e)=>{e.stopPropagation();
-        const c=S.completions[compKey]||{exercises:{}};
-        const exs={...c.exercises};const cur=exState({exercises:exs},ii);
-        exs[ii]={done:!cur.done,sets:cur.sets,actual:cur.actual};
-        S.completions={...S.completions,[compKey]:{...c,exercises:exs}};save();render();};
-      row.append(ck,nm,aw);row.onclick=()=>ck.onclick(new Event('c'));
-      inner.appendChild(row);
-    });
-
-    exp.appendChild(inner);wrap.appendChild(exp);
-
-    // Complete button
-    const ca=document.createElement('div');ca.className='carea';
-    const cb=document.createElement('button');
-    cb.className='cbtn'+(isDone?' dn':'');
-    cb.style.background=isDone?'':yogaColor;
-    cb.style.color=isDone?'':'#0a0a0a';
-    cb.textContent=isDone?'✓ COMPLETE':'MARK COMPLETE';
-    cb.onclick=()=>{
-      const c=S.completions[compKey]||{};
-      S.completions={...S.completions,[compKey]:{...c,done:!c.done,completedAt:!c.done?isoToday():null}};
-      save();render();
-    };
-    ca.appendChild(cb);wrap.appendChild(ca);
+  // Weeks hitting 70k
+  if(weeksHit70k>0){
+    const wb=document.createElement('div');
+    wb.style.cssText='margin-top:.75rem;font-size:.75rem;font-family:JetBrains Mono,monospace;color:#34d399;text-align:center';
+    wb.textContent='🏆 '+weeksHit70k+' week'+(weeksHit70k!==1?'s':'')+' hit 70,000 step target';
+    wrap.appendChild(wb);
   }
   return wrap;
 }
-
 // ── Total weight lifted calculation ──────────────────────────────────────────
 function calcWeeklyLift(week){
   let total=0;
@@ -1535,12 +1603,290 @@ function mkMondayPrompt(week){
   card.appendChild(btn);
   return card;
 }
+
+function mkWeekStepsSummary(week){
+  const WEEK_TGT=70000;const WEND_DAYS=new Set(['sat','sun']);
+  const WDAY_TGT=7000,WEND_TGT=10000;
+  let total=0,logged=0;
+  const dayData=DAYS.map(d=>{
+    const raw=(S.steps&&S.steps['w'+week+'-'+d])||'';
+    const n=raw?parseInt(raw.replace(/,/g,'')):NaN;
+    const hasData=!isNaN(n)&&raw!=='';
+    if(hasData){total+=n;logged++;}
+    return{d,n:hasData?n:null,tgt:WEND_DAYS.has(d)?WEND_TGT:WDAY_TGT};
+  });
+  if(logged===0)return null;
+  const pct=Math.min(100,Math.round((total/WEEK_TGT)*100));
+  const barColor=pct>=100?'#34d399':pct>=70?'#f59e0b':'#fb923c';
+
+  const wrap=document.createElement('div');wrap.className='steps-week-wrap';
+  const hdr=document.createElement('div');hdr.className='steps-week-hdr';
+  hdr.innerHTML=`<span class="steps-week-lbl">Steps this week</span>
+    <span class="steps-week-total" style="color:${barColor}">${total.toLocaleString()} <span style="color:#525252;font-size:.6rem">/ 70k</span></span>`;
+  wrap.appendChild(hdr);
+
+  // Bar chart per day
+  const maxN=Math.max(...dayData.filter(x=>x.n!==null).map(x=>x.n),WEND_TGT);
+  const grid=document.createElement('div');grid.className='steps-week-grid';
+  dayData.forEach(({d,n,tgt})=>{
+    const col=document.createElement('div');col.className='steps-day-col';
+    const isWend=WEND_DAYS.has(d);
+    const hit=n!==null&&n>=tgt;
+    const miss=n!==null&&!hit;
+    const barH=n!==null?Math.max(4,Math.round((n/maxN)*40)):0;
+    const barColor2=hit?'#34d399':miss?(isWend?'#c084fc':'#fb923c'):'#262626';
+    col.innerHTML=`
+      <div class="steps-day-lbl" style="${isWend?'color:#c084fc':''}">${DAY_SHORT[d]}</div>
+      <div class="steps-day-bar-wrap">
+        <div class="steps-day-bar" style="height:${barH}px;background:${barColor2}"></div>
+      </div>
+      <div class="steps-day-val">${n!==null?(n>=1000?(n/1000).toFixed(1)+'k':n):'—'}</div>`;
+    grid.appendChild(col);
+  });
+  wrap.appendChild(grid);
+
+  // Progress toward 70k
+  const pb=document.createElement('div');pb.className='steps-prog-bar-wrap';
+  pb.innerHTML=`<div class="steps-prog-bar" style="width:${pct}%;background:${barColor}"></div>`;
+  const pl=document.createElement('div');pl.className='steps-prog-lbl';
+  pl.innerHTML=`<span class="steps-prog-txt">${pct}% of 70,000 weekly target</span>
+    <span class="steps-prog-txt">${(WEEK_TGT-total).toLocaleString()} to go</span>`;
+  wrap.appendChild(pb);wrap.appendChild(pl);
+  return wrap;
+}
+
+function getWeekLabel(week){
+  if(isWeekFuture(week))return null;
+  const schd=getSchedule(week).d;
+  let gym=0,run=0,yoga=0,golf=0,walk=0,swim=0;
+  DAYS.forEach(d=>{
+    const key='w'+week+'-'+d;
+    if(!S.completions[key]?.done)return;
+    const aid=(S.overrides&&S.overrides[key])||schd[d];
+    if(aid.startsWith('gym'))gym++;
+    else if(aid==='run')run++;
+    else if(aid==='yoga')yoga++;
+    else if(aid==='golf')golf++;
+    else if(aid==='walk')walk++;
+    else if(aid==='swim')swim++;
+  });
+  (S.extras||[]).filter(e=>e.week===week&&e.done).forEach(e=>{
+    const a=e.activityId;
+    if(a.startsWith('gym'))gym++;else if(a==='run')run++;
+    else if(a==='yoga')yoga++;else if(a==='golf')golf++;
+    else if(a==='walk')walk++;else if(a==='swim')swim++;
+  });
+  const total=gym+run+yoga+golf+walk+swim;
+  const cardio=run+walk;
+  const flex=yoga+golf;
+  if(total<=1) return{label:"Death's Door",emoji:'💀',color:'#ef4444',bg:'rgba(239,68,68,.15)',total};
+  if(total<=3) return{label:'Disaster',emoji:'🔥',color:'#fb923c',bg:'rgba(251,146,60,.15)',total};
+  if(gym>=2&&gym<=3&&run>=2&&run<=3&&yoga>=1&&yoga<=2&&(golf+walk)>=1)
+    return{label:'Balanced',emoji:'⚖️',color:'#a3e635',bg:'rgba(163,230,53,.15)',total};
+  if((gym>=3||(gym>=2&&yoga>=2))&&cardio<=1)
+    return{label:'Strength',emoji:'💪',color:'#f59e0b',bg:'rgba(245,158,11,.15)',total};
+  if(cardio>=3||(cardio>=2&&cardio>gym&&cardio>=flex))
+    return{label:'Cardio',emoji:'🏃',color:'#60a5fa',bg:'rgba(96,165,250,.15)',total};
+  if(flex>=3||(flex>=2&&flex>gym&&flex>=cardio))
+    return{label:'Flexibility',emoji:'🧘',color:'#c084fc',bg:'rgba(192,132,252,.15)',total};
+  if(gym>=cardio&&gym>=flex&&gym>=1) return{label:'Strength',emoji:'💪',color:'#f59e0b',bg:'rgba(245,158,11,.15)',total};
+  if(cardio>flex) return{label:'Cardio',emoji:'🏃',color:'#60a5fa',bg:'rgba(96,165,250,.15)',total};
+  return{label:'Flexibility',emoji:'🧘',color:'#c084fc',bg:'rgba(192,132,252,.15)',total};
+}
+
+function mkOptionalYogaCard(week,day){
+  const compKey='w'+week+'-'+day+'-yoga';
+  const comp=S.completions[compKey]||{};
+  const isDone=!!comp.done;
+  const expKey='optyoga-'+week+'-'+day;
+  const expanded=S.expanded===expKey;
+  const yogaColor='#a3e635';
+
+  const wrap=document.createElement('div');
+  wrap.className='opt-yoga-wrap'+(isDone?' dn':'');
+
+  const top=document.createElement('button');top.className='opt-yoga-top';
+  top.style.cssText='width:100%;background:transparent;border:none;cursor:pointer;text-align:left';
+  top.innerHTML=`
+    <span style="font-size:1.125rem;line-height:1">🧘</span>
+    <div style="flex:1;min-width:0">
+      <div class="opt-yoga-lbl">${DAY_NAMES[day]}</div>
+      <div class="opt-yoga-name">Yoga / Mobility</div>
+      <div class="opt-yoga-sub">40–45 min flow</div>
+    </div>
+    <span class="extra-chev${expanded?' op':''}">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </span>`;
+  top.onclick=()=>{S.expanded=(expanded?null:expKey);save();render();};
+  wrap.appendChild(top);
+
+  if(expanded){
+    const exp=document.createElement('div');exp.className='cexp fade';
+    const inner=document.createElement('div');inner.className='cein';
+
+    YOGA.forEach((item,ii)=>{
+      const es=exState(comp,ii);
+      if(item.isSunSal){
+        const totalSS=countSunSals();const pct=Math.min(100,(totalSS/100)*100);
+        const ssRow=document.createElement('div');ssRow.className='sunsal-row';
+        const ssHdr=document.createElement('div');ssHdr.className='sunsal-hdr';
+        const ck=document.createElement('button');ck.className='ck'+(es.done?' on':'');
+        ck.style.background=es.done?yogaColor:'transparent';
+        ck.innerHTML=es.done?'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>':'';
+        ck.onclick=(e)=>{e.stopPropagation();
+          const c=S.completions[compKey]||{exercises:{}};
+          const exs={...c.exercises};const cur=exState({exercises:exs},ii);
+          exs[ii]={done:!cur.done,sets:cur.sets,actual:cur.actual};
+          S.completions={...S.completions,[compKey]:{...c,exercises:exs}};save();render();};
+        const t=document.createElement('span');t.className='sunsal-title';t.textContent='Sun Salutations';
+        const tg=document.createElement('span');tg.className='sunsal-target';tg.textContent='Goal: 100 / year';
+        ssHdr.append(ck,t,tg);
+        const ir=document.createElement('div');ir.className='sunsal-inp-row';
+        const lb=document.createElement('span');lb.className='sunsal-inp-lbl';lb.textContent='Reps today';
+        const inp=document.createElement('input');inp.className='sunsal-inp';
+        inp.type='text';inp.inputMode='numeric';inp.placeholder='0';inp.value=es.actual||'';
+        inp.setAttribute('data-compkey',compKey);inp.setAttribute('data-yogi',ii);
+        inp.onclick=(e)=>e.stopPropagation();inp.onfocus=(e)=>e.target.select();
+        ir.append(lb,inp);
+        const pw=document.createElement('div');pw.className='sunsal-prog-wrap';
+        pw.innerHTML=`<div class="sunsal-prog-lbl"><span class="sunsal-prog-txt">${totalSS} total · ${Math.max(0,100-totalSS)} to go</span><span class="sunsal-prog-pct">${pct.toFixed(0)}%</span></div><div class="sunsal-bar"><div class="sunsal-bar-fill" style="width:${pct}%"></div></div>`;
+        ssRow.append(ssHdr,ir,pw);inner.appendChild(ssRow);return;
+      }
+      const row=document.createElement('div');row.className='irow';row.style.cursor='pointer';
+      const ck=document.createElement('button');ck.className='ck'+(es.done?' on':'');
+      ck.style.background=es.done?yogaColor:'transparent';
+      ck.innerHTML=es.done?'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>':'';
+      const nm=document.createElement('span');nm.className='inm'+(es.done?' dn':'');nm.textContent=item.n;
+      const ytBOY=ytBtn(item.n);if(ytBOY)nm.appendChild(ytBOY);
+      const aw=document.createElement('div');aw.className='actual-wrap';
+      const al=document.createElement('span');al.className='actual-lbl';al.textContent=item.d||'';
+      const ai=document.createElement('input');ai.className='actual-inp';
+      ai.type='text';ai.placeholder='actual';ai.value=es.actual||'';
+      ai.setAttribute('data-compkey',compKey);ai.setAttribute('data-yogi',ii);
+      ai.onclick=(e)=>e.stopPropagation();
+      aw.append(al,ai);
+      ck.onclick=(e)=>{e.stopPropagation();
+        const c=S.completions[compKey]||{exercises:{}};
+        const exs={...c.exercises};const cur=exState({exercises:exs},ii);
+        exs[ii]={done:!cur.done,sets:cur.sets,actual:cur.actual};
+        S.completions={...S.completions,[compKey]:{...c,exercises:exs}};save();render();};
+      row.append(ck,nm,aw);row.onclick=()=>ck.onclick(new Event('c'));
+      inner.appendChild(row);
+    });
+
+    exp.appendChild(inner);wrap.appendChild(exp);
+
+    const ca=document.createElement('div');ca.className='carea';
+    const dr=document.createElement('div');dr.className='date-row';
+    const dl=document.createElement('span');dl.className='date-lbl';dl.textContent='Session date';
+    const di=document.createElement('input');di.type='date';di.className='date-inp';
+    di.max=isoToday();di.value=comp.sessionDate||getExpectedDate(week,day);
+    di.onchange=(e)=>{
+      const c=S.completions[compKey]||{};
+      S.completions={...S.completions,[compKey]:{...c,sessionDate:e.target.value}};save();
+    };
+    dr.append(dl,di);ca.appendChild(dr);
+    const cb=document.createElement('button');cb.className='cbtn'+(isDone?' dn':'');
+    cb.style.background=isDone?'':yogaColor;cb.style.color=isDone?'':'#0a0a0a';
+    cb.textContent=isDone?'✓ COMPLETE':'MARK COMPLETE';
+    cb.onclick=()=>{
+      const c=S.completions[compKey]||{};
+      S.completions={...S.completions,[compKey]:{...c,done:!c.done,completedAt:!c.done?(c.sessionDate||isoToday()):null}};
+      save();render();
+    };
+    ca.appendChild(cb);wrap.appendChild(ca);
+  }
+  return wrap;
+}
+
+function mkSetupScreen(){
+  const div=document.createElement('div');div.className='setup-screen';
+  div.innerHTML=`<div class="setup-logo">P</div>
+    <div class="setup-title">Programme Tracker</div>
+    <div class="setup-sub">Personal fitness tracker.<br>Who's training today?</div>`;
+
+  const existingUsers=getUsers();
+
+  // Show existing users
+  if(existingUsers.length>0){
+    const ul=document.createElement('div');ul.className='user-list';
+    const ulbl=document.createElement('div');ulbl.className='user-list-lbl';ulbl.textContent='Select profile';
+    ul.appendChild(ulbl);
+    existingUsers.forEach(name=>{
+      const row=document.createElement('div');row.style.cssText='display:flex;align-items:center;gap:.375rem;margin-bottom:.375rem';
+      const ub=document.createElement('button');ub.className='user-btn';
+      ub.innerHTML=`<span style="font-size:1rem">👤</span>
+        <span style="flex:1;text-align:left">${name}</span>
+        <span class="user-btn-arrow">→</span>`;
+      ub.onclick=()=>{
+        try{
+          const saved=localStorage.getItem(userKey(name));
+          if(saved){S=Object.assign(defState(),JSON.parse(saved));}
+          else{S=defState();S.userName=name;}
+        }catch{S=defState();S.userName=name;}
+        S.userName=name;
+        localStorage.setItem('prgm-current-user',name);
+        save();render();
+      };
+      const db=document.createElement('button');db.className='del-user-btn';db.title='Delete profile';
+      db.innerHTML='🗑';
+      db.onclick=(e)=>{e.stopPropagation();
+        if(confirm('Delete '+name+"'s profile? All their data will be lost.")){
+          localStorage.removeItem(userKey(name));
+          const u=getUsers().filter(n=>n!==name);saveUsers(u);
+          if(localStorage.getItem('prgm-current-user')===name)localStorage.removeItem('prgm-current-user');
+          render();
+        }
+      };
+      row.append(ub,db);ul.appendChild(row);
+    });
+    div.appendChild(ul);
+    // Divider
+    const divd=document.createElement('div');divd.className='setup-divider';
+    divd.innerHTML='<div class="setup-divider-line"></div><span class="setup-divider-txt">OR</span><div class="setup-divider-line"></div>';
+    div.appendChild(divd);
+  }
+
+  // New user form
+  const newLbl=document.createElement('div');newLbl.className='setup-label';
+  newLbl.textContent=existingUsers.length>0?'Add new profile':'Your name';
+  const inp=document.createElement('input');inp.className='setup-inp';
+  inp.type='text';inp.placeholder='e.g. Amit Suri';inp.autocomplete='name';
+  inp.onfocus=(e)=>e.target.select();
+  const btn=document.createElement('button');btn.className='setup-btn';
+  btn.textContent=existingUsers.length>0?'Create Profile →':'Get Started →';
+  const doSave=()=>{
+    const name=inp.value.trim();
+    if(!name)return inp.focus();
+    // Check if migrating legacy data
+    const legacy=localStorage.getItem(BASE_KEY);
+    if(legacy&&existingUsers.length===0){
+      try{
+        const lp=JSON.parse(legacy);
+        if(lp&&!lp.userName){S=Object.assign(defState(),lp);}
+      }catch{}
+    } else {
+      S=defState();
+    }
+    S.userName=name;
+    // Register user
+    const users=getUsers();
+    if(!users.includes(name)){users.push(name);saveUsers(users);}
+    localStorage.setItem('prgm-current-user',name);
+    save();render();
+  };
+  btn.onclick=doSave;
+  inp.onkeydown=(e)=>{if(e.key==='Enter')doSave();};
+  div.append(newLbl,inp,btn);
+  return div;
+}
 // =========================================================
 // RENDER ENGINE — targeted updates to avoid destroying inputs
 // =========================================================
 function render(){
   const app=document.getElementById('app');
   app.innerHTML='';
+  if(!S.userName){app.appendChild(mkSetupScreen());return;}
   app.appendChild(mkHeader());
   app.appendChild(mkTabs());
   if(S.tab==='today')     app.appendChild(mkToday());
@@ -1554,10 +1900,20 @@ function render(){
 function mkHeader(){
   const ph=getSchedule(S.week).ph, pi=PHASES[ph]||PHASES[3];
   const d=document.createElement('div');d.className='hdr';
+  const nameDisplay=S.editingName
+    ? `<div class="name-edit-row">
+        <input class="name-edit-inp" id="nameEditInp" type="text" value="${S.userName}" placeholder="Your name">
+        <button class="name-save-btn" id="nameSaveBtn">Save</button>
+       </div>`
+    : `<div class="name-row">
+        <span class="user-name">${S.userName.toUpperCase()}</span>
+        <button class="edit-name-btn" id="editNameBtn" title="Edit name">✏️</button>
+        <button class="edit-name-btn" id="switchUserBtn" title="Switch user" style="font-size:.7rem">⇄ switch</button>
+       </div>`;
   d.innerHTML=`
     <div class="hdr-row">
       <span class="lxs">PROGRAMME</span>
-      <span class="lxs">A · SURI</span>
+      <span class="lxs mf" style="color:var(--t4);font-size:.5rem">PERSONAL TRAINER</span>
     </div>
     <h1 class="wtitle sf">Week<span class="wnum">${String(S.week).padStart(2,'0')}</span></h1>
     <div class="prow">
@@ -1676,6 +2032,7 @@ function mkCard(day,week,isToday){
         ckBtn.innerHTML=es.done?'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>':'';
         ckBtn.onclick=()=>toggleEx(compKey,ei,es,det.color,ckBtn,nmEl);
         const nmEl=document.createElement('span');nmEl.className='exnm'+(es.done?' dn':'');nmEl.textContent=ex.n;
+        const ytB=ytBtn(ex.n);if(ytB)nmEl.appendChild(ytB);
         const mtEl=document.createElement('span');mtEl.className='exmt mf';
         mtEl.innerHTML=`${ex.s} × ${ex.r}<span class="exrs">${ex.rest}</span>`;
         rowHdr.append(ckBtn,nmEl,mtEl);
@@ -1858,7 +2215,7 @@ function mkCard(day,week,isToday){
       const dl=document.createElement('span');dl.className='date-lbl';dl.textContent='Session date';
       const di=document.createElement('input');di.type='date';di.className='date-inp';
       di.max=isoToday();
-      const storedDate=comp.sessionDate||isoToday();
+      const storedDate=comp.sessionDate||getExpectedDate(week,day);
       di.value=storedDate;
       di.setAttribute('data-dpkey',compKey);
       di.onchange=(e)=>{
@@ -2009,6 +2366,39 @@ function mkToday(){
     oyw.appendChild(mkOptionalYogaCard(S.week,today));
     div.appendChild(oyw);
   }
+  // Past sessions quick-nav
+  const pastNav=document.createElement('div');pastNav.className='past-nav';
+  const yesterdayBtn=document.createElement('button');
+  yesterdayBtn.className='past-nav-btn';
+  yesterdayBtn.innerHTML='← Yesterday';
+  yesterdayBtn.onclick=()=>{
+    // Go to yesterday's day in week view
+    const yd=new Date();yd.setDate(yd.getDate()-1);
+    const ydDay=DAY_JS[yd.getDay()];
+    // If yesterday was in current week, just switch to week view
+    const wkStart=weekStartDate(S.week);
+    const wkEnd=weekEndDate(S.week);
+    wkStart.setHours(0,0,0,0);wkEnd.setHours(23,59,59);yd.setHours(12,0,0);
+    if(yd>=wkStart&&yd<=wkEnd){
+      S.tab='week';S.expanded=ydDay;save();render();
+    } else {
+      // Yesterday was in previous week
+      if(S.week>0){S.week--;S.tab='week';S.expanded=ydDay;save();render();}
+    }
+  };
+  const editWeekBtn=document.createElement('button');
+  editWeekBtn.className='past-nav-btn accent';
+  editWeekBtn.innerHTML='📋 Edit this week';
+  editWeekBtn.onclick=()=>{S.tab='week';save();render();};
+  const prevWeekBtn=document.createElement('button');
+  prevWeekBtn.className='past-nav-btn';
+  prevWeekBtn.innerHTML='← Prev week';
+  prevWeekBtn.onclick=()=>{if(S.week>0){S.week--;S.tab='week';save();render();}};
+  pastNav.append(yesterdayBtn,editWeekBtn,prevWeekBtn);
+  div.appendChild(pastNav);
+  // Weekly steps summary
+  const wss=mkWeekStepsSummary(S.week);
+  if(wss)div.appendChild(wss);
   // Monday measurement prompt
   if(todayDayKey()==='mon'){
     const mpW=document.createElement('div');mpW.style.cssText='padding:0 1.25rem;margin-top:.375rem';
@@ -2043,6 +2433,19 @@ function mkToday(){
 function mkWeek(){
   const div=document.createElement('div');div.className='wview fade';
   const today=todayDayKey();
+  // Week banner — shows which week is being edited
+  const isPastWeek=isWeekFuture(S.week)===false&&S.week<parseInt((() => {
+    const now=new Date();now.setHours(0,0,0,0);
+    for(let w=0;w<=24;w++){const ws=weekStartDate(w);ws.setHours(0,0,0,0);const we=weekEndDate(w);we.setHours(23,59,59,999);if(now>=ws&&now<=we)return w;}return S.week;
+  })());
+  if(isPastWeek||isWeekFuture(S.week)){
+    const banner=document.createElement('div');
+    banner.style.cssText='margin:.75rem 1.25rem .25rem;padding:.5rem .875rem;border-radius:.625rem;font-size:.6875rem;font-family:JetBrains Mono,monospace;letter-spacing:.05em;text-align:center;'+
+      (isPastWeek?'background:rgba(96,165,250,.08);border:1px solid rgba(96,165,250,.25);color:#60a5fa':
+                  'background:rgba(38,38,38,.4);border:1px solid #262626;color:#525252');
+    banner.textContent=isPastWeek?'📝 Editing past week — '+fmtWeekRange(S.week):'📅 Future week — '+fmtWeekRange(S.week);
+    div.appendChild(banner);
+  }
   DAYS.forEach(d=>{
     div.appendChild(mkCard(d,S.week,d===today));
     // Optional yoga after run in Phase 3
