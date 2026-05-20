@@ -667,6 +667,8 @@ const GYM={
     {n:'Glute Bridge Knee→Chest',     s:1,r:'6/sd',   rest:'—', bw:1},
     {n:'Neutral Grip Lat Pulldown',   s:4,r:'12–15',  rest:'60s'},
     {n:'One-Arm Cable Lat Raise',     s:3,r:'12–15',  rest:'45s'},
+    {n:'KB Rotational Swings',          s:3,r:'10–12',  rest:'60s'},
+    {n:'KB Swings for Glutes',           s:4,r:'15–20',  rest:'60s'},
     {n:'Lying Cable Shoulder Pull',   s:3,r:'12–15',  rest:'45s'},
     {n:'Front Foot Elev. Split Squat',s:2,r:'8–12/sd',rest:'60s'},
     {n:'Bicep Curl',                  s:4,r:'12',     rest:'45s'},
@@ -832,6 +834,8 @@ const VIDEO_URLS={
   'Glute Bridge Knee→Chest': 'https://www.youtube.com/results?search_query=glute+bridge+knee+to+chest+exercise',
   'Neutral Grip Lat Pulldown':    'https://www.youtube.com/results?search_query=neutral+grip+lat+pulldown+form',
   'One-Arm Cable Lat Raise':      'https://www.youtube.com/results?search_query=one+arm+cable+lateral+raise+tutorial',
+  'KB Rotational Swings':          'https://www.youtube.com/results?search_query=kettlebell+rotational+swing+tutorial',
+  'KB Swings for Glutes':          'https://www.youtube.com/results?search_query=kettlebell+swing+glutes+hip+hinge+tutorial',
   'Lying Cable Shoulder Pull':    'https://www.youtube.com/results?search_query=lying+cable+shoulder+pull+exercise',
   'Front Foot Elev. Split Squat': 'https://www.youtube.com/results?search_query=front+foot+elevated+split+squat+tutorial',
   'Bicep Curl':                   'https://www.youtube.com/results?search_query=dumbbell+bicep+curl+proper+form',
@@ -1109,15 +1113,14 @@ function mkExtraCard(extra){
 
     // Date + complete
     const ca=document.createElement('div');ca.className='carea';
-    const dr=document.createElement('div');dr.className='date-row';
+    // Date row — at top of extra card content
+    const dr=document.createElement('div');dr.className='date-row';dr.style.cssText='margin-bottom:.5rem;padding-bottom:.5rem;border-bottom:1px solid rgba(38,38,38,.4)';
     const dl=document.createElement('span');dl.className='date-lbl';dl.textContent='Session date';
     const di=document.createElement('input');di.type='date';di.className='date-inp';
-    di.max=isoToday();di.value=extra.date||isoToday();
-    di.onchange=(e)=>{
-      const newDate=e.target.value;
-      // Build updated extra with new date
-      const updatedExtra={...extra, date:newDate};
-      // Find which week this date falls in (search up to max possible week)
+    di.value=extra.date||isoToday();
+    const doExtraMove=()=>{
+      const newDate=di.value;if(!newDate)return;
+      const updatedExtra={...extra,date:newDate};
       const ed=new Date(newDate+'T00:00:00');
       if(!isNaN(ed.getTime())){
         const maxW=Math.max(52,S.week+4);
@@ -1127,14 +1130,19 @@ function mkExtraCard(extra){
           ws.setHours(0,0,0,0);we.setHours(23,59,59,999);
           if(ed>=ws&&ed<=we){updatedExtra.week=w;S.week=w;found=true;break;}
         }
-        // If date is before programme start, keep current week but update date
-        if(!found) updatedExtra.week=extra.week;
+        if(!found)updatedExtra.week=extra.week;
       }
-      // Replace in extras array using immutable update
       S.extras=S.extras.map(x=>x.id===extra.id?updatedExtra:x);
       saveNow();render();
     };
-    dr.append(dl,di);ca.appendChild(dr);
+    const mvBtnE=document.createElement('button');
+    mvBtnE.style.cssText='padding:.3rem .625rem;border-radius:.4rem;background:rgba(251,146,60,.15);border:1px solid rgba(251,146,60,.3);color:#fb923c;font-size:.6rem;font-family:JetBrains Mono,monospace;cursor:pointer;white-space:nowrap;flex-shrink:0';
+    mvBtnE.textContent='Move →';
+    mvBtnE.onclick=(e)=>{e.stopPropagation();doExtraMove();};
+    di.onchange=(e)=>{e.stopPropagation();doExtraMove();};
+    dr.append(dl,di,mvBtnE);
+    // Insert at very top of extra card content
+    ca.insertBefore(dr,ca.firstChild);
     const cb=document.createElement('button');cb.className='cbtn'+(isDone?' dn':'');
     cb.style.background=isDone?'':det.color;
     if(isDone){
@@ -3231,24 +3239,32 @@ function mkCard(day,week,isToday){
     // Complete button
     if(aid!=='rest'){
       const ca=document.createElement('div');ca.className='carea';
-      // Date picker row
-      const dr=document.createElement('div');dr.className='date-row';
+      // Date picker — inserted at TOP of expanded content
+      const dr=document.createElement('div');dr.className='date-row';dr.style.cssText='margin-bottom:.5rem;padding-bottom:.5rem;border-bottom:1px solid rgba(38,38,38,.4)';
       const dl=document.createElement('span');dl.className='date-lbl';dl.textContent='Session date';
       const di=document.createElement('input');di.type='date';di.className='date-inp';
-      di.max=isoToday();
       const storedDate=comp.sessionDate||getExpectedDate(week,day);
       di.value=storedDate;
       di.setAttribute('data-dpkey',compKey);
-      di.onchange=(e)=>{
-        const newDate=e.target.value;
+      // Move button — explicit tap to apply date change
+      const mvBtn=document.createElement('button');
+      mvBtn.style.cssText='padding:.3rem .625rem;border-radius:.4rem;background:rgba(251,146,60,.15);border:1px solid rgba(251,146,60,.3);color:#fb923c;font-size:.6rem;font-family:JetBrains Mono,monospace;cursor:pointer;white-space:nowrap;flex-shrink:0';
+      mvBtn.textContent='Move →';
+      const doMove=()=>{
+        const newDate=di.value;if(!newDate)return;
         const moved=moveSession(compKey,newDate);
         if(moved===compKey){
           const c=S.completions[compKey]||{};
           S.completions={...S.completions,[compKey]:{...c,sessionDate:newDate}};
+          saveNow();
         }
-        save();render();
+        render();
       };
-      dr.append(dl,di);ca.appendChild(dr);
+      mvBtn.onclick=(e)=>{e.stopPropagation();doMove();};
+      di.onchange=(e)=>{e.stopPropagation();doMove();};
+      dr.append(dl,di,mvBtn);
+      // Insert at top of inner (exercise list), before exercises
+      inner.insertBefore(dr,inner.firstChild);
       // Complete button
       const cb=document.createElement('button');
       cb.className='cbtn'+(isDone?' dn':'');
