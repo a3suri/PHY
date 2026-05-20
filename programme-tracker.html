@@ -2890,10 +2890,22 @@ function render(){
   if(!S.userName){app.appendChild(mkSetupScreen());return;}
   app.appendChild(mkHeader());
   app.appendChild(mkTabs());
-  if(S.tab==='today')           app.appendChild(mkToday());
-  else if(S.tab==='week')        app.appendChild(mkWeek());
-  else if(S.tab==='achievements') app.appendChild(mkAchievements());
-  else                           app.appendChild(mkProgress());
+  const renderTab=()=>{
+    if(S.tab==='today')           return mkToday();
+    else if(S.tab==='week')       return mkWeek();
+    else if(S.tab==='achievements')return mkAchievements();
+    else                          return mkProgress();
+  };
+  try{
+    app.appendChild(renderTab());
+  }catch(err){
+    const errDiv=document.createElement('div');
+    errDiv.style.cssText='margin:1.5rem;padding:1rem;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.4);border-radius:.75rem;font-family:JetBrains Mono,monospace;font-size:.6875rem;color:#f87171;line-height:1.6;word-break:break-all';
+    errDiv.innerHTML='<b>Render error in '+S.tab+' tab:</b><br>'+err.message+'<br><br>'+
+      (err.stack||'').split('\n').slice(0,4).join('<br>');
+    app.appendChild(errDiv);
+    console.error('Render error:',err);
+  }
 }
 
 // =========================================================
