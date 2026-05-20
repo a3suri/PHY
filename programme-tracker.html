@@ -2193,9 +2193,9 @@ function moveSession(oldKey, newDateStr){
 }
 
 // ── CHALLENGE ──────────────────────────────────────────────────────────────
-function getChallengeStreak(exercise){
+function getChallengeStreak(exercise,upToDate){
   if(!S.challenge||!S.challenge.log)return 0;
-  const d=new Date(isoToday()+'T00:00:00');
+  const d=new Date((upToDate||isoToday())+'T00:00:00');
   let streak=0;
   for(let i=0;i<365;i++){
     const ds=localISODate(d);
@@ -2205,16 +2205,17 @@ function getChallengeStreak(exercise){
   }
   return streak;
 }
-function getChallengeStreakAll(){
+function getChallengeStreakAll(upToDate){
   if(!S.challenge||!S.challenge.log)return 0;
-  const d=new Date(isoToday()+'T00:00:00');
+  const d=new Date((upToDate||isoToday())+'T00:00:00');
+  const exs=getChalExercises();
   let streak=0;
   for(let i=0;i<365;i++){
     const ds=localISODate(d);
     const e=S.challenge.log[ds]||{};
-    if(parseFloat(e.pushups)>0&&parseFloat(e.squats)>0&&parseFloat(e.plank)>0){
-      streak++;d.setDate(d.getDate()-1);
-    } else break;
+    const allDone=exs.every(ex=>parseFloat(e[ex.key])>0);
+    if(allDone){streak++;d.setDate(d.getDate()-1);}
+    else break;
   }
   return streak;
 }
@@ -2257,7 +2258,7 @@ function mkChallengeDayCard(week, day){
   const hdr = document.createElement('div'); hdr.className='chal-hdr';
   hdr.style.cursor='pointer';
   const streakBadges = getChalExercises().map(ex=>{
-    const st = getChallengeStreak(ex.key);
+    const st = getChallengeStreak(ex.key,dateStr);
     return `<span class="chal-badge">${ex.label.split(' ')[0]} ${st>0?'<b style=color:#fb923c>🔥'+st+'</b>':'—'}</span>`;
   }).join('');
   hdr.innerHTML = `<span class="chal-title">💪 Challenge</span>
@@ -2269,7 +2270,7 @@ function mkChallengeDayCard(week, day){
   if(expanded){
     const body = document.createElement('div'); body.className='chal-body';
     getChalExercises().forEach(ex=>{
-      const streak = getChallengeStreak(ex.key);
+      const streak = getChallengeStreak(ex.key,dateStr);
       const row = document.createElement('div'); row.className='chal-row';
       const nameCol = document.createElement('div');
       nameCol.innerHTML = `<div class="chal-exname">${ex.label}</div>
@@ -2301,14 +2302,19 @@ function mkChallengeWeekCard(week){
   const expKey='chal-week-'+week;
   const expanded=S.expanded===expKey;
 
+  // Streak date calc of that week (past) or today (current/future)
+  const _we=weekEndDate(week);
+  const _today=new Date();_today.setHours(0,0,0,0);_we.setHours(0,0,0,0);
+  const streakDate=_we<_today?localISODate(_we):isoToday();
+
   const wrap=document.createElement('div');
   wrap.className='chal-card';
   wrap.style.cssText='margin:.75rem 1.25rem .25rem;';
 
-  // Header — always shows per-exercise streaks
+  // Header — shows streaks as of that week
   const hdr=document.createElement('div');hdr.className='chal-hdr';hdr.style.cursor='pointer';
   const streakBadges=getChalExercises().map(ex=>{
-    const st=getChallengeStreak(ex.key);
+    const st=getChallengeStreak(ex.key,streakDate);
     return `<span class="chal-badge">${ex.label} ${st>0?'<b style=color:#fb923c>🔥'+st+'d</b>':'—'}</span>`;
   }).join('');
   hdr.innerHTML=`<span class="chal-title">💪 Squat · Push Up · Plank</span>
@@ -2319,7 +2325,7 @@ function mkChallengeWeekCard(week){
   // Streak row always visible below header
   const sr=document.createElement('div');sr.className='chal-streak-row';
   getChalExercises().forEach(ex=>{
-    const st=getChallengeStreak(ex.key);
+    const st=getChallengeStreak(ex.key,streakDate);
     const sc=document.createElement('div');sc.className='chal-streak-cell';
     sc.innerHTML=`<div class="chal-sc-lbl">${ex.label}</div>
       <div class="chal-sc-val">${st>0?'🔥 '+st:'—'}</div>
@@ -2780,7 +2786,7 @@ function calcAchievements(){
     add({id:'steps12',emoji:'🌟',title:'12 × 70k Weeks!',desc:'Every single week hit the step target. Exceptional.',ctx:weeks70k+' weeks',tier:'gold',cat:'Steps'});
 
   // ── 💪 Challenge streaks ─────────────────────────────────────────────
-  const overallStreak=getChallengeStreakAll();
+  const overallStreak=getChallengeStreakAll(); // always use today for achievements
   const chalTgt=S.challenge?.targetDays||0;
   const milestones=[
     {n:3, emoji:'💪',label:'3-Day Streak',tier:'bronze'},
@@ -3518,7 +3524,6 @@ function mkWeek(){
   const _mwdiv=document.createElement('div');_mwdiv.style.cssText='padding:0 1.25rem';
   _mwdiv.appendChild(mkMeasurementsDayCard(S.week));div.appendChild(_mwdiv);
     DAYS.forEach(d=>{
-    div.appendChild(mkChallengeDayCard(S.week,d));
     div.appendChild(mkCard(d,S.week,d===today));
     // Optional yoga after run in Phase 3
     const _aid=(S.overrides&&S.overrides['w'+S.week+'-'+d])||getSchedule(S.week).d[d];
