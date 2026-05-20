@@ -2248,7 +2248,7 @@ function mkChallengeDayCard(week, day){
   const dateStr = getExpectedDate(week, day);
   const entry = (S.challenge&&S.challenge.log&&S.challenge.log[dateStr])||{};
   const pd = new Date(dateStr+'T00:00:00'); pd.setDate(pd.getDate()-1);
-  const prev = (S.challenge&&S.challenge.log&&S.challenge.log[plocalISODate(d)])||{};
+  const prev = (S.challenge&&S.challenge.log&&S.challenge.log[localISODate(pd)])||{};
   const expKey = 'chal-day-'+week+'-'+day;
   const expanded = S.expanded===expKey;
 
