@@ -219,7 +219,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 .actual-inp:focus{border-color:rgba(251,146,60,.4)}
 .actual-inp::placeholder{color:#3a3a3a}
 
-.date-row{display:flex;align-items:center;justify-content:space-between;padding:.625rem 1rem;border-top:1px solid rgba(38,38,38,.4)}
+.date-row{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.5rem .875rem;background:rgba(23,23,23,.4);border-radius:.625rem}.date-formatted{font-size:.75rem;font-family:'JetBrains Mono',monospace;color:#fb923c;flex:1;min-width:0}
 .date-lbl{font-size:.625rem;font-family:'JetBrains Mono',monospace;color:#737373;letter-spacing:.15em;text-transform:uppercase}
 .date-inp{background:rgba(23,23,23,.7);border:1px solid #3d3d3d;border-radius:.5rem;padding:.35rem .625rem;font-family:'JetBrains Mono',monospace;font-size:.875rem;color:var(--t1);outline:none;-webkit-appearance:none}
 .date-inp:focus{border-color:rgba(251,146,60,.4)}
@@ -934,7 +934,16 @@ function saveNow(){clearTimeout(_st);try{const k=S.userName?userKey(S.userName):
 // HELPERS
 // =========================================================
 function todayDayKey(){return DAY_JS[new Date().getDay()];}
-function isoToday(){return new Date().toISOString().slice(0,10);}
+function fmtFullDate(iso){
+  if(!iso)return '';
+  const d=new Date(iso+'T00:00:00');
+  return d.getDate()+' '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()]+' '+d.getFullYear();
+}
+function localISODate(d){
+  const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0');
+  return y+'-'+m+'-'+dd;
+}
+function isoToday(){return localISODate(new Date());}
 function fmtDate(iso){const d=new Date(iso);return d.getDate()+' '+MONTHS[d.getMonth()];}
 function fmtLong(){return new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});}
 
@@ -1139,10 +1148,14 @@ function mkExtraCard(extra){
     mvBtnE.style.cssText='padding:.3rem .625rem;border-radius:.4rem;background:rgba(251,146,60,.15);border:1px solid rgba(251,146,60,.3);color:#fb923c;font-size:.6rem;font-family:JetBrains Mono,monospace;cursor:pointer;white-space:nowrap;flex-shrink:0';
     mvBtnE.textContent='Move →';
     mvBtnE.onclick=(e)=>{e.stopPropagation();doExtraMove();};
-    di.onchange=(e)=>{e.stopPropagation();doExtraMove();};
-    dr.append(dl,di,mvBtnE);
-    // Insert at very top of extra card content
-    ca.insertBefore(dr,ca.firstChild);
+    // Formatted date display
+    const dfmt=document.createElement('span');dfmt.className='date-formatted';
+    dfmt.textContent=extra.date?fmtFullDate(extra.date):'Select date';
+    di.oninput=(e)=>{dfmt.textContent=e.target.value?fmtFullDate(e.target.value):'Select date';};
+    di.onchange=(e)=>{e.stopPropagation();dfmt.textContent=e.target.value?fmtFullDate(e.target.value):'Select date';doExtraMove();};
+    dr.append(dl,di,dfmt,mvBtnE);
+    // Insert at TOP of exercise list (inside inner, before exercises)
+    inner.insertBefore(dr,inner.firstChild);
     const cb=document.createElement('button');cb.className='cbtn'+(isDone?' dn':'');
     cb.style.background=isDone?'':det.color;
     if(isDone){
@@ -1202,7 +1215,7 @@ function fmtWeekRange(w){
 function getExpectedDate(week,day){
   const ws=weekStartDate(week);
   ws.setDate(ws.getDate()+DAYS.indexOf(day));
-  return ws.toISOString().slice(0,10);
+  return localISODate(ws);
 }
 
 function countSunSals(){
@@ -2185,7 +2198,7 @@ function getChallengeStreak(exercise){
   const d=new Date(isoToday()+'T00:00:00');
   let streak=0;
   for(let i=0;i<365;i++){
-    const ds=d.toISOString().slice(0,10);
+    const ds=localISODate(d);
     const e=S.challenge.log[ds];
     if(e&&e[exercise]&&parseFloat(e[exercise])>0){streak++;d.setDate(d.getDate()-1);}
     else break;
@@ -2197,7 +2210,7 @@ function getChallengeStreakAll(){
   const d=new Date(isoToday()+'T00:00:00');
   let streak=0;
   for(let i=0;i<365;i++){
-    const ds=d.toISOString().slice(0,10);
+    const ds=localISODate(d);
     const e=S.challenge.log[ds]||{};
     if(parseFloat(e.pushups)>0&&parseFloat(e.squats)>0&&parseFloat(e.plank)>0){
       streak++;d.setDate(d.getDate()-1);
@@ -2234,7 +2247,7 @@ function mkChallengeDayCard(week, day){
   const dateStr = getExpectedDate(week, day);
   const entry = (S.challenge&&S.challenge.log&&S.challenge.log[dateStr])||{};
   const pd = new Date(dateStr+'T00:00:00'); pd.setDate(pd.getDate()-1);
-  const prev = (S.challenge&&S.challenge.log&&S.challenge.log[pd.toISOString().slice(0,10)])||{};
+  const prev = (S.challenge&&S.challenge.log&&S.challenge.log[plocalISODate(d)])||{};
   const expKey = 'chal-day-'+week+'-'+day;
   const expanded = S.expanded===expKey;
 
@@ -3260,9 +3273,13 @@ function mkCard(day,week,isToday){
         }
         render();
       };
+      // Formatted date display
+      const dfmt2=document.createElement('span');dfmt2.className='date-formatted';
+      dfmt2.textContent=storedDate?fmtFullDate(storedDate):'Select date';
+      di.oninput=(e)=>{dfmt2.textContent=e.target.value?fmtFullDate(e.target.value):'Select date';};
       mvBtn.onclick=(e)=>{e.stopPropagation();doMove();};
       di.onchange=(e)=>{e.stopPropagation();doMove();};
-      dr.append(dl,di,mvBtn);
+      dr.append(dl,di,dfmt2,mvBtn);
       // Insert at top of inner (exercise list), before exercises
       inner.insertBefore(dr,inner.firstChild);
       // Complete button
@@ -3270,7 +3287,7 @@ function mkCard(day,week,isToday){
       cb.className='cbtn'+(isDone?' dn':'');
       cb.style.background=isDone?'':det.color;
       if(isDone){
-        const dt=comp.completedAt?new Date(comp.completedAt).toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'';
+        const dt=comp.completedAt?fmtFullDate(comp.completedAt.slice(0,10)):'';
         cb.innerHTML=`<span style="display:flex;align-items:center;justify-content:center;gap:.5rem">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           COMPLETE${dt?` <span style="color:#525252">· ${dt}</span>`:''}
@@ -3533,7 +3550,7 @@ function mkProgress(){
   let streak=0;
   for(let i=0;i<90;i++){
     const d=new Date();d.setDate(d.getDate()-i);
-    const iso=d.toISOString().slice(0,10);
+    const iso=localISODate(d);
     if(Object.values(S.completions).some(c=>c.completedAt===iso&&c.done))streak++;
     else if(i>0)break;
   }
