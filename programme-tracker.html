@@ -451,6 +451,163 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 .yoga-set-ck.on{border-color:transparent}
 .yoga-set-ck svg{display:none}
 .yoga-set-ck.on svg{display:block}
+
+.chal-card{border-radius:1rem;border:1px solid rgba(251,146,60,.25);
+  background:rgba(251,146,60,.05);overflow:hidden;margin-bottom:.5rem}
+.chal-hdr{display:flex;align-items:center;gap:.5rem;padding:.625rem 1rem .375rem;
+  cursor:pointer;user-select:none}
+.chal-title{font-size:.625rem;font-family:'JetBrains Mono',monospace;color:var(--ac);
+  letter-spacing:.2em;text-transform:uppercase;flex:1}
+.chal-streak-badge{font-size:.625rem;font-family:'JetBrains Mono',monospace;
+  color:#fb923c;background:rgba(251,146,60,.15);border-radius:.375rem;
+  padding:.15rem .4rem;white-space:nowrap}
+.chal-body{padding:.375rem .875rem .75rem}
+.chal-row{display:flex;align-items:center;gap:.5rem;padding:.375rem 0;
+  border-bottom:1px solid rgba(38,38,38,.4)}
+.chal-row:last-child{border-bottom:none}
+.chal-exname{font-size:.8125rem;color:var(--t2);flex:1;min-width:0}
+.chal-streak{font-size:.5rem;font-family:'JetBrains Mono',monospace;color:#fb923c;
+  white-space:nowrap}
+.chal-inp{width:3.5rem;background:rgba(23,23,23,.7);border:1px solid #3d3d3d;
+  border-radius:.5rem;padding:.35rem .5rem;font-family:'JetBrains Mono',monospace;
+  font-size:.9375rem;color:var(--t1);outline:none;text-align:center;flex-shrink:0}
+.chal-inp:focus{border-color:var(--ac)}
+.chal-unit{font-size:.5rem;font-family:'JetBrains Mono',monospace;color:#525252;
+  width:1.75rem;flex-shrink:0}
+.chal-prev{font-size:.5625rem;font-family:'JetBrains Mono',monospace;color:#525252;
+  white-space:nowrap}
+/* Progress challenge */
+.chal-prog-card{border-radius:1rem;border:1px solid rgba(251,146,60,.3);
+  background:rgba(251,146,60,.06);padding:1rem;margin-bottom:1.25rem}
+.chal-prog-hdr{display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:.75rem}
+.chal-prog-title{font-family:'Fraunces',Georgia,serif;font-size:1.125rem;
+  font-weight:500;color:var(--t1)}
+.chal-prog-streak{font-size:1.5rem;font-family:'Fraunces',Georgia,serif;
+  color:#fb923c;font-weight:500}
+.chal-tgt-row{display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem}
+.chal-tgt-lbl{font-size:.625rem;font-family:'JetBrains Mono',monospace;
+  color:#737373;letter-spacing:.1em;text-transform:uppercase;flex:1}
+.chal-tgt-inp{width:4rem;background:rgba(23,23,23,.7);border:1px solid #3d3d3d;
+  border-radius:.5rem;padding:.35rem .5rem;font-family:'JetBrains Mono',monospace;
+  font-size:.9375rem;color:var(--t1);outline:none;text-align:center}
+.chal-tgt-inp:focus{border-color:var(--ac)}
+.chal-ex-row{display:flex;align-items:center;gap:.75rem;padding:.375rem 0}
+.chal-ex-lbl{font-size:.8125rem;color:var(--t2);flex:1}
+.chal-ex-stat{font-size:.6875rem;font-family:'JetBrains Mono',monospace;color:#525252}
+.chal-ex-streak{font-size:.875rem;font-family:'JetBrains Mono',monospace;color:#fb923c}
+
+.chal-badges{display:flex;gap:.375rem;flex-wrap:wrap;flex:1;justify-content:flex-end;margin-right:.375rem}
+.chal-badge{font-size:.5rem;font-family:'JetBrains Mono',monospace;color:#737373;
+  background:rgba(38,38,38,.5);border-radius:.25rem;padding:.1rem .35rem;white-space:nowrap}
+.chal-streak-row{display:grid;grid-template-columns:repeat(3,1fr);
+  border-top:1px solid rgba(38,38,38,.4)}
+.chal-streak-cell{display:flex;flex-direction:column;align-items:center;
+  padding:.5rem .25rem;border-right:1px solid rgba(38,38,38,.3)}
+.chal-streak-cell:last-child{border-right:none}
+.chal-sc-lbl{font-size:.5rem;font-family:'JetBrains Mono',monospace;color:#737373;
+  letter-spacing:.1em;text-transform:uppercase;margin-bottom:.2rem}
+.chal-sc-val{font-size:1.25rem;font-family:'Fraunces',Georgia,serif;color:var(--t1);
+  font-weight:500;line-height:1.1}
+.chal-sc-unit{font-size:.5rem;font-family:'JetBrains Mono',monospace;color:#525252}
+/* Week grid */
+.chal-week-grid{width:100%;margin:.625rem 0}
+.chal-wg-hdr,.chal-wg-row{display:grid;grid-template-columns:3rem repeat(7,1fr);gap:2px;margin-bottom:2px}
+.chal-wg-dlbl,.chal-wg-exlbl{font-size:.45rem;font-family:'JetBrains Mono',monospace;
+  color:#525252;text-align:center;padding:.2rem 0}
+.chal-wg-cell{font-size:.5rem;font-family:'JetBrains Mono',monospace;color:#525252;
+  text-align:center;padding:.25rem .1rem;border-radius:.25rem;background:rgba(23,23,23,.4)}
+.chal-wg-cell.filled{color:#fb923c;background:rgba(251,146,60,.12)}
+/* Progress ex row */
+.chal-prog-ex-row{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-bottom:.625rem}
+.chal-prog-ex-col{display:flex;flex-direction:column;align-items:center;text-align:center;
+  background:rgba(23,23,23,.4);border-radius:.625rem;padding:.625rem .25rem}
+.chal-prog-ex-name{font-size:.5rem;font-family:'JetBrains Mono',monospace;color:#737373;
+  letter-spacing:.1em;text-transform:uppercase;margin-bottom:.25rem}
+.chal-prog-ex-streak{font-size:1.375rem;font-family:'Fraunces',Georgia,serif;
+  color:var(--t1);font-weight:500;line-height:1.1}
+.chal-prog-ex-unit{font-size:.5rem;font-family:'JetBrains Mono',monospace;color:#525252;margin-bottom:.2rem}
+.chal-prog-ex-best{font-size:.5rem;font-family:'JetBrains Mono',monospace;color:#fb923c}
+
+.chal-mgmt{margin-top:.75rem}
+.chal-mgmt-lbl{font-size:.5rem;font-family:'JetBrains Mono',monospace;color:#525252;
+  letter-spacing:.2em;text-transform:uppercase;margin-bottom:.5rem}
+.chal-ex-item{display:flex;align-items:center;gap:.5rem;padding:.375rem 0;
+  border-bottom:1px solid rgba(38,38,38,.3)}
+.chal-ex-item:last-child{border-bottom:none}
+.chal-ex-item-name{flex:1;font-size:.8125rem;color:var(--t2)}
+.chal-ex-item-unit{font-size:.625rem;font-family:'JetBrains Mono',monospace;
+  color:#525252;background:rgba(38,38,38,.5);border-radius:.25rem;padding:.15rem .35rem}
+.chal-del-btn{background:transparent;border:none;color:#525252;cursor:pointer;
+  padding:.25rem;font-size:.875rem;border-radius:.375rem;flex-shrink:0}
+.chal-del-btn:active{color:#ef4444}
+.chal-add-row{display:flex;gap:.375rem;align-items:center;margin-top:.625rem;flex-wrap:wrap}
+.chal-add-inp{flex:1;min-width:6rem;background:rgba(23,23,23,.7);border:1px solid #3d3d3d;
+  border-radius:.5rem;padding:.4rem .625rem;font-size:.875rem;color:var(--t1);
+  outline:none;font-family:'JetBrains Mono',monospace}
+.chal-add-inp:focus{border-color:var(--ac)}
+.chal-add-inp::placeholder{color:#3a3a3a}
+.chal-unit-sel{background:rgba(23,23,23,.7);border:1px solid #3d3d3d;border-radius:.5rem;
+  padding:.4rem .5rem;font-size:.75rem;color:var(--t2);outline:none;cursor:pointer;flex-shrink:0}
+.chal-add-btn{padding:.4rem .75rem;border-radius:.5rem;background:var(--ac);color:#0a0a0a;
+  font-size:.75rem;font-weight:600;border:none;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.chal-add-btn:active{opacity:.8}
+
+.mday-card{border-radius:1rem;border:1px solid rgba(96,165,250,.2);
+  background:rgba(96,165,250,.04);overflow:hidden;margin-bottom:.5rem}
+.mday-hdr{display:flex;align-items:center;gap:.5rem;padding:.625rem 1rem .375rem;
+  cursor:pointer;user-select:none}
+.mday-title{font-size:.625rem;font-family:'JetBrains Mono',monospace;color:#60a5fa;
+  letter-spacing:.2em;text-transform:uppercase;flex:1}
+.mday-latest{font-size:.6875rem;font-family:'JetBrains Mono',monospace;color:#a3a3a3}
+.mday-body{padding:.375rem .875rem .75rem}
+.mday-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.5rem}
+.mday-field{display:flex;flex-direction:column;gap:.2rem}
+.mday-lbl{font-size:.45rem;font-family:'JetBrains Mono',monospace;color:#525252;
+  letter-spacing:.15em;text-transform:uppercase}
+.mday-inp{background:rgba(23,23,23,.7);border:1px solid #3d3d3d;border-radius:.5rem;
+  padding:.375rem .5rem;font-family:'JetBrains Mono',monospace;font-size:.9375rem;
+  color:var(--t1);outline:none;width:100%;text-align:left}
+.mday-inp:focus{border-color:rgba(96,165,250,.5)}
+.mday-inp::placeholder{color:#3a3a3a}
+.mday-prev{font-size:.45rem;font-family:'JetBrains Mono',monospace;color:#525252}
+.mday-save-btn{width:100%;padding:.5rem;border-radius:.625rem;background:rgba(96,165,250,.15);
+  border:1px solid rgba(96,165,250,.3);color:#60a5fa;font-size:.6875rem;
+  font-family:'JetBrains Mono',monospace;cursor:pointer;letter-spacing:.05em}
+.mday-save-btn:active{background:rgba(96,165,250,.25)}
+
+/* Achievements tab */
+.achv-view{padding:0 0 6rem}
+.achv-empty{text-align:center;padding:3rem 1.5rem;color:#525252;font-family:'JetBrains Mono',monospace;font-size:.75rem}
+.achv-group{margin-bottom:1.5rem;padding:0 1.25rem}
+.achv-group-lbl{font-size:.5rem;font-family:'JetBrains Mono',monospace;color:#525252;
+  letter-spacing:.25em;text-transform:uppercase;margin-bottom:.625rem;display:flex;
+  align-items:center;gap:.5rem}
+.achv-grid{display:grid;grid-template-columns:1fr 1fr;gap:.625rem}
+.achv-card{border-radius:1rem;padding:.875rem .75rem;border:1px solid var(--b1);
+  background:rgba(23,23,23,.5);display:flex;flex-direction:column;gap:.25rem;
+  position:relative;overflow:hidden}
+.achv-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.achv-card.gold::before{background:linear-gradient(90deg,#f59e0b,#fbbf24)}
+.achv-card.silver::before{background:linear-gradient(90deg,#94a3b8,#cbd5e1)}
+.achv-card.bronze::before{background:linear-gradient(90deg,#fb923c,#fcd34d)}
+.achv-card.blue::before{background:linear-gradient(90deg,#60a5fa,#93c5fd)}
+.achv-card.green::before{background:linear-gradient(90deg,#34d399,#6ee7b7)}
+.achv-card.purple::before{background:linear-gradient(90deg,#a78bfa,#c4b5fd)}
+.achv-card.red::before{background:linear-gradient(90deg,#fb923c,#f87171)}
+.achv-emoji{font-size:1.75rem;line-height:1;margin-bottom:.125rem}
+.achv-title{font-size:.75rem;font-weight:600;color:var(--t1);line-height:1.2}
+.achv-desc{font-size:.5625rem;color:#737373;line-height:1.35}
+.achv-ctx{font-size:.5rem;font-family:'JetBrains Mono',monospace;color:#525252;margin-top:.125rem}
+.achv-new{position:absolute;top:.5rem;right:.5rem;font-size:.4rem;font-family:'JetBrains Mono',monospace;
+  background:#fb923c;color:#0a0a0a;padding:.1rem .3rem;border-radius:.25rem;letter-spacing:.08em}
+.achv-score{display:flex;align-items:center;gap:.75rem;padding:.875rem 1.25rem;
+  background:rgba(23,23,23,.4);border-bottom:1px solid var(--b1);margin-bottom:1rem}
+.achv-score-num{font-family:'Fraunces',Georgia,serif;font-size:2.5rem;color:var(--ac);font-weight:500;line-height:1}
+.achv-score-lbl{font-size:.625rem;font-family:'JetBrains Mono',monospace;color:#737373;
+  letter-spacing:.1em;text-transform:uppercase}
+.achv-locked-lbl{font-size:.5625rem;color:#525252;font-family:'JetBrains Mono',monospace;
+  padding:.625rem .875rem;text-align:center}
 </style>
 </head>
 <body>
@@ -663,7 +820,7 @@ const GOLF=[
 
 function getSchedule(w){
   if(SCHED[w])return SCHED[w];
-  // Phase 4 (weeks 13-24): same structure as Phase 3
+  // Beyond week 12: Phase 4 indefinitely
   return{ph:4,d:{mon:'gym-a',tue:'run',wed:'gym-b',thu:'run',fri:'gym-c',sat:'golf',sun:'run'}};
 }
 
@@ -737,7 +894,7 @@ function slugify(n){return n.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9
 function userKey(n){return n?BASE_KEY+'-'+slugify(n):BASE_KEY;}
 function getUsers(){try{return JSON.parse(localStorage.getItem(USERS_KEY))||[];}catch{return[];}}
 function saveUsers(u){try{localStorage.setItem(USERS_KEY,JSON.stringify(u));}catch{}}
-function defState(){return{week:0,tab:'today',expanded:todayDayKey(),completions:{},overrides:{},swapping:null,extras:[],steps:{},measurements:{},targets:{weight:'',bodyFat:'',waist:'',chest:'',hips:'',thigh:'',arm:'',runDist:5,golfHcp:'',totalLift:''},_measWeek:undefined,userName:'',editingName:false};}
+function defState(){return{week:0,tab:'today',expanded:todayDayKey(),completions:{},overrides:{},swapping:null,extras:[],steps:{},measurements:{},targets:{weight:'',bodyFat:'',muscleMass:'',waist:'',chest:'',hips:'',thigh:'',arm:'',runDist:5,golfHcp:'',totalLift:''},_measWeek:undefined,userName:'',editingName:false,challenge:{targetDays:0,exercises:[],log:{}}};}
 let S=defState();
 // Load: check for a remembered current user, otherwise try legacy key
 (function(){
@@ -956,7 +1113,20 @@ function mkExtraCard(extra){
     const dl=document.createElement('span');dl.className='date-lbl';dl.textContent='Session date';
     const di=document.createElement('input');di.type='date';di.className='date-inp';
     di.max=isoToday();di.value=extra.date||isoToday();
-    di.onchange=(e)=>{extra.date=e.target.value;S.extras=[...S.extras.filter(x=>x.id!==extra.id),extra];save();render();};
+    di.onchange=(e)=>{
+      extra.date=e.target.value;
+      // Recalculate which week this extra belongs to
+      const ed=new Date(extra.date+'T00:00:00');
+      if(!isNaN(ed.getTime())){
+        for(let w=0;w<=24;w++){
+          const ws=weekStartDate(w),we=weekEndDate(w);
+          ws.setHours(0,0,0,0);we.setHours(23,59,59,999);
+          if(ed>=ws&&ed<=we){extra.week=w;S.week=w;break;}
+        }
+      }
+      S.extras=[...S.extras.filter(x=>x.id!==extra.id),extra];
+      save();render();
+    };
     dr.append(dl,di);ca.appendChild(dr);
     const cb=document.createElement('button');cb.className='cbtn'+(isDone?' dn':'');
     cb.style.background=isDone?'':det.color;
@@ -1226,7 +1396,7 @@ function calcWeeklyLift(week){
 
 // ── SVG line chart ────────────────────────────────────────────────────────────
 function mkLineChart(points,opts={}){
-  const{color='#fb923c',unit='',target,label=''}=opts;
+  const{color='#fb923c',unit='',target,targetSeries,label=''}=opts;
   const filled=points.filter(p=>p.v!==''&&p.v!==null&&p.v!==undefined&&!isNaN(parseFloat(p.v)));
   if(filled.length<1){
     const empty=document.createElement('div');empty.className='chart-empty';
@@ -1234,11 +1404,14 @@ function mkLineChart(points,opts={}){
   }
   const vals=filled.map(p=>parseFloat(p.v));
   const tgtVal=target?parseFloat(target):null;
-  const allVals=tgtVal?[...vals,tgtVal]:vals;
+  // Collect all values for scale (actuals + target series)
+  const allVals=[...vals];
+  if(tgtVal)allVals.push(tgtVal);
+  if(targetSeries&&targetSeries.length)targetSeries.forEach(p=>allVals.push(parseFloat(p.v)));
   const minV=Math.min(...allVals);const maxV=Math.max(...allVals);
   const pad2=Math.max((maxV-minV)*0.12,0.5);
   const lo=minV-pad2,hi=maxV+pad2,range=hi-lo||1;
-  const W=320,H=90,pL=36,pR=8,pT=8,pB=22;
+  const W=320,H=90,pL=36,pR=16,pT=8,pB=22;
   const iW=W-pL-pR,iH=H-pT-pB;
   const xOf=i=>pL+(i/(Math.max(filled.length-1,1)))*iW;
   const yOf=v=>pT+iH-((v-lo)/range)*iH;
@@ -1246,6 +1419,7 @@ function mkLineChart(points,opts={}){
   const svg=document.createElementNS(ns,'svg');
   svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
   svg.style.cssText='width:100%;height:75px;overflow:visible;display:block';
+
   // Grid lines + y labels
   [0,1,2,3].forEach(i=>{
     const y=pT+(i*iH/3);
@@ -1262,8 +1436,24 @@ function mkLineChart(points,opts={}){
     txt.textContent=v>=1000?Math.round(v/100)/10+'k':v.toFixed(v<10?1:0);
     svg.appendChild(txt);
   });
-  // Target line
-  if(tgtVal!==null&&!isNaN(tgtVal)){
+
+  // Target series (weekly step targets — diagonal dashed line)
+  if(targetSeries&&targetSeries.length>=2){
+    // Map target series x to same scale as actual data (by week number)
+    const allWeeks=filled.map(p=>p.w);
+    const minW=Math.min(...allWeeks),maxW=Math.max(...allWeeks);
+    const xOfW=w=>pL+((w-minW)/(maxW-minW||1))*iW;
+    const tsFilled=targetSeries.filter(p=>p.w>=minW&&p.w<=maxW);
+    if(tsFilled.length>=2){
+      const tpathD='M '+tsFilled.map(p=>`${xOfW(p.w)},${yOf(parseFloat(p.v))}`).join(' L ');
+      const tpath=document.createElementNS(ns,'path');
+      tpath.setAttribute('d',tpathD);tpath.setAttribute('fill','none');
+      tpath.setAttribute('stroke',color);tpath.setAttribute('stroke-width','1.25');
+      tpath.setAttribute('stroke-dasharray','4,3');tpath.setAttribute('opacity','0.55');
+      svg.appendChild(tpath);
+    }
+  } else if(tgtVal!==null&&!isNaN(tgtVal)){
+    // Flat target line (fallback)
     const ty=yOf(tgtVal);
     const tl=document.createElementNS(ns,'line');
     tl.setAttribute('x1',pL);tl.setAttribute('x2',pL+iW);
@@ -1271,20 +1461,15 @@ function mkLineChart(points,opts={}){
     tl.setAttribute('stroke',color);tl.setAttribute('stroke-width','1');
     tl.setAttribute('stroke-dasharray','4,3');tl.setAttribute('opacity','0.4');
     svg.appendChild(tl);
-    const tlbl=document.createElementNS(ns,'text');
-    tlbl.setAttribute('x',pL+iW+2);tlbl.setAttribute('y',ty+3);
-    tlbl.setAttribute('font-size','6');tlbl.setAttribute('fill',color);
-    tlbl.setAttribute('font-family','JetBrains Mono,monospace');tlbl.setAttribute('opacity','0.7');
-    tlbl.textContent='TGT';svg.appendChild(tlbl);
   }
-  // Area
+
+  // Area fill
   if(filled.length>1){
     const aD='M '+filled.map((p,i)=>`${xOf(i)},${yOf(parseFloat(p.v))}`).join(' L ')+
       ` L ${xOf(filled.length-1)},${pT+iH} L ${xOf(0)},${pT+iH} Z`;
     const area=document.createElementNS(ns,'path');
     area.setAttribute('d',aD);area.setAttribute('fill',color);area.setAttribute('opacity','0.1');
     svg.appendChild(area);
-    // Line
     const lD='M '+filled.map((p,i)=>`${xOf(i)},${yOf(parseFloat(p.v))}`).join(' L ');
     const lp=document.createElementNS(ns,'path');
     lp.setAttribute('d',lD);lp.setAttribute('fill','none');
@@ -1292,7 +1477,8 @@ function mkLineChart(points,opts={}){
     lp.setAttribute('stroke-linejoin','round');lp.setAttribute('stroke-linecap','round');
     svg.appendChild(lp);
   }
-  // Dots + x labels (show every other label if many points)
+
+  // Dots + x labels
   const showEvery=filled.length>8?3:filled.length>5?2:1;
   filled.forEach((p,i)=>{
     const cx=xOf(i),cy=yOf(parseFloat(p.v));
@@ -1315,7 +1501,7 @@ function mkLineChart(points,opts={}){
   return svg;
 }
 
-// ── Measurements section ──────────────────────────────────────────────────────
+
 function mkMeasurementsSection(selectedWeek){
   const wrap=document.createElement('div');wrap.className='meas-section';
   wrap.innerHTML='<div class="seclbl mf">WEEKLY MEASUREMENTS</div>';
@@ -1352,6 +1538,7 @@ function mkMeasurementsSection(selectedWeek){
   const FIELDS=[
     {key:'weight',    label:'Body Weight',  unit:'kg',   group:'body'},
     {key:'bodyFat',   label:'Body Fat',     unit:'%',    group:'body'},
+    {key:'muscleMass',label:'Muscle Mass',  unit:'kg',   group:'body'},
     {key:'waist',     label:'Waist',        unit:'cm',   group:'body'},
     {key:'chest',     label:'Chest',        unit:'cm',   group:'body'},
     {key:'hips',      label:'Hips',         unit:'cm',   group:'body'},
@@ -1406,51 +1593,88 @@ function mkMeasurementsSection(selectedWeek){
 // ── Charts section ────────────────────────────────────────────────────────────
 function mkChartsSection(){
   const wrap=document.createElement('div');wrap.className='chart-wrap';
-  wrap.innerHTML='<div class="seclbl mf">PROGRESS CHARTS</div>';
 
-  const METRICS=[
-    {key:'weight',    label:'BODY WEIGHT',   unit:'kg',  color:'#fb923c', targetKey:null},
-    {key:'bodyFat',   label:'BODY FAT',      unit:'%',   color:'#f87171', targetKey:null},
-    {key:'waist',     label:'WAIST',         unit:'cm',  color:'#c084fc', targetKey:null},
-    {key:'chest',     label:'CHEST',         unit:'cm',  color:'#a78bfa', targetKey:null},
-    {key:'arm',       label:'ARM',           unit:'cm',  color:'#60a5fa', targetKey:null},
-    {key:'runDist',   label:'RUN DISTANCE',  unit:'km',  color:'#60a5fa', targetKey:'runDist'},
-    {key:'golfHcp',   label:'GOLF HANDICAP', unit:'hcp', color:'#c084fc', targetKey:'golfHcp'},
-    {key:'totalLift', label:'TOTAL LIFTED',  unit:'kg',  color:'#f59e0b', targetKey:'totalLift'},
+  const GROUPS=[
+    {label:'BODY COMPOSITION',metrics:[
+      {key:'weight',    label:'Body Weight',  unit:'kg',  color:'#fb923c',targetKey:'weight',    dir:false},
+      {key:'bodyFat',   label:'Body Fat',     unit:'%',   color:'#f87171',targetKey:'bodyFat',   dir:false},
+      {key:'muscleMass',label:'Muscle Mass',  unit:'kg',  color:'#34d399',targetKey:'muscleMass',dir:true},
+    ]},
+    {label:'BODY MEASUREMENTS',metrics:[
+      {key:'chest',     label:'Chest',        unit:'cm',  color:'#a78bfa',targetKey:'chest',     dir:true},
+      {key:'waist',     label:'Waist',        unit:'cm',  color:'#c084fc',targetKey:'waist',     dir:false},
+      {key:'arm',       label:'Arm',          unit:'cm',  color:'#60a5fa',targetKey:'arm',       dir:true},
+      {key:'thigh',     label:'Thigh',        unit:'cm',  color:'#818cf8',targetKey:'thigh',     dir:false},
+      {key:'hips',      label:'Hips',         unit:'cm',  color:'#e879f9',targetKey:'hips',      dir:false},
+    ]},
+    {label:'PERFORMANCE',metrics:[
+      {key:'runDist',   label:'Run Distance', unit:'km',  color:'#22d3ee',targetKey:'runDist',   dir:true},
+      {key:'golfHcp',   label:'Golf Handicap',unit:'hcp', color:'#4ade80',targetKey:'golfHcp',   dir:false},
+      {key:'totalLift', label:'Total Lifted', unit:'kg',  color:'#f59e0b',targetKey:'totalLift', dir:true},
+    ]},
   ];
 
-  METRICS.forEach(m=>{
-    const points=[];
-    for(let w=0;w<=24;w++){
-      const meas=S.measurements['w'+w];
-      if(!meas)continue;
-      // For totalLift, use stored or calculate
-      const rawVal=m.key==='totalLift'?(meas.totalLift||calcWeeklyLift(w)):meas[m.key];
-      if(rawVal!==undefined&&rawVal!==''&&rawVal!==null){
-        points.push({w,v:parseFloat(rawVal)});
+  GROUPS.forEach(grp=>{
+    const grpEl=document.createElement('div');grpEl.style.marginBottom='1.25rem';
+    const glbl=document.createElement('div');glbl.className='seclbl mf';glbl.textContent=grp.label;
+    grpEl.appendChild(glbl);
+
+    grp.metrics.forEach(m=>{
+      const points=[];
+      const maxW=Math.max(24,S.week);
+      for(let w=0;w<=maxW;w++){
+        const meas=S.measurements['w'+w];
+        if(!meas)continue;
+        const rawVal=m.key==='totalLift'?(meas.totalLift||calcWeeklyLift(w)):meas[m.key];
+        if(rawVal!==undefined&&rawVal!==''&&rawVal!==null){
+          points.push({w,v:parseFloat(rawVal)});
+        }
       }
-    }
 
-    const latest=points.length?points[points.length-1]:null;
-    const target=m.targetKey&&S.targets&&S.targets[m.targetKey]?parseFloat(S.targets[m.targetKey]):null;
+      const latest=points.length?points[points.length-1]:null;
+      const target=m.targetKey&&S.targets&&S.targets[m.targetKey]?parseFloat(S.targets[m.targetKey]):null;
+      const targetSeries=m.targetKey?getWeeklyTargetSeries(m.targetKey):[];
 
-    const card=document.createElement('div');card.className='chart-card';
-    const hdr=document.createElement('div');hdr.className='chart-header';
-    hdr.innerHTML=`<span class="chart-lbl" style="color:${m.color}">${m.label}</span>
-      <span>
-        ${latest?`<span class="chart-latest" style="color:${m.color}">${latest.v} <span style="font-size:.6rem;color:#525252">${m.unit}</span></span>`:'<span class="chart-tgt">no data</span>'}
-        ${target?`<span class="chart-tgt"> / tgt ${target}${m.unit}</span>`:''}
-      </span>`;
-    card.appendChild(hdr);
+      const card=document.createElement('div');card.className='chart-card';
+      card.style.marginBottom='.625rem';
 
-    const chart=mkLineChart(points,{color:m.color,unit:m.unit,target});
-    card.appendChild(chart);
-    wrap.appendChild(card);
+      // Header row: metric name + latest value + target + direction
+      const hdr=document.createElement('div');hdr.className='chart-header';
+      const tgtStr=target?` → tgt ${target}${m.unit}`:'';
+      const dirIcon=target&&latest?(m.dir?(latest.v>=target?'✓':'↑'):(latest.v<=target?'✓':'↓')):'';
+      const dirColor=target&&latest?((m.dir?latest.v>=target:latest.v<=target)?'#a3e635':'#f87171'):'#525252';
+      hdr.innerHTML=`
+        <span class="chart-lbl" style="color:${m.color}">${m.label}</span>
+        <span style="display:flex;align-items:baseline;gap:.375rem">
+          ${latest?`<span class="chart-latest" style="color:${m.color}">${latest.v}<span style="font-size:.6rem;color:#525252"> ${m.unit}</span></span>`:'<span class="chart-tgt">no data</span>'}
+          ${target?`<span style="font-size:.5625rem;font-family:'JetBrains Mono',monospace;color:#525252">${tgtStr}</span>`:''}
+          ${dirIcon?`<span style="font-size:.75rem;color:${dirColor};font-weight:600">${dirIcon}</span>`:''}
+        </span>`;
+      card.appendChild(hdr);
+
+      // Legend for actual vs target
+      if(points.length>0&&target){
+        const leg=document.createElement('div');
+        leg.style.cssText='display:flex;gap:.75rem;padding:0 0 .375rem;';
+        leg.innerHTML=`
+          <span style="font-size:.5rem;font-family:'JetBrains Mono',monospace;color:${m.color};display:flex;align-items:center;gap:.25rem">
+            <svg width="16" height="4"><line x1="0" y1="2" x2="16" y2="2" stroke="${m.color}" stroke-width="2"/></svg>Actual
+          </span>
+          <span style="font-size:.5rem;font-family:'JetBrains Mono',monospace;color:${m.color};display:flex;align-items:center;gap:.25rem;opacity:.6">
+            <svg width="16" height="4"><line x1="0" y1="2" x2="16" y2="2" stroke="${m.color}" stroke-width="1.5" stroke-dasharray="3,2"/></svg>Target
+          </span>`;
+        card.appendChild(leg);
+      }
+
+      const chart=mkLineChart(points,{color:m.color,unit:m.unit,target,targetSeries:targetSeries.length>=2?targetSeries:null});
+      card.appendChild(chart);
+      grpEl.appendChild(card);
+    });
+    wrap.appendChild(grpEl);
   });
   return wrap;
 }
 
-// ── Targets section ───────────────────────────────────────────────────────────
 function mkTargetsSection(){
   const wrap=document.createElement('div');
   wrap.innerHTML='<div class="seclbl mf">WEEK 12 TARGETS</div>';
@@ -1462,6 +1686,7 @@ function mkTargetsSection(){
   const TFIELDS=[
     {key:'weight',   label:'Body Weight',   unit:'kg',   mode:'decimal'},
     {key:'bodyFat',  label:'Body Fat',      unit:'%',    mode:'decimal'},
+    {key:'muscleMass',label:'Muscle Mass',   unit:'kg',   mode:'decimal'},
     {key:'waist',    label:'Waist',         unit:'cm',   mode:'decimal'},
     {key:'chest',    label:'Chest',         unit:'cm',   mode:'decimal'},
     {key:'hips',     label:'Hips',          unit:'cm',   mode:'decimal'},
@@ -1492,9 +1717,9 @@ function mkTargetsSection(){
 
 
 // Direction: true = higher is better, false = lower is better
-const METRIC_DIR={weight:false,bodyFat:false,waist:false,chest:true,hips:false,thigh:false,arm:true,runDist:true,golfHcp:false,totalLift:true};
+const METRIC_DIR={weight:false,bodyFat:false,muscleMass:true,waist:false,chest:true,hips:false,thigh:false,arm:true,runDist:true,golfHcp:false,totalLift:true};
 const METRIC_META={
-  weight:{label:'Body Weight',unit:'kg'},bodyFat:{label:'Body Fat',unit:'%'},
+  weight:{label:'Body Weight',unit:'kg'},bodyFat:{label:'Body Fat',unit:'%'},muscleMass:{label:'Muscle Mass',unit:'kg'},
   waist:{label:'Waist',unit:'cm'},chest:{label:'Chest',unit:'cm'},
   hips:{label:'Hips',unit:'cm'},thigh:{label:'Thigh',unit:'cm'},
   arm:{label:'Arm',unit:'cm'},runDist:{label:'Run Distance',unit:'km'},
@@ -1804,8 +2029,14 @@ function mkOptionalYogaCard(week,day){
     const di=document.createElement('input');di.type='date';di.className='date-inp';
     di.max=isoToday();di.value=comp.sessionDate||getExpectedDate(week,day);
     di.onchange=(e)=>{
-      const c=S.completions[compKey]||{};
-      S.completions={...S.completions,[compKey]:{...c,sessionDate:e.target.value}};save();
+      const newDate=e.target.value;
+      const moved=moveSession(compKey,newDate);
+      if(moved===compKey){
+        // Same slot — just update date
+        const c=S.completions[compKey]||{};
+        S.completions={...S.completions,[compKey]:{...c,sessionDate:newDate}};
+      }
+      save();render();
     };
     dr.append(dl,di);ca.appendChild(dr);
     const cb=document.createElement('button');cb.className='cbtn'+(isDone?' dn':'');
@@ -1902,6 +2133,719 @@ function mkSetupScreen(){
   div.append(newLbl,inp,btn);
   return div;
 }
+
+function moveSession(oldKey, newDateStr){
+  // Work out which week+day the new date falls in
+  const d=new Date(newDateStr+'T00:00:00');
+  if(isNaN(d.getTime()))return oldKey; // invalid date — bail
+  let newWeek=-1, newDay='';
+  for(let w=0;w<=24;w++){
+    const ws=weekStartDate(w),we=weekEndDate(w);
+    ws.setHours(0,0,0,0);we.setHours(23,59,59,999);
+    if(d>=ws&&d<=we){newWeek=w;newDay=DAY_JS[d.getDay()];break;}
+  }
+  if(newWeek===-1)return oldKey; // date outside programme range
+
+  // Build new key (handle yoga companion suffix)
+  const suffix=oldKey.endsWith('-yoga')?'-yoga':'';
+  const newKey='w'+newWeek+'-'+newDay+suffix;
+
+  if(newKey===oldKey)return oldKey; // nothing changed
+
+  // Move the completion data
+  const comp=S.completions[oldKey]||{};
+  const newComps={...S.completions};
+  delete newComps[oldKey];
+  newComps[newKey]={...comp,sessionDate:newDateStr};
+  S.completions=newComps;
+  S.week=newWeek;
+  S.expanded=newDay;
+  return newKey;
+}
+
+// ── CHALLENGE ──────────────────────────────────────────────────────────────
+function getChallengeStreak(exercise){
+  if(!S.challenge||!S.challenge.log)return 0;
+  const d=new Date(isoToday()+'T00:00:00');
+  let streak=0;
+  for(let i=0;i<365;i++){
+    const ds=d.toISOString().slice(0,10);
+    const e=S.challenge.log[ds];
+    if(e&&e[exercise]&&parseFloat(e[exercise])>0){streak++;d.setDate(d.getDate()-1);}
+    else break;
+  }
+  return streak;
+}
+function getChallengeStreakAll(){
+  if(!S.challenge||!S.challenge.log)return 0;
+  const d=new Date(isoToday()+'T00:00:00');
+  let streak=0;
+  for(let i=0;i<365;i++){
+    const ds=d.toISOString().slice(0,10);
+    const e=S.challenge.log[ds]||{};
+    if(parseFloat(e.pushups)>0&&parseFloat(e.squats)>0&&parseFloat(e.plank)>0){
+      streak++;d.setDate(d.getDate()-1);
+    } else break;
+  }
+  return streak;
+}
+function getChallengeMax(exercise){
+  if(!S.challenge||!S.challenge.log)return 0;
+  return Math.max(0,...Object.values(S.challenge.log)
+    .map(e=>parseFloat(e[exercise])||0));
+}
+function saveChallengeEntry(dateStr,field,val){
+  if(!S.challenge)S.challenge={targetDays:0,log:{}};
+  if(!S.challenge.log)S.challenge.log={};
+  S.challenge.log[dateStr]={...(S.challenge.log[dateStr]||{}), [field]:val};
+  save();
+}
+
+
+// ── CHALLENGE CARDS ─────────────────────────────────────────────────────────
+function getChalExercises(){
+  if(S.challenge&&S.challenge.exercises&&S.challenge.exercises.length>0)
+    return S.challenge.exercises;
+  return[
+    {key:'pushups',label:'Push Ups',unit:'reps'},
+    {key:'squats', label:'Squats',  unit:'reps'},
+    {key:'plank',  label:'Plank',   unit:'sec'},
+  ];
+}
+
+function mkChallengeDayCard(week, day){
+  // Day-level card: entry + streaks for each exercise
+  const dateStr = getExpectedDate(week, day);
+  const entry = (S.challenge&&S.challenge.log&&S.challenge.log[dateStr])||{};
+  const pd = new Date(dateStr+'T00:00:00'); pd.setDate(pd.getDate()-1);
+  const prev = (S.challenge&&S.challenge.log&&S.challenge.log[pd.toISOString().slice(0,10)])||{};
+  const expKey = 'chal-day-'+week+'-'+day;
+  const expanded = S.expanded===expKey;
+
+  const wrap = document.createElement('div'); wrap.className='chal-card';
+
+  // Header — always shows per-exercise streaks
+  const hdr = document.createElement('div'); hdr.className='chal-hdr';
+  hdr.style.cursor='pointer';
+  const streakBadges = getChalExercises().map(ex=>{
+    const st = getChallengeStreak(ex.key);
+    return `<span class="chal-badge">${ex.label.split(' ')[0]} ${st>0?'<b style=color:#fb923c>🔥'+st+'</b>':'—'}</span>`;
+  }).join('');
+  hdr.innerHTML = `<span class="chal-title">💪 Challenge</span>
+    <div class="chal-badges">${streakBadges}</div>
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#525252" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;transform:rotate(${expanded?180:0}deg);transition:.2s"><polyline points="6 9 12 15 18 9"/></svg>`;
+  hdr.onclick = ()=>{S.expanded=(expanded?null:expKey);save();render();};
+  wrap.appendChild(hdr);
+
+  if(expanded){
+    const body = document.createElement('div'); body.className='chal-body';
+    getChalExercises().forEach(ex=>{
+      const streak = getChallengeStreak(ex.key);
+      const row = document.createElement('div'); row.className='chal-row';
+      const nameCol = document.createElement('div');
+      nameCol.innerHTML = `<div class="chal-exname">${ex.label}</div>
+        <div class="chal-streak">${streak>0?'🔥 '+streak+' day streak':''}</div>`;
+      const inp = document.createElement('input'); inp.className='chal-inp';
+      inp.type='text'; inp.inputMode='numeric'; inp.placeholder='0';
+      inp.value = entry[ex.key]||'';
+      inp.setAttribute('data-chal-date',dateStr);
+      inp.setAttribute('data-chal-field',ex.key);
+      inp.onclick = e=>e.stopPropagation();
+      inp.onfocus = e=>e.target.select();
+      inp.onblur = e=>{
+        if(e.target.value.trim()) saveChallengeEntry(dateStr,ex.key,e.target.value.trim());
+      };
+      const unit = document.createElement('span'); unit.className='chal-unit'; unit.textContent=ex.unit;
+      const prevEl = document.createElement('span'); prevEl.className='chal-prev';
+      prevEl.textContent = prev[ex.key]?'Prev: '+prev[ex.key]+ex.unit:'';
+      row.append(nameCol,inp,unit,prevEl);
+      body.appendChild(row);
+    });
+    wrap.appendChild(body);
+  }
+  return wrap;
+}
+
+function mkChallengeWeekCard(week){
+  // Week-level card: this week's entries + streaks
+  if(!S.challenge) S.challenge={targetDays:0,log:{}};
+  const expKey='chal-week-'+week;
+  const expanded=S.expanded===expKey;
+
+  const wrap=document.createElement('div');
+  wrap.className='chal-card';
+  wrap.style.cssText='margin:.75rem 1.25rem .25rem;';
+
+  // Header — always shows per-exercise streaks
+  const hdr=document.createElement('div');hdr.className='chal-hdr';hdr.style.cursor='pointer';
+  const streakBadges=getChalExercises().map(ex=>{
+    const st=getChallengeStreak(ex.key);
+    return `<span class="chal-badge">${ex.label} ${st>0?'<b style=color:#fb923c>🔥'+st+'d</b>':'—'}</span>`;
+  }).join('');
+  hdr.innerHTML=`<span class="chal-title">💪 Squat · Push Up · Plank</span>
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#525252" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;transform:rotate(${expanded?180:0}deg);transition:.2s"><polyline points="6 9 12 15 18 9"/></svg>`;
+  hdr.onclick=()=>{S.expanded=(expanded?null:expKey);save();render();};
+  wrap.appendChild(hdr);
+
+  // Streak row always visible below header
+  const sr=document.createElement('div');sr.className='chal-streak-row';
+  getChalExercises().forEach(ex=>{
+    const st=getChallengeStreak(ex.key);
+    const sc=document.createElement('div');sc.className='chal-streak-cell';
+    sc.innerHTML=`<div class="chal-sc-lbl">${ex.label}</div>
+      <div class="chal-sc-val">${st>0?'🔥 '+st:'—'}</div>
+      <div class="chal-sc-unit">${st>0?'days':''}</div>`;
+    sr.appendChild(sc);
+  });
+  wrap.appendChild(sr);
+
+  if(expanded){
+    const body=document.createElement('div');body.className='chal-body';
+    body.style.borderTop='1px solid rgba(38,38,38,.4)';
+
+    // Mini week grid
+    const grid=document.createElement('div');grid.className='chal-week-grid';
+    // Header row
+    const ghdr=document.createElement('div');ghdr.className='chal-wg-hdr';
+    ghdr.innerHTML='<div class="chal-wg-exlbl"></div>'+
+      DAYS.map(d=>`<div class="chal-wg-dlbl">${DAY_SHORT[d]}</div>`).join('');
+    grid.appendChild(ghdr);
+    getChalExercises().forEach(ex=>{
+      const row=document.createElement('div');row.className='chal-wg-row';
+      const lbl=document.createElement('div');lbl.className='chal-wg-exlbl';lbl.textContent=ex.label.split(' ')[0];
+      row.appendChild(lbl);
+      DAYS.forEach(d=>{
+        const dateStr=getExpectedDate(week,d);
+        const val=(S.challenge.log&&S.challenge.log[dateStr]&&S.challenge.log[dateStr][ex.key])||'';
+        const cell=document.createElement('div');cell.className='chal-wg-cell'+(val?' filled':'');
+        cell.textContent=val||'—';
+        row.appendChild(cell);
+      });
+      grid.appendChild(row);
+    });
+    body.appendChild(grid);
+    wrap.appendChild(body);
+  }
+  return wrap;
+}
+
+function mkChallengeProgress(){
+  if(!S.challenge) S.challenge={targetDays:0,log:{}};
+  const wrap=document.createElement('div');
+  wrap.innerHTML='<div class="seclbl mf">💪 SQUAT · PUSH UP · PLANK CHALLENGE</div>';
+  const card=document.createElement('div');card.className='chal-prog-card';
+
+  // Per-exercise streaks — always shown prominently
+  const exRow=document.createElement('div');exRow.className='chal-prog-ex-row';
+  getChalExercises().forEach(ex=>{
+    const st=getChallengeStreak(ex.key);
+    const best=getChallengeMax(ex.key);
+    const col=document.createElement('div');col.className='chal-prog-ex-col';
+    col.innerHTML=`<div class="chal-prog-ex-name">${ex.label}</div>
+      <div class="chal-prog-ex-streak">${st>0?'🔥 '+st:'—'}</div>
+      <div class="chal-prog-ex-unit">${st>0?'days':''}</div>
+      <div class="chal-prog-ex-best">${best?'Best: '+best+' '+ex.unit:''}</div>`;
+    exRow.appendChild(col);
+  });
+  card.appendChild(exRow);
+
+  // Divider
+  const div2=document.createElement('div');div2.style.cssText='height:1px;background:rgba(38,38,38,.4);margin:.625rem 0';
+  card.appendChild(div2);
+
+  // Overall streak + target
+  const allStr=getChallengeStreakAll();
+  const tgt=S.challenge.targetDays||0;
+  const pct=tgt>0?Math.min(100,Math.round((allStr/tgt)*100)):0;
+
+  const statsRow=document.createElement('div');statsRow.style.cssText='display:flex;align-items:center;gap:1rem;margin-bottom:.75rem';
+  statsRow.innerHTML=`<div style="flex:1">
+    <div style="font-size:.5rem;font-family:'JetBrains Mono',monospace;color:#737373;letter-spacing:.15em;text-transform:uppercase;margin-bottom:.25rem">Overall streak (all 3)</div>
+    <div style="font-size:1.75rem;font-family:'Fraunces',Georgia,serif;color:#fb923c;font-weight:500">${allStr} <span style="font-size:.875rem;color:#737373">days 🔥</span></div>
+  </div>`;
+  card.appendChild(statsRow);
+
+  // Target input + progress bar
+  const tr=document.createElement('div');tr.className='chal-tgt-row';
+  const tl=document.createElement('span');tl.className='chal-tgt-lbl';tl.textContent='Challenge target';
+  const ti=document.createElement('input');ti.className='chal-tgt-inp';
+  ti.type='text';ti.inputMode='numeric';ti.placeholder='e.g. 30';ti.value=tgt||'';
+  ti.onchange=e=>{if(!S.challenge)S.challenge={targetDays:0,log:{}};S.challenge.targetDays=parseInt(e.target.value)||0;save();render();};
+  const tu=document.createElement('span');tu.className='chal-unit';tu.textContent='days';
+  tr.append(tl,ti,tu);card.appendChild(tr);
+
+  if(tgt>0){
+    const barC=document.createElement('div');barC.className='steps-prog-bar-wrap';barC.style.marginTop='.5rem';
+    barC.innerHTML=`<div class="steps-prog-bar" style="width:${pct}%;background:#fb923c"></div>`;
+    const bl=document.createElement('div');bl.className='steps-prog-lbl';
+    bl.innerHTML=`<span class="steps-prog-txt">${allStr}/${tgt} days (${pct}%)</span>
+      <span class="steps-prog-txt">${Math.max(0,tgt-allStr)} to go</span>`;
+    card.appendChild(barC);card.appendChild(bl);
+  }
+
+  const totalDays=Object.keys(S.challenge.log||{}).filter(d=>{
+    const e=S.challenge.log[d];
+    return getChalExercises().some(ex=>parseFloat(e[ex.key])>0);
+  }).length;
+  if(totalDays>0){
+    const td=document.createElement('div');
+    td.style.cssText='margin-top:.5rem;font-size:.5625rem;font-family:JetBrains Mono,monospace;color:#525252;text-align:right';
+    td.textContent=totalDays+' day'+(totalDays!==1?'s':'')+' logged total';
+    card.appendChild(td);
+  }
+  // Exercise management
+  const mgmt=document.createElement('div');mgmt.className='chal-mgmt';
+  const mLbl=document.createElement('div');mLbl.className='chal-mgmt-lbl';
+  mLbl.textContent='Your exercises';mgmt.appendChild(mLbl);
+  const CHAL_DFLT=[
+    {key:'pushups',label:'Push Ups',unit:'reps'},
+    {key:'squats', label:'Squats',  unit:'reps'},
+    {key:'plank',  label:'Plank',   unit:'sec'},
+  ];
+  const storedEx=(S.challenge&&S.challenge.exercises)||[];
+  const curEx=storedEx.length>0?storedEx:[...CHAL_DFLT];
+  curEx.forEach(ex=>{
+    const item=document.createElement('div');item.className='chal-ex-item';
+    const nm=document.createElement('span');nm.className='chal-ex-item-name';nm.textContent=ex.label;
+    const un=document.createElement('span');un.className='chal-ex-item-unit';un.textContent=ex.unit;
+    const db=document.createElement('button');db.className='chal-del-btn';db.innerHTML='🗑';
+    db.onclick=()=>{
+      if(!S.challenge)S.challenge={targetDays:0,exercises:[],log:{}};
+      const base=S.challenge.exercises.length>0?S.challenge.exercises:[...CHAL_DFLT];
+      S.challenge.exercises=base.filter(e=>e.key!==ex.key);
+      save();render();
+    };
+    item.append(nm,un,db);mgmt.appendChild(item);
+  });
+  const addRow=document.createElement('div');addRow.className='chal-add-row';
+  const nInp=document.createElement('input');nInp.className='chal-add-inp';
+  nInp.type='text';nInp.placeholder='Add exercise (e.g. Pull Ups)';
+  const uSel=document.createElement('select');uSel.className='chal-unit-sel';
+  ['reps','sec','min','km','steps','kg'].forEach(u=>{
+    const o=document.createElement('option');o.value=u;o.textContent=u;uSel.appendChild(o);
+  });
+  const aBtn=document.createElement('button');aBtn.className='chal-add-btn';aBtn.textContent='+ Add';
+  aBtn.onclick=()=>{
+    const n2=nInp.value.trim();if(!n2)return nInp.focus();
+    if(!S.challenge)S.challenge={targetDays:0,exercises:[],log:{}};
+    const base2=S.challenge.exercises.length>0?S.challenge.exercises:[...CHAL_DFLT];
+    if(base2.some(e=>e.label.toLowerCase()===n2.toLowerCase()))return;
+    const k=n2.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'')+'_'+Date.now().toString(36);
+    base2.push({key:k,label:n2,unit:uSel.value});
+    S.challenge.exercises=base2;nInp.value='';
+    save();render();
+  };
+  nInp.onkeydown=e=>{if(e.key==='Enter')aBtn.onclick();};
+  addRow.append(nInp,uSel,aBtn);mgmt.appendChild(addRow);
+  card.appendChild(mgmt);
+
+  wrap.appendChild(card);
+  return wrap;
+}
+
+function mkMeasurementsDayCard(week){
+  const wk='w'+week;
+  const m=S.measurements[wk]||{};
+  const prevM=S.measurements['w'+(week-1)]||{};
+  const expKey='mday-'+week;
+  const expanded=S.expanded===expKey;
+
+  // Summary: show weight and any logged value
+  const hasData=Object.values(m).some(v=>v!==''&&v!==null&&v!==undefined);
+  const summaryParts=[];
+  if(m.weight) summaryParts.push(m.weight+'kg');
+  if(m.bodyFat) summaryParts.push(m.bodyFat+'%');
+  if(m.waist)   summaryParts.push('W:'+m.waist+'cm');
+
+  const wrap=document.createElement('div');wrap.className='mday-card';
+  const hdr=document.createElement('div');hdr.className='mday-hdr';
+  hdr.onclick=()=>{S.expanded=(expanded?null:expKey);save();render();};
+  hdr.innerHTML=`<span class="mday-title">📏 Week ${week} Measurements</span>
+    <span class="mday-latest">${summaryParts.length?summaryParts.join(' · '):'tap to log'}</span>
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#525252" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-left:.25rem;transform:rotate(${expanded?180:0}deg);transition:.2s"><polyline points="6 9 12 15 18 9"/></svg>`;
+  wrap.appendChild(hdr);
+
+  if(expanded){
+    const body=document.createElement('div');body.className='mday-body';
+    const MFIELDS=[
+      {key:'weight',   lbl:'Weight',   unit:'kg',  ph:'80.0'},
+      {key:'bodyFat',  lbl:'Body Fat', unit:'%',   ph:'20'},
+      {key:'muscleMass',lbl:'Muscle Mass',unit:'kg', ph:'35'},
+      {key:'waist',    lbl:'Waist',    unit:'cm',  ph:'90'},
+      {key:'chest',    lbl:'Chest',    unit:'cm',  ph:'100'},
+      {key:'hips',     lbl:'Hips',     unit:'cm',  ph:'95'},
+      {key:'thigh',    lbl:'Thigh',    unit:'cm',  ph:'60'},
+      {key:'arm',      lbl:'Arm',      unit:'cm',  ph:'35'},
+      {key:'runDist',  lbl:'Run PB',   unit:'km',  ph:'5.0'},
+      {key:'golfHcp',  lbl:'Golf Hcp', unit:'',    ph:'18'},
+    ];
+    const grid=document.createElement('div');grid.className='mday-grid';
+    const vals={...m};
+    MFIELDS.forEach(f=>{
+      const fd=document.createElement('div');fd.className='mday-field';
+      const lbl=document.createElement('div');lbl.className='mday-lbl';
+      lbl.textContent=f.lbl+(f.unit?' ('+f.unit+')':'');
+      const inp=document.createElement('input');inp.className='mday-inp';
+      inp.type='text';inp.inputMode='decimal';
+      inp.placeholder=f.ph||'—';inp.value=m[f.key]||'';
+      inp.setAttribute('data-mday-week',wk);
+      inp.setAttribute('data-mday-key',f.key);
+      inp.onclick=e=>e.stopPropagation();
+      inp.onfocus=e=>e.target.select();
+      inp.oninput=e=>{vals[f.key]=e.target.value;};
+      const prev=document.createElement('div');prev.className='mday-prev';
+      if(prevM[f.key]) prev.textContent='Prev: '+prevM[f.key]+f.unit;
+      fd.append(lbl,inp,prev);grid.appendChild(fd);
+    });
+    body.appendChild(grid);
+
+
+    // Weekly step targets
+    const MDAY_TARGET_KEYS=[
+      {key:'weight',   lbl:'Weight',    unit:'kg',  dir:false},
+      {key:'bodyFat',  lbl:'Body Fat',  unit:'%',   dir:false},
+      {key:'muscleMass',lbl:'Muscle',   unit:'kg',  dir:true},
+      {key:'waist',    lbl:'Waist',     unit:'cm',  dir:false},
+      {key:'chest',    lbl:'Chest',     unit:'cm',  dir:true},
+      {key:'arm',      lbl:'Arm',       unit:'cm',  dir:true},
+    ];
+    const tgtRows=MDAY_TARGET_KEYS.filter(f=>S.targets&&S.targets[f.key]);
+    if(tgtRows.length>0){
+      const tbl=document.createElement('div');
+      tbl.style.cssText='border-top:1px solid rgba(38,38,38,.4);padding-top:.5rem;margin-top:.25rem';
+      const tlbl=document.createElement('div');tlbl.className='mday-lbl';
+      tlbl.style.marginBottom='.375rem';tlbl.textContent='THIS WEEK\'S STEP TARGET';
+      tbl.appendChild(tlbl);
+      const tgrid=document.createElement('div');tgrid.className='mday-grid';
+      tgtRows.forEach(f=>{
+        const wt=getWeeklyTarget(f.key,week);
+        if(wt===null)return;
+        const cur=parseFloat((S.measurements[wk]||{})[f.key]);
+        const onTrack=!isNaN(cur)?(f.dir?cur>=wt:cur<=wt):null;
+        const fd=document.createElement('div');fd.className='mday-field';
+        const lbl2=document.createElement('div');lbl2.className='mday-lbl';lbl2.textContent=f.lbl;
+        const val=document.createElement('div');
+        val.style.cssText='font-size:.9375rem;font-family:JetBrains Mono,monospace;color:'+(onTrack===true?'#a3e635':onTrack===false?'#f87171':'#fb923c');
+        val.textContent=wt+f.unit+(onTrack===true?' ✓':onTrack===false?(f.dir?' ↑':' ↓'):'');
+        fd.append(lbl2,val);tgrid.appendChild(fd);
+      });
+      tbl.appendChild(tgrid);
+      body.appendChild(tbl);
+    }
+    // Auto-calc total lift
+    const lift=calcWeeklyLift(week);
+    if(lift){
+      const lf=document.createElement('div');
+      lf.style.cssText='font-size:.5625rem;font-family:JetBrains Mono,monospace;color:#737373;margin-bottom:.5rem';
+      lf.textContent='Total lifted this week: '+lift.toLocaleString()+' kg (auto-calculated)';
+      body.appendChild(lf);
+    }
+
+    const saveBtn=document.createElement('button');saveBtn.className='mday-save-btn';
+    saveBtn.textContent='Save Measurements';
+    saveBtn.onclick=()=>{
+      // Collect all filled inputs
+      const meas={...(S.measurements[wk]||{})};
+      body.querySelectorAll('[data-mday-key]').forEach(inp=>{
+        if(inp.value.trim()) meas[inp.getAttribute('data-mday-key')]=inp.value.trim();
+      });
+      if(lift) meas.totalLift=lift;
+      S.measurements={...S.measurements,[wk]:meas};
+      S.expanded=null;save();render();
+    };
+    body.appendChild(saveBtn);
+    wrap.appendChild(body);
+  }
+  return wrap;
+}
+
+function getWeeklyTarget(metricKey, week){
+  if(!S.targets||!S.targets[metricKey])return null;
+  const finalTgt=parseFloat(S.targets[metricKey]);
+  if(isNaN(finalTgt))return null;
+  // Find baseline: first logged week for this metric
+  let startVal=null,startWeek=0;
+  for(let w=0;w<=12;w++){
+    const mv=S.measurements['w'+w]&&S.measurements['w'+w][metricKey];
+    if(mv&&!isNaN(parseFloat(mv))){startVal=parseFloat(mv);startWeek=w;break;}
+  }
+  if(startVal===null)return finalTgt; // no data yet
+  if(week<=startWeek)return parseFloat(startVal.toFixed(1));
+  const weeksLeft=12-startWeek;
+  if(weeksLeft<=0)return parseFloat(finalTgt.toFixed(1));
+  const step=(finalTgt-startVal)/weeksLeft;
+  return parseFloat((startVal+step*(week-startWeek)).toFixed(1));
+}
+
+function getWeeklyTargetSeries(metricKey){
+  const pts=[];
+  for(let w=0;w<=12;w++){
+    const t=getWeeklyTarget(metricKey,w);
+    if(t!==null)pts.push({w,v:t});
+  }
+  return pts;
+}
+
+// =========================================================
+// ACHIEVEMENTS
+// =========================================================
+function getCompletedSessionCount(type){
+  // type: 'gym','run','yoga','golf','swim','walk' or null=any
+  let count=0;
+  Object.entries(S.completions||{}).forEach(([key,c])=>{
+    if(!c||!c.done)return;
+    const parts=key.split('-');if(parts.length<2)return;
+    const w=parseInt(parts[0].slice(1)),d=parts[1];
+    if(isNaN(w)||!d||d==='yoga')return;
+    const aid=(S.overrides&&S.overrides[key])||getSchedule(w)?.d[d];
+    if(!aid)return;
+    if(!type||(type==='gym'&&aid.startsWith('gym'))||aid===type)count++;
+  });
+  (S.extras||[]).forEach(e=>{
+    if(!e.done)return;
+    if(!type||(type==='gym'&&e.activityId?.startsWith('gym'))||e.activityId===type)count++;
+  });
+  return count;
+}
+
+function getTotalWeightLifted(){
+  let total=0;
+  Object.entries(S.completions||{}).forEach(([key,c])=>{
+    if(!c?.exercises)return;
+    const parts=key.split('-');if(parts.length<2)return;
+    const w=parseInt(parts[0].slice(1)),d=parts[1];
+    if(isNaN(w)||!d)return;
+    const aid=(S.overrides&&S.overrides[key])||getSchedule(w)?.d[d];
+    if(!aid?.startsWith('gym'))return;
+    const g=GYM[aid];if(!g)return;
+    g.ex.forEach((ex,ei)=>{
+      const es=exState(c,ei);
+      es.sets.forEach(s=>{
+        const wt=parseFloat(s?.weight),r=parseFloat(s?.reps);
+        if(!isNaN(wt)&&!isNaN(r)&&wt>0&&r>0)total+=wt*r;
+      });
+    });
+  });
+  return Math.round(total);
+}
+
+function getWeeks70k(){
+  let n=0;
+  for(let w=0;w<=Math.max(24,S.week);w++){
+    let tot=0;
+    DAYS.forEach(d=>{const raw=(S.steps||{})['w'+w+'-'+d];if(raw){const n2=parseInt(raw);if(!isNaN(n2))tot+=n2;}});
+    if(tot>=70000)n++;
+  }
+  return n;
+}
+
+function calcAchievements(){
+  const A=[];
+  const add=(a)=>A.push(a);
+
+  const gymCount=getCompletedSessionCount('gym');
+  const runCount=getCompletedSessionCount('run');
+  const totalSessions=getCompletedSessionCount(null);
+  const totalLift=getTotalWeightLifted();
+  const weeks70k=getWeeks70k();
+  const maxWeek=S.week;
+
+  // ── 🏆 Programme milestones ──────────────────────────────────────────
+  if(totalSessions>=1)
+    add({id:'first',emoji:'🎯',title:'First Session',desc:'Your journey begins.',tier:'bronze',cat:'Programme'});
+  if(maxWeek>=1)
+    add({id:'wk1',emoji:'✅',title:'Week 1 Complete',desc:'Habit formation started.',ctx:'Wk 1',tier:'bronze',cat:'Programme'});
+  if(maxWeek>=4)
+    add({id:'wk4',emoji:'🔥',title:'One Month Strong',desc:'4 weeks of consistency.',ctx:'Wk 4',tier:'silver',cat:'Programme'});
+  if(maxWeek>=8)
+    add({id:'wk8',emoji:'⚡',title:'Two Months In',desc:'Phase 2 complete — building real momentum.',ctx:'Wk 8',tier:'silver',cat:'Programme'});
+  if(maxWeek>=12)
+    add({id:'wk12',emoji:'🏆',title:'12 Weeks Done!',desc:'The full programme complete. Exceptional.',ctx:'Wk 12',tier:'gold',cat:'Programme'});
+  if(maxWeek>=24)
+    add({id:'wk24',emoji:'👑',title:'6 Months Strong',desc:'Phase 4 mastered. Elite consistency.',ctx:'Wk 24',tier:'gold',cat:'Programme'});
+
+  // ── 🏋 Gym milestones ───────────────────────────────────────────────
+  if(gymCount>=1)
+    add({id:'gym1',emoji:'🏋',title:'First Gym Session',desc:'The hardest step is showing up.',tier:'bronze',cat:'Gym'});
+  if(gymCount>=10)
+    add({id:'gym10',emoji:'💪',title:'10 Gym Sessions',desc:'Building the habit.',ctx:gymCount+' sessions',tier:'bronze',cat:'Gym'});
+  if(gymCount>=25)
+    add({id:'gym25',emoji:'🦾',title:'25 Gym Sessions',desc:'Consistency is your superpower.',ctx:gymCount+' sessions',tier:'silver',cat:'Gym'});
+  if(gymCount>=50)
+    add({id:'gym50',emoji:'🔱',title:'50 Gym Sessions',desc:'Fifty sessions. Unstoppable.',ctx:gymCount+' sessions',tier:'gold',cat:'Gym'});
+
+  // Total lifted
+  if(totalLift>=10000)
+    add({id:'lift10k',emoji:'⚖️',title:'10,000 kg Lifted',desc:'Total training tonnage milestone.',ctx:Math.round(totalLift/1000)+'t total',tier:'bronze',cat:'Gym'});
+  if(totalLift>=50000)
+    add({id:'lift50k',emoji:'🏗',title:'50,000 kg Lifted',desc:'Half way to 100 tonnes!',ctx:Math.round(totalLift/1000)+'t total',tier:'silver',cat:'Gym'});
+  if(totalLift>=100000)
+    add({id:'lift100k',emoji:'🌋',title:'100 Tonnes Lifted!',desc:'A hundred thousand kilograms. Legendary.',ctx:Math.round(totalLift/1000)+'t total',tier:'gold',cat:'Gym'});
+
+  // ── 🏃 Running ───────────────────────────────────────────────────────
+  if(runCount>=1)
+    add({id:'run1',emoji:'🏃',title:'First Run',desc:'Get out there!',tier:'bronze',cat:'Running'});
+  if(runCount>=10)
+    add({id:'run10',emoji:'👟',title:'10 Runs Logged',desc:'Building the engine.',ctx:runCount+' runs',tier:'silver',cat:'Running'});
+  if(runCount>=25)
+    add({id:'run25',emoji:'🎽',title:'25 Runs!',desc:'Consistent cardio champion.',ctx:runCount+' runs',tier:'gold',cat:'Running'});
+  // 5K target hit
+  const runPBs=Object.values(S.measurements||{}).map(m=>parseFloat(m.runDist)).filter(v=>!isNaN(v));
+  if(runPBs.length&&Math.max(...runPBs)>=5)
+    add({id:'run5k',emoji:'🎯',title:'5K Run Achieved!',desc:'Hit your run distance target.',ctx:'Best: '+Math.max(...runPBs)+'km',tier:'gold',cat:'Running'});
+
+  // ── 📏 Measurement weekly step targets ──────────────────────────────
+  const mKeys=[
+    {key:'weight',   label:'Weight',      unit:'kg', dir:false},
+    {key:'bodyFat',  label:'Body Fat',    unit:'%',  dir:false},
+    {key:'muscleMass',label:'Muscle Mass',unit:'kg', dir:true},
+    {key:'waist',    label:'Waist',       unit:'cm', dir:false},
+    {key:'chest',    label:'Chest',       unit:'cm', dir:true},
+    {key:'arm',      label:'Arm',         unit:'cm', dir:true},
+    {key:'thigh',    label:'Thigh',       unit:'cm', dir:false},
+  ];
+  mKeys.forEach(mk=>{
+    if(!S.targets?.[mk.key])return;
+    let weeksHit=0,firstHitWk=null;
+    for(let w=1;w<=12;w++){
+      const actual=parseFloat(S.measurements?.['w'+w]?.[mk.key]);
+      const tgt=getWeeklyTarget(mk.key,w);
+      if(!isNaN(actual)&&tgt!==null){
+        const hit=mk.dir?actual>=tgt:actual<=tgt;
+        if(hit){weeksHit++;if(firstHitWk===null)firstHitWk=w;}
+      }
+    }
+    if(weeksHit>=1)
+      add({id:'mwk1-'+mk.key,emoji:'📏',title:mk.label+' On Track',
+        desc:'Hit the weekly '+mk.label.toLowerCase()+' step target.',
+        ctx:'First hit: Wk '+firstHitWk,tier:'bronze',cat:'Measurements'});
+    if(weeksHit>=4)
+      add({id:'mwk4-'+mk.key,emoji:'📈',title:mk.label+' — 4 Weeks On Target',
+        desc:'4 consecutive weekly targets hit for '+mk.label.toLowerCase()+'.',
+        ctx:weeksHit+' weeks hit',tier:'silver',cat:'Measurements'});
+    if(weeksHit>=8)
+      add({id:'mwk8-'+mk.key,emoji:'⭐',title:mk.label+' — 8 Weeks On Target',
+        desc:'Consistently tracking your '+mk.label.toLowerCase()+' goal.',
+        ctx:weeksHit+' weeks hit',tier:'gold',cat:'Measurements'});
+
+    // 12-week final target
+    const final12=parseFloat(S.measurements?.['w12']?.[mk.key]);
+    const finalTgt=parseFloat(S.targets[mk.key]);
+    if(!isNaN(final12)&&!isNaN(finalTgt)){
+      const hit12=mk.dir?final12>=finalTgt:final12<=finalTgt;
+      if(hit12)
+        add({id:'m12-'+mk.key,emoji:'🎯',title:'12-Week '+mk.label+' Target Hit!',
+          desc:'Achieved your 12-week '+mk.label.toLowerCase()+' goal.',
+          ctx:final12+mk.unit+' / target: '+finalTgt+mk.unit,tier:'gold',cat:'Measurements'});
+    }
+  });
+
+  // ── 👣 Steps ────────────────────────────────────────────────────────
+  if(weeks70k>=1)
+    add({id:'steps1',emoji:'👣',title:'70k Steps Week',desc:'Hit the weekly 70,000 step target.',ctx:'1 week',tier:'bronze',cat:'Steps'});
+  if(weeks70k>=4)
+    add({id:'steps4',emoji:'🚶',title:'4 × 70k Weeks',desc:'Four weeks of great step counts.',ctx:weeks70k+' weeks',tier:'silver',cat:'Steps'});
+  if(weeks70k>=8)
+    add({id:'steps8',emoji:'🏅',title:'8 × 70k Weeks',desc:'Consistently active all programme.',ctx:weeks70k+' weeks',tier:'gold',cat:'Steps'});
+  if(weeks70k>=12)
+    add({id:'steps12',emoji:'🌟',title:'12 × 70k Weeks!',desc:'Every single week hit the step target. Exceptional.',ctx:weeks70k+' weeks',tier:'gold',cat:'Steps'});
+
+  // ── 💪 Challenge streaks ─────────────────────────────────────────────
+  const overallStreak=getChallengeStreakAll();
+  const chalTgt=S.challenge?.targetDays||0;
+  const milestones=[
+    {n:3, emoji:'💪',label:'3-Day Streak',tier:'bronze'},
+    {n:7, emoji:'🔥',label:'7-Day Streak',tier:'bronze'},
+    {n:14,emoji:'🔥',label:'14-Day Streak',tier:'silver'},
+    {n:21,emoji:'💥',label:'21-Day Streak',tier:'silver'},
+    {n:30,emoji:'⚡',label:'30-Day Streak',tier:'gold'},
+    {n:60,emoji:'🌟',label:'60-Day Streak',tier:'gold'},
+    {n:100,emoji:'👑',label:'100-Day Streak!',tier:'gold'},
+  ];
+  milestones.forEach(m=>{
+    if(overallStreak>=m.n)
+      add({id:'streak'+m.n,emoji:m.emoji,title:m.label+' — All Exercises',
+        desc:'Kept up every challenge exercise for '+m.n+' days straight.',
+        ctx:'Current: '+overallStreak+' days',tier:m.tier,cat:'Challenge'});
+  });
+  if(chalTgt>0&&overallStreak>=chalTgt)
+    add({id:'chal-done',emoji:'🏆',title:'Challenge Target Achieved!',
+      desc:'Hit your '+chalTgt+'-day challenge target. Goal unlocked.',
+      ctx:overallStreak+' / '+chalTgt+' days',tier:'gold',cat:'Challenge'});
+
+  // Per-exercise streaks
+  getChalExercises().forEach(ex=>{
+    const st=getChallengeStreak(ex.key);
+    const best=getChallengeMax(ex.key);
+    milestones.filter(m=>st>=m.n).slice(-1).forEach(m=>{
+      add({id:'exstreak-'+ex.key+'-'+m.n,emoji:m.emoji,
+        title:ex.label+' — '+m.label,
+        desc:m.n+' consecutive days of '+ex.label.toLowerCase()+'.',
+        ctx:'Streak: '+st+'d · Best: '+best+' '+ex.unit,tier:m.tier,cat:'Challenge'});
+    });
+  });
+
+  return A;
+}
+
+function mkAchievements(){
+  const div=document.createElement('div');div.className='achv-view fade';
+  const achieved=calcAchievements();
+
+  // Score header
+  const score=document.createElement('div');score.className='achv-score';
+  score.innerHTML=`
+    <div>
+      <div class="achv-score-num">${achieved.length}</div>
+      <div class="achv-score-lbl">Achievements<br>Unlocked</div>
+    </div>
+    <div style="flex:1">
+      <div style="font-size:.875rem;color:var(--t2);margin-bottom:.5rem">
+        ${achieved.filter(a=>a.tier==='gold').length} 🥇 gold &nbsp;
+        ${achieved.filter(a=>a.tier==='silver').length} 🥈 silver &nbsp;
+        ${achieved.filter(a=>a.tier==='bronze').length} 🥉 bronze
+      </div>
+      <div style="font-size:.6875rem;color:#525252;font-family:'JetBrains Mono',monospace">
+        ${achieved.length===0?'Start training to unlock achievements':'Keep going — more to unlock!'}
+      </div>
+    </div>`;
+  div.appendChild(score);
+
+  if(achieved.length===0){
+    const empty=document.createElement('div');empty.className='achv-empty';
+    empty.innerHTML='🏆<br><br>Complete sessions, hit targets<br>and build streaks to unlock achievements.';
+    div.appendChild(empty);return div;
+  }
+
+  // Group by category
+  const CATS=['Programme','Gym','Running','Steps','Measurements','Challenge'];
+  const CAT_COLORS={
+    'Programme':'gold','Gym':'red','Running':'blue',
+    'Steps':'green','Measurements':'purple','Challenge':'silver'
+  };
+  CATS.forEach(cat=>{
+    const catItems=achieved.filter(a=>a.cat===cat);
+    if(catItems.length===0)return;
+    const grp=document.createElement('div');grp.className='achv-group';
+    const lbl=document.createElement('div');lbl.className='achv-group-lbl';
+    lbl.textContent=cat;
+    grp.appendChild(lbl);
+    const grid=document.createElement('div');grid.className='achv-grid';
+    catItems.forEach(a=>{
+      const card=document.createElement('div');
+      card.className='achv-card '+(a.tier==='gold'?CAT_COLORS[cat]||'gold':a.tier==='silver'?'silver':'bronze');
+      card.innerHTML=`
+        <div class="achv-emoji">${a.emoji}</div>
+        <div class="achv-title">${a.title}</div>
+        <div class="achv-desc">${a.desc}</div>
+        ${a.ctx?`<div class="achv-ctx">${a.ctx}</div>`:''}`;
+      grid.appendChild(card);
+    });
+    grp.appendChild(grid);
+    div.appendChild(grp);
+  });
+  return div;
+}
 // =========================================================
 // RENDER ENGINE — targeted updates to avoid destroying inputs
 // =========================================================
@@ -1911,9 +2855,10 @@ function render(){
   if(!S.userName){app.appendChild(mkSetupScreen());return;}
   app.appendChild(mkHeader());
   app.appendChild(mkTabs());
-  if(S.tab==='today')     app.appendChild(mkToday());
-  else if(S.tab==='week') app.appendChild(mkWeek());
-  else                    app.appendChild(mkProgress());
+  if(S.tab==='today')           app.appendChild(mkToday());
+  else if(S.tab==='week')        app.appendChild(mkWeek());
+  else if(S.tab==='achievements') app.appendChild(mkAchievements());
+  else                           app.appendChild(mkProgress());
 }
 
 // =========================================================
@@ -1944,14 +2889,14 @@ function mkHeader(){
         <button class="nbt" id="btnPrev" ${S.week<=0?'disabled':''}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
         </button>
-        <button class="nbt" id="btnNext" ${S.week>=24?'disabled':''}>
+        <button class="nbt" id="btnNext" >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
       </div>
     </div>`;
   d.querySelector('#btnPrev').onclick=()=>{if(S.week>0){S.week--;S.swapping=null;save();render();}}
 
-  d.querySelector('#btnNext').onclick=()=>{if(S.week<24){S.week++;S.swapping=null;save();render();}};
+  d.querySelector('#btnNext').onclick=()=>{S.week++;S.swapping=null;save();render();};
   return d;
 }
 
@@ -1964,6 +2909,7 @@ function mkTabs(){
     <button class="tab${S.tab==='today'?' on':''}" data-t="today">Today</button>
     <button class="tab${S.tab==='week'?' on':''}" data-t="week">Week</button>
     <button class="tab${S.tab==='progress'?' on':''}" data-t="progress">Progress</button>
+    <button class="tab${S.tab==='achievements'?' on':''}" data-t="achievements">🏆</button>
   </div>`;
   d.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{S.tab=b.dataset.t;save();render();});
   return d;
@@ -2286,9 +3232,13 @@ function mkCard(day,week,isToday){
       di.value=storedDate;
       di.setAttribute('data-dpkey',compKey);
       di.onchange=(e)=>{
-        const c=S.completions[compKey]||{};
-        S.completions={...S.completions,[compKey]:{...c,sessionDate:e.target.value}};
-        save();
+        const newDate=e.target.value;
+        const moved=moveSession(compKey,newDate);
+        if(moved===compKey){
+          const c=S.completions[compKey]||{};
+          S.completions={...S.completions,[compKey]:{...c,sessionDate:newDate}};
+        }
+        save();render();
       };
       dr.append(dl,di);ca.appendChild(dr);
       // Complete button
@@ -2433,6 +3383,14 @@ function mkToday(){
     oyw.appendChild(mkOptionalYogaCard(S.week,today));
     div.appendChild(oyw);
   }
+  // Daily challenge card
+  const todayCC=document.createElement('div');todayCC.style.cssText='padding:0 1.25rem';
+  todayCC.appendChild(mkChallengeDayCard(S.week,today));
+  div.appendChild(todayCC);
+  // Measurements day card
+  const mdayC=document.createElement('div');mdayC.style.cssText='padding:0 1.25rem';
+  mdayC.appendChild(mkMeasurementsDayCard(S.week));
+  div.appendChild(mdayC);
   // Past sessions quick-nav
   const pastNav=document.createElement('div');pastNav.className='past-nav';
   const yesterdayBtn=document.createElement('button');
@@ -2513,7 +3471,13 @@ function mkWeek(){
     banner.textContent=isPastWeek?'📝 Editing past week — '+fmtWeekRange(S.week):'📅 Future week — '+fmtWeekRange(S.week);
     div.appendChild(banner);
   }
-  DAYS.forEach(d=>{
+  // Challenge week card
+  div.appendChild(mkChallengeWeekCard(S.week));
+  // Measurements week card
+  const _mwdiv=document.createElement('div');_mwdiv.style.cssText='padding:0 1.25rem';
+  _mwdiv.appendChild(mkMeasurementsDayCard(S.week));div.appendChild(_mwdiv);
+    DAYS.forEach(d=>{
+    div.appendChild(mkChallengeDayCard(S.week,d));
     div.appendChild(mkCard(d,S.week,d===today));
     // Optional yoga after run in Phase 3
     const _aid=(S.overrides&&S.overrides['w'+S.week+'-'+d])||getSchedule(S.week).d[d];
@@ -2600,7 +3564,7 @@ function mkProgress(){
   wmEl.innerHTML='<div class="seclbl mf">12-WEEK MAP</div>';
   const wmcard=document.createElement('div');wmcard.className='wmcard';
   const wmap=document.createElement('div');wmap.className='wmap';
-  for(let w=0;w<=24;w++){
+  for(let w=0;w<=Math.max(24,S.week);w++){
     const schd=getSchedule(w).d;
     const total2=DAYS.filter(d=>(S.overrides&&S.overrides['w'+w+'-'+d]?S.overrides['w'+w+'-'+d]:schd[d])!=='rest').length;
     const done2=DAYS.filter(d=>{const a=(S.overrides&&S.overrides['w'+w+'-'+d])||schd[d];return a!=='rest'&&S.completions['w'+w+'-'+d]?.done;}).length;
@@ -2646,18 +3610,18 @@ function mkProgress(){
 
   // ---- Apple Health Import ----
   const rst=document.createElement('button');rst.className='rstbtn mf';rst.textContent='Reset all progress';
-    // Continuation prompt at week 12
-  if(S.week>=12) div.appendChild(mkContinuationPrompt());
+    // Challenge progress
+  div.appendChild(mkChallengeProgress());
+
+  // Measurements (above targets)
+  const measWeek=S._measWeek!==undefined?S._measWeek:S.week;
+  div.appendChild(mkMeasurementsSection(measWeek));
 
   // Targets
   div.appendChild(mkTargetsSection());
 
-  // Week 12 comparison
+  // Week 12 comparison (actual vs targets)
   div.appendChild(mkWeek12Comparison());
-
-  // Measurements
-  const measWeek=S._measWeek!==undefined?S._measWeek:S.week;
-  div.appendChild(mkMeasurementsSection(measWeek));
 
   // Charts
   div.appendChild(mkChartsSection());
@@ -2665,11 +3629,14 @@ function mkProgress(){
   // Steps progress
   div.appendChild(mkStepsProgress());
 
+  // Continuation prompt at week 12
+  if(S.week>=12) div.appendChild(mkContinuationPrompt());
+
   // Week Profile list
   const wpEl=document.createElement('div');
   wpEl.innerHTML='<div class="seclbl mf" style="margin-top:1.25rem">WEEK PROFILE</div>';
   const wpCard=document.createElement('div');wpCard.className='wk-profile-card';
-  for(let w=0;w<=24;w++){
+  for(let w=0;w<=Math.max(24,S.week);w++){
     const lbl=getWeekLabel(w);
     const schd=getSchedule(w).d;
     let gym=0,run=0,yoga=0,golf=0,walk=0;
@@ -2724,6 +3691,19 @@ function maybeShowInstall(){
 // =========================================================
 // INIT
 // =========================================================
+// Auto-set to current week on first load (S.week===0 means fresh/default)
+(function(){
+  try{
+    if(S.week===0){
+      const now=new Date();now.setHours(0,0,0,0);
+      for(let w=1;w<=52;w++){
+        const ws=weekStartDate(w),we=weekEndDate(w);
+        ws.setHours(0,0,0,0);we.setHours(23,59,59,999);
+        if(now>=ws&&now<=we){S.week=w;save();break;}
+      }
+    }
+  }catch(e){}
+})();
 render();
 setTimeout(maybeShowInstall,500);
 </script>
