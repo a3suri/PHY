@@ -608,6 +608,43 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
   letter-spacing:.1em;text-transform:uppercase}
 .achv-locked-lbl{font-size:.5625rem;color:#525252;font-family:'JetBrains Mono',monospace;
   padding:.625rem .875rem;text-align:center}
+
+.add-set-btn{width:100%;margin-top:.375rem;padding:.375rem;border-radius:.5rem;
+  border:1px dashed rgba(255,255,255,.15);background:transparent;
+  color:#525252;font-size:.6rem;font-family:'JetBrains Mono',monospace;
+  cursor:pointer;letter-spacing:.1em;transition:all .15s}
+.add-set-btn:active{border-color:rgba(251,146,60,.4);color:#fb923c}
+
+.ex-edit-form{background:rgba(23,23,23,.8);border:1px solid rgba(251,146,60,.3);
+  border-radius:.75rem;padding:.75rem;margin-bottom:.5rem}
+.ex-edit-grid{display:grid;grid-template-columns:1fr 3rem 5rem;gap:.375rem;margin-bottom:.5rem}
+.ex-edit-inp{background:rgba(38,38,38,.6);border:1px solid #3d3d3d;border-radius:.5rem;
+  padding:.375rem .5rem;font-size:.8125rem;color:var(--t1);outline:none;width:100%;
+  font-family:'JetBrains Mono',monospace}
+.ex-edit-inp:focus{border-color:var(--ac)}
+.ex-edit-inp::placeholder{color:#3a3a3a}
+.ex-edit-toggles{display:flex;gap:.75rem;margin-bottom:.5rem;align-items:center}
+.ex-edit-toggle{display:flex;align-items:center;gap:.3rem;font-size:.6875rem;
+  color:#737373;cursor:pointer;user-select:none}
+.ex-edit-toggle input{accent-color:var(--ac);width:1rem;height:1rem}
+.ex-edit-btns{display:flex;gap:.375rem}
+.ex-edit-save{flex:1;padding:.4rem;border-radius:.5rem;background:var(--ac);
+  color:#0a0a0a;font-size:.6875rem;font-weight:600;border:none;cursor:pointer}
+.ex-edit-cancel{padding:.4rem .75rem;border-radius:.5rem;background:rgba(38,38,38,.6);
+  color:#737373;font-size:.6875rem;border:1px solid #3d3d3d;cursor:pointer}
+.ex-edit-del{padding:.4rem .75rem;border-radius:.5rem;background:rgba(239,68,68,.1);
+  color:#f87171;font-size:.6875rem;border:1px solid rgba(239,68,68,.25);cursor:pointer}
+.ex-change-btn{background:transparent;border:none;color:#525252;cursor:pointer;
+  padding:.1rem .3rem;font-size:.7rem;line-height:1;flex-shrink:0}
+.ex-change-btn:active{color:var(--ac)}
+.add-ex-btn{width:100%;margin-top:.625rem;padding:.5rem;border-radius:.625rem;
+  border:1px dashed rgba(251,146,60,.3);background:transparent;
+  color:#fb923c;font-size:.6875rem;font-family:'JetBrains Mono',monospace;
+  cursor:pointer;letter-spacing:.1em}
+.add-ex-btn:active{background:rgba(251,146,60,.08)}
+.custom-ex-badge{font-size:.45rem;font-family:'JetBrains Mono',monospace;
+  background:rgba(251,146,60,.15);color:#fb923c;border-radius:.25rem;
+  padding:.1rem .3rem;margin-left:.375rem;vertical-align:middle}
 </style>
 </head>
 <body>
@@ -675,7 +712,7 @@ const GYM={
     {n:'Abdominal Crunch',            s:3,r:'12–15',  rest:'45s',bw:1},
     {n:'Face Pulls (cable rope)',      s:3,r:'15–20',  rest:'45s'},
     {n:'Band Pull-Aparts',            s:3,r:'20',     rest:'30s',bw:1},
-    {n:'McGill Side Plank',           s:3,r:'20s/sd', rest:'30s',bw:1},
+    {n:'McGill Side Plank',           s:3,r:'20s/sd', rest:'30s',bw:1,timed:true},
   ]},
   'gym-b':{name:'Session B',focus:'Hinge · Push · Posterior · Arms',ex:[
     {n:'Trap Bar Romanian Deadlift',      s:4,r:'8–12',    rest:'90s'},
@@ -686,8 +723,8 @@ const GYM={
     {n:'Tricep Pushdown w/Forward Lean',  s:4,r:'12–15',   rest:'45s'},
     {n:'Facing Cable Bicep Curl',         s:4,r:'12–15',   rest:'45s'},
     {n:'Kneeling Chin Dip',               s:3,r:'12–15',   rest:'60s'},
-    {n:'Bird Dog (10s hold)',          s:5,r:'10s/sd', rest:'20s',bw:1},
-    {n:'McGill Modified Curl-up',     s:5,r:'10s hold',rest:'20s',bw:1},
+    {n:'Bird Dog (10s hold)',          s:5,r:'10s/sd', rest:'20s',bw:1,timed:true},
+    {n:'McGill Modified Curl-up',     s:5,r:'10s hold',rest:'20s',bw:1,timed:true},
   ]},
   'gym-c':{name:'Session C',focus:'Full Body Conditioning',ex:[
     {n:'Suitcase Squat',              s:3,r:'12',   rest:'60s'},
@@ -696,7 +733,7 @@ const GYM={
     {n:'Walking Lunge',               s:3,r:'10/sd',rest:'45s',bw:1},
     {n:'Tricep Pushdown w/Forward Lean',s:3,r:'12', rest:'45s'},
     {n:'Bicep Curl',                  s:3,r:'12',   rest:'45s'},
-    {n:'Plank',                       s:3,r:'45s',  rest:'45s',bw:1},
+    {n:'Plank',                       s:3,r:'45s',  rest:'45s',bw:1,timed:true},
     {n:'Face Pulls (cable rope)',      s:3,r:'15–20',  rest:'45s'},
     {n:'Band Pull-Aparts',            s:3,r:'20',     rest:'30s',bw:1},
   ]},
@@ -898,7 +935,7 @@ function slugify(n){return n.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9
 function userKey(n){return n?BASE_KEY+'-'+slugify(n):BASE_KEY;}
 function getUsers(){try{return JSON.parse(localStorage.getItem(USERS_KEY))||[];}catch{return[];}}
 function saveUsers(u){try{localStorage.setItem(USERS_KEY,JSON.stringify(u));}catch{}}
-function defState(){return{week:0,tab:'today',expanded:todayDayKey(),completions:{},overrides:{},swapping:null,extras:[],steps:{},measurements:{},targets:{weight:'',bodyFat:'',muscleMass:'',waist:'',chest:'',hips:'',thigh:'',arm:'',runDist:5,golfHcp:'',totalLift:''},_measWeek:undefined,userName:'',editingName:false,challenge:{targetDays:0,exercises:[],log:{}}};}
+function defState(){return{week:0,tab:'today',expanded:todayDayKey(),completions:{},overrides:{},swapping:null,extras:[],steps:{},measurements:{},targets:{weight:'',bodyFat:'',muscleMass:'',waist:'',chest:'',hips:'',thigh:'',arm:'',runDist:5,golfHcp:'',totalLift:''},_measWeek:undefined,userName:'',editingName:false,editingEx:null,addingEx:null,challenge:{targetDays:0,exercises:[],log:{}}};}
 let S=defState();
 // Load: check for a remembered current user, otherwise try legacy key
 (function(){
@@ -1068,14 +1105,28 @@ function mkExtraCard(extra){
           S.extras=[...S.extras.filter(x=>x.id!==extra.id),extra];
           save();render();
         };
-        const nmEl=document.createElement('span');nmEl.className='exnm'+(es.done?' dn':'');nmEl.textContent=ex.n;
-        const ytB=ytBtn(ex.n);if(ytB)nmEl.appendChild(ytB);
+        // Check for user override of this exercise
+        const exOvr=(comp.exOverrides||{})[ei];
+        const exData=exOvr||ex; // use override if exists
+        const isEditing=S.editingEx&&S.editingEx.key===compKey&&S.editingEx.idx===ei&&!S.editingEx.isCustom;
+
+        const nmEl=document.createElement('span');nmEl.className='exnm'+(es.done?' dn':'');
+        nmEl.textContent=exData.n;
+        if(exOvr){const badge=document.createElement('span');badge.className='custom-ex-badge';badge.textContent='CUSTOM';nmEl.appendChild(badge);}
+        const ytB=ytBtn(exData.n)||ytBtn(ex.n);if(ytB)nmEl.appendChild(ytB);
+        // ✎ Change exercise button
+        const chgBtn=document.createElement('button');chgBtn.className='ex-change-btn';
+        chgBtn.innerHTML='✎';chgBtn.title='Change exercise';
+        chgBtn.onclick=(e)=>{e.stopPropagation();
+          S.editingEx=isEditing?null:{key:compKey,idx:ei,isCustom:false};
+          save();render();};
         const mtEl=document.createElement('span');mtEl.className='exmt mf';
         mtEl.innerHTML=`${ex.s} × ${ex.r}<span class="exrs">${ex.rest}</span>`;
-        rowHdr.append(ckBtn,nmEl,mtEl);
+        rowHdr.append(ckBtn,nmEl,chgBtn,mtEl);
         const grid=document.createElement('div');grid.className='sgrid';
         grid.style.gridTemplateColumns=`repeat(${ex.s},minmax(0,1fr))`;
-        for(let si=0;si<ex.s;si++){
+        const totalSets=Math.max(ex.s, es.sets.filter(s=>s&&(s.weight||s.reps||s.time)).length + (es.sets.length>ex.s?0:0), es.sets.length);
+        for(let si=0;si<totalSets;si++){
           const s=es.sets[si]||{};
           const pw=prev?.sets[si]?.weight||'';const pr=prev?.sets[si]?.reps||'';
           const sc=document.createElement('div');sc.className='scard'+(s.weight||s.reps?' fi':'');
@@ -1088,6 +1139,22 @@ function mkExtraCard(extra){
           inn+=`<div class="sunt mf">reps</div>`;
           sc.innerHTML=inn;grid.appendChild(sc);
         }
+        // Add set button
+        const addSetBtn=document.createElement('button');
+        addSetBtn.className='add-set-btn';
+        addSetBtn.textContent='+ Add set';
+        addSetBtn.onclick=(e)=>{e.stopPropagation();
+          const c=S.completions[compKey]||{exercises:{}};
+          const exs2={...(c.exercises||{})};
+          const cur2=exState({exercises:exs2},ei);
+          const ns2=cur2.sets.slice();
+          // Ensure array has at least totalSets+1 entries
+          while(ns2.length<=totalSets)ns2.push({});
+          exs2[ei]={done:cur2.done,sets:ns2};
+          S.completions={...S.completions,[compKey]:{...c,exercises:exs2}};
+          save();render();
+        };
+        grid.appendChild(addSetBtn);
         row.append(rowHdr,grid);
         if(prev){
           const ph2=document.createElement('div');ph2.className='pvhint';
@@ -1098,6 +1165,56 @@ function mkExtraCard(extra){
         }
         inner.appendChild(row);
       });
+
+      // ── Custom exercises added to this session ──────────────────────────
+      (comp.customEx||[]).forEach((cex,ci)=>{
+        const isEditingC=S.editingEx&&S.editingEx.key===compKey&&S.editingEx.isCustom&&S.editingEx.ci===ci;
+        const crow=document.createElement('div');crow.className='exrow';
+        const crowHdr=document.createElement('div');crowHdr.className='exhdr';
+        const cnm=document.createElement('span');cnm.className='exnm';
+        cnm.innerHTML=cex.n+'<span class="custom-ex-badge">CUSTOM</span>';
+        const cmt=document.createElement('span');cmt.className='exmt mf';
+        cmt.textContent=(cex.s||3)+'×'+(cex.r||'  ')+(cex.bw?' BW':'');
+        const cchg=document.createElement('button');cchg.className='ex-change-btn';cchg.innerHTML='✎';
+        cchg.onclick=(e)=>{e.stopPropagation();
+          S.editingEx=isEditingC?null:{key:compKey,isCustom:true,ci};save();render();};
+        crowHdr.append(cnm,cchg,cmt);
+        if(isEditingC){
+          const cf=mkExEditForm(compKey,ci,cex,true,
+            (nx)=>{const c=S.completions[compKey]||{};const cx=[...(c.customEx||[])];cx[ci]=nx;
+              S.completions={...S.completions,[compKey]:{...c,customEx:cx}};S.editingEx=null;save();render();},
+            ()=>{S.editingEx=null;save();render();},
+            ()=>{const c=S.completions[compKey]||{};const cx=[...(c.customEx||[])];cx.splice(ci,1);
+              S.completions={...S.completions,[compKey]:{...c,customEx:cx}};S.editingEx=null;save();render();}
+          );
+          crow.append(crowHdr,cf);
+        } else {
+          const cgrid=document.createElement('div');cgrid.className='sgrid';
+          for(let csi=0;csi<(parseInt(cex.s)||3);csi++){
+            const csc=document.createElement('div');csc.className='scard';
+            let ci2=`<div class="snum mf">SET ${csi+1}</div>`;
+            if(!cex.bw)ci2+=`<input class="sinp wt" type="text" inputmode="decimal" placeholder="—" value="" data-f="weight" data-key="${compKey}" data-customci="${ci}" data-si="${csi}"><div class="sunt mf">kg</div>`;
+            ci2+=`<input class="sinp rp" type="text" inputmode="numeric" placeholder="—" value="" data-f="${cex.timed?'time':'reps'}" data-key="${compKey}" data-customci="${ci}" data-si="${csi}"><div class="sunt mf">${cex.timed?'sec':'reps'}</div>`;
+            csc.innerHTML=ci2;cgrid.appendChild(csc);
+          }
+          crow.append(crowHdr,cgrid);
+        }
+        inner.appendChild(crow);
+      });
+      // Add exercise button
+      if(!S.addingEx||S.addingEx!==compKey){
+        const aexBtn=document.createElement('button');aexBtn.className='add-ex-btn';
+        aexBtn.textContent='+ Add exercise to session';
+        aexBtn.onclick=(e)=>{e.stopPropagation();S.addingEx=compKey;S.editingEx=null;save();render();};
+        inner.appendChild(aexBtn);
+      } else {
+        const addF=mkExEditForm(compKey,-1,{n:'',s:3,r:'',bw:false,timed:false},true,
+          (nx)=>{const c=S.completions[compKey]||{};const cx=[...(c.customEx||[]),nx];
+            S.completions={...S.completions,[compKey]:{...c,customEx:cx}};S.addingEx=null;save();render();},
+          ()=>{S.addingEx=null;save();render();},null);
+        inner.appendChild(addF);
+      }
+
     } else if(det.items){
       det.items.forEach((item,ii)=>{
         const fakeComp={exercises:extra.exercises||{}};
@@ -1190,7 +1307,7 @@ function mkAddSessionBtn(week,day){
 
 
 
-const WK0_START='2026-05-13';
+const WK0_START='2026-05-11';
 const WK1_START='2026-05-18';
 
 function weekStartDate(w){
@@ -2660,7 +2777,7 @@ function getTotalWeightLifted(){
     g.ex.forEach((ex,ei)=>{
       const es=exState(c,ei);
       es.sets.forEach(s=>{
-        const wt=parseFloat(s?.weight),r=parseFloat(s?.reps);
+        const wt=parseFloat(s?.weight),r=parseFloat(s?.reps||s?.time||0);
         if(!isNaN(wt)&&!isNaN(r)&&wt>0&&r>0)total+=wt*r;
       });
     });
@@ -2885,6 +3002,58 @@ function mkAchievements(){
   });
   return div;
 }
+
+function mkExEditForm(compKey, exIdx, ex, isCustom, onSave, onCancel, onDelete){
+  const form=document.createElement('div');form.className='ex-edit-form';
+  form.onclick=e=>e.stopPropagation();
+
+  const grid=document.createElement('div');grid.className='ex-edit-grid';
+
+  const nameInp=document.createElement('input');nameInp.className='ex-edit-inp';
+  nameInp.type='text';nameInp.placeholder='Exercise name';nameInp.value=ex.n||'';
+
+  const setsInp=document.createElement('input');setsInp.className='ex-edit-inp';
+  setsInp.type='text';setsInp.inputMode='numeric';setsInp.placeholder='Sets';
+  setsInp.value=ex.s||3;setsInp.style.textAlign='center';
+
+  const repsInp=document.createElement('input');repsInp.className='ex-edit-inp';
+  repsInp.type='text';repsInp.placeholder='Reps / time';repsInp.value=ex.r||ex.reps||'';
+
+  const nLbl=document.createElement('span');nLbl.style.cssText='font-size:.5rem;font-family:JetBrains Mono,monospace;color:#525252;margin-bottom:.2rem;display:block';nLbl.textContent='Exercise name';
+  const sLbl=document.createElement('span');sLbl.style.cssText=nLbl.style.cssText;sLbl.textContent='Sets';
+  const rLbl=document.createElement('span');rLbl.style.cssText=nLbl.style.cssText;rLbl.textContent='Reps/time';
+
+  const nW=document.createElement('div');nW.append(nLbl,nameInp);
+  const sW=document.createElement('div');sW.append(sLbl,setsInp);
+  const rW=document.createElement('div');rW.append(rLbl,repsInp);
+  grid.append(nW,sW,rW);form.appendChild(grid);
+
+  const toggles=document.createElement('div');toggles.className='ex-edit-toggles';
+  const bwLbl=document.createElement('label');bwLbl.className='ex-edit-toggle';
+  const bwCk=document.createElement('input');bwCk.type='checkbox';bwCk.checked=!!(ex.bw);
+  bwLbl.append(bwCk,' Bodyweight');
+  const timedLbl=document.createElement('label');timedLbl.className='ex-edit-toggle';
+  const timedCk=document.createElement('input');timedCk.type='checkbox';timedCk.checked=!!(ex.timed);
+  timedLbl.append(timedCk,' Timed (sec)');
+  toggles.append(bwLbl,timedLbl);form.appendChild(toggles);
+
+  const btns=document.createElement('div');btns.className='ex-edit-btns';
+  const saveBtn=document.createElement('button');saveBtn.className='ex-edit-save';saveBtn.textContent='Save';
+  const cancelBtn=document.createElement('button');cancelBtn.className='ex-edit-cancel';cancelBtn.textContent='Cancel';
+  btns.append(saveBtn,cancelBtn);
+  if(onDelete){const delBtn=document.createElement('button');delBtn.className='ex-edit-del';delBtn.textContent='Remove';
+    delBtn.onclick=()=>onDelete();btns.appendChild(delBtn);}
+  form.appendChild(btns);
+
+  saveBtn.onclick=()=>{
+    const n=nameInp.value.trim();if(!n){nameInp.focus();return;}
+    onSave({n,s:parseInt(setsInp.value)||3,r:repsInp.value.trim(),bw:bwCk.checked,timed:timedCk.checked});
+  };
+  cancelBtn.onclick=()=>onCancel();
+  nameInp.onkeydown=e=>{if(e.key==='Enter')saveBtn.onclick();if(e.key==='Escape')onCancel();};
+  setTimeout(()=>nameInp.focus(),50);
+  return form;
+}
 // =========================================================
 // RENDER ENGINE — targeted updates to avoid destroying inputs
 // =========================================================
@@ -3050,11 +3219,24 @@ function mkCard(day,week,isToday){
         ckBtn.style.background=es.done?det.color:'transparent';
         ckBtn.innerHTML=es.done?'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>':'';
         ckBtn.onclick=()=>toggleEx(compKey,ei,es,det.color,ckBtn,nmEl);
-        const nmEl=document.createElement('span');nmEl.className='exnm'+(es.done?' dn':'');nmEl.textContent=ex.n;
-        const ytB=ytBtn(ex.n);if(ytB)nmEl.appendChild(ytB);
+        // Check for user override of this exercise
+        const exOvr=(comp.exOverrides||{})[ei];
+        const exData=exOvr||ex; // use override if exists
+        const isEditing=S.editingEx&&S.editingEx.key===compKey&&S.editingEx.idx===ei&&!S.editingEx.isCustom;
+
+        const nmEl=document.createElement('span');nmEl.className='exnm'+(es.done?' dn':'');
+        nmEl.textContent=exData.n;
+        if(exOvr){const badge=document.createElement('span');badge.className='custom-ex-badge';badge.textContent='CUSTOM';nmEl.appendChild(badge);}
+        const ytB=ytBtn(exData.n)||ytBtn(ex.n);if(ytB)nmEl.appendChild(ytB);
+        // ✎ Change exercise button
+        const chgBtn=document.createElement('button');chgBtn.className='ex-change-btn';
+        chgBtn.innerHTML='✎';chgBtn.title='Change exercise';
+        chgBtn.onclick=(e)=>{e.stopPropagation();
+          S.editingEx=isEditing?null:{key:compKey,idx:ei,isCustom:false};
+          save();render();};
         const mtEl=document.createElement('span');mtEl.className='exmt mf';
         mtEl.innerHTML=`${ex.s} × ${ex.r}<span class="exrs">${ex.rest}</span>`;
-        rowHdr.append(ckBtn,nmEl,mtEl);
+        rowHdr.append(ckBtn,nmEl,chgBtn,mtEl);
 
         // Sets grid
         const grid=document.createElement('div');
@@ -3066,8 +3248,10 @@ function mkCard(day,week,isToday){
           const pw=prev?.sets[si]?.weight||'';
           const pr=prev?.sets[si]?.reps||'';
           const setDone=!!(s.done);
+          const isExtra=si>=ex.s; // beyond standard set count
           const sc=document.createElement('div');
-          sc.className='scard'+((s.weight||s.reps)?' fi':'')+(setDone?' set-done':'');
+          sc.className='scard'+((s.weight||s.reps||s.time)?' fi':'')+(setDone?' set-done':'');
+          if(isExtra)sc.style.opacity='0.6';
           if(setDone)sc.style.borderColor=det.color+'60';
           sc.dataset.key=compKey;sc.dataset.ei=ei;sc.dataset.si=si;
           const sck=document.createElement('button');
@@ -3085,13 +3269,22 @@ function mkCard(day,week,isToday){
             exs[ei]={done:cur.done,sets:ns};
             S.completions={...S.completions,[compKey]:{...c,exercises:exs}};
             save();render();};
+          // Pre-fill from previous session if no current data
+          const prefW=s.weight!==undefined&&s.weight!==''?s.weight:(pw||'');
+          const prefR=s.reps!==undefined&&s.reps!==''?s.reps:(pr||'');
+          const prefT=s.time!==undefined&&s.time!==''?s.time:(prev?.sets[si]?.time||'');
           let inner2=`<div class="snum mf">SET ${si+1}</div>`;
           if(!bw){
-            inner2+=`<input class="sinp wt" type="text" inputmode="decimal" placeholder="${pw||'—'}" value="${s.weight||''}" data-f="weight" data-key="${compKey}" data-ei="${ei}" data-si="${si}">`;
+            inner2+=`<input class="sinp wt" type="text" inputmode="decimal" placeholder="${pw||'—'}" value="${prefW}" data-f="weight" data-key="${compKey}" data-ei="${ei}" data-si="${si}">`;
             inner2+=`<div class="sunt mf">kg</div>`;
           }
-          inner2+=`<input class="sinp rp" type="text" inputmode="numeric" placeholder="${pr||'—'}" value="${s.reps||''}" data-f="reps" data-key="${compKey}" data-ei="${ei}" data-si="${si}">`;
-          inner2+=`<div class="sunt mf">reps</div>`;
+          if(ex.timed){
+            inner2+=`<input class="sinp rp" type="text" inputmode="numeric" placeholder="${pr||'—'}" value="${prefT}" data-f="time" data-key="${compKey}" data-ei="${ei}" data-si="${si}">`;
+            inner2+=`<div class="sunt mf">sec</div>`;
+          } else {
+            inner2+=`<input class="sinp rp" type="text" inputmode="numeric" placeholder="${pr||'—'}" value="${prefR}" data-f="reps" data-key="${compKey}" data-ei="${ei}" data-si="${si}">`;
+            inner2+=`<div class="sunt mf">reps</div>`;
+          }
           sc.innerHTML=inner2;
           sc.insertBefore(sck,sc.firstChild);
           grid.appendChild(sc);
@@ -3120,6 +3313,56 @@ function mkCard(day,week,isToday){
         }
         inner.appendChild(row);
       });
+
+      // ── Custom exercises added to this session ──────────────────────────
+      (comp.customEx||[]).forEach((cex,ci)=>{
+        const isEditingC=S.editingEx&&S.editingEx.key===compKey&&S.editingEx.isCustom&&S.editingEx.ci===ci;
+        const crow=document.createElement('div');crow.className='exrow';
+        const crowHdr=document.createElement('div');crowHdr.className='exhdr';
+        const cnm=document.createElement('span');cnm.className='exnm';
+        cnm.innerHTML=cex.n+'<span class="custom-ex-badge">CUSTOM</span>';
+        const cmt=document.createElement('span');cmt.className='exmt mf';
+        cmt.textContent=(cex.s||3)+'×'+(cex.r||'  ')+(cex.bw?' BW':'');
+        const cchg=document.createElement('button');cchg.className='ex-change-btn';cchg.innerHTML='✎';
+        cchg.onclick=(e)=>{e.stopPropagation();
+          S.editingEx=isEditingC?null:{key:compKey,isCustom:true,ci};save();render();};
+        crowHdr.append(cnm,cchg,cmt);
+        if(isEditingC){
+          const cf=mkExEditForm(compKey,ci,cex,true,
+            (nx)=>{const c=S.completions[compKey]||{};const cx=[...(c.customEx||[])];cx[ci]=nx;
+              S.completions={...S.completions,[compKey]:{...c,customEx:cx}};S.editingEx=null;save();render();},
+            ()=>{S.editingEx=null;save();render();},
+            ()=>{const c=S.completions[compKey]||{};const cx=[...(c.customEx||[])];cx.splice(ci,1);
+              S.completions={...S.completions,[compKey]:{...c,customEx:cx}};S.editingEx=null;save();render();}
+          );
+          crow.append(crowHdr,cf);
+        } else {
+          const cgrid=document.createElement('div');cgrid.className='sgrid';
+          for(let csi=0;csi<(parseInt(cex.s)||3);csi++){
+            const csc=document.createElement('div');csc.className='scard';
+            let ci2=`<div class="snum mf">SET ${csi+1}</div>`;
+            if(!cex.bw)ci2+=`<input class="sinp wt" type="text" inputmode="decimal" placeholder="—" value="" data-f="weight" data-key="${compKey}" data-customci="${ci}" data-si="${csi}"><div class="sunt mf">kg</div>`;
+            ci2+=`<input class="sinp rp" type="text" inputmode="numeric" placeholder="—" value="" data-f="${cex.timed?'time':'reps'}" data-key="${compKey}" data-customci="${ci}" data-si="${csi}"><div class="sunt mf">${cex.timed?'sec':'reps'}</div>`;
+            csc.innerHTML=ci2;cgrid.appendChild(csc);
+          }
+          crow.append(crowHdr,cgrid);
+        }
+        inner.appendChild(crow);
+      });
+      // Add exercise button
+      if(!S.addingEx||S.addingEx!==compKey){
+        const aexBtn=document.createElement('button');aexBtn.className='add-ex-btn';
+        aexBtn.textContent='+ Add exercise to session';
+        aexBtn.onclick=(e)=>{e.stopPropagation();S.addingEx=compKey;S.editingEx=null;save();render();};
+        inner.appendChild(aexBtn);
+      } else {
+        const addF=mkExEditForm(compKey,-1,{n:'',s:3,r:'',bw:false,timed:false},true,
+          (nx)=>{const c=S.completions[compKey]||{};const cx=[...(c.customEx||[]),nx];
+            S.completions={...S.completions,[compKey]:{...c,customEx:cx}};S.addingEx=null;save();render();},
+          ()=>{S.addingEx=null;save();render();},null);
+        inner.appendChild(addF);
+      }
+
     } else if(det.items){
       det.items.forEach((item,ii)=>{
         const es=exState(comp,ii);
@@ -3388,8 +3631,9 @@ document.addEventListener('input',e=>{
   const sc=inp.closest('.scard');
   if(sc){
     const wt=sc.querySelector('[data-f="weight"]');
+    const tm=sc.querySelector('[data-f="time"]');
     const rp=sc.querySelector('[data-f="reps"]');
-    const hasVal=(wt&&wt.value)||(rp&&rp.value);
+    const hasVal=(wt&&wt.value)||(rp&&rp.value)||(tm&&tm.value);
     sc.classList.toggle('fi',!!hasVal);
   }
 });
@@ -3541,6 +3785,8 @@ function mkWeek(){
     DAYS.forEach(d=>{
     const isReallyToday=getExpectedDate(S.week,d)===todayDateStr;
     div.appendChild(mkCard(d,S.week,isReallyToday));
+    // Daily challenge card for this specific day
+    div.appendChild(mkChallengeDayCard(S.week,d));
     // Optional yoga after run in Phase 3
     const _aid=(S.overrides&&S.overrides['w'+S.week+'-'+d])||getSchedule(S.week).d[d];
     if(_aid==='run'&&getSchedule(S.week).ph>=3) div.appendChild(mkOptionalYogaCard(S.week,d));
