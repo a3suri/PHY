@@ -645,7 +645,25 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 .custom-ex-badge{font-size:.45rem;font-family:'JetBrains Mono',monospace;
   background:rgba(251,146,60,.15);color:#fb923c;border-radius:.25rem;
   padding:.1rem .3rem;margin-left:.375rem;vertical-align:middle}
+
+.chal-ex-item{flex-wrap:wrap;gap:.4rem}
+.chal-ex-ctrl{display:flex;align-items:center;gap:.4rem;width:100%;margin-top:.25rem}
+.chal-tgt-mini{width:3.25rem;background:rgba(23,23,23,.7);border:1px solid #3d3d3d;
+  border-radius:.4rem;padding:.25rem .4rem;font-family:'JetBrains Mono',monospace;
+  font-size:.75rem;color:var(--t1);outline:none;text-align:center}
+.chal-tgt-mini:focus{border-color:var(--ac)}
+.chal-tgt-lbl-mini{font-size:.5rem;font-family:'JetBrains Mono',monospace;color:#525252}
+.chal-show-toggle{display:flex;align-items:center;gap:.3rem;cursor:pointer;
+  font-size:.5rem;font-family:'JetBrains Mono',monospace;color:#737373;
+  letter-spacing:.05em;margin-left:auto}
+.chal-show-box{width:1rem;height:1rem;border-radius:.25rem;border:1.5px solid #3d3d3d;
+  display:flex;align-items:center;justify-content:center;font-size:.625rem}
+.chal-show-box.on{background:var(--ac);border-color:var(--ac);color:#0a0a0a}
+.chal-tgt-prog{font-size:.5rem;font-family:'JetBrains Mono',monospace;color:#fb923c;white-space:nowrap}
 </style>
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxODAgMTgwIj48cmVjdCB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iIzBhMGEwYSIvPjxwYXRoIGQ9Ik0gNDUgNDUgTCAxMzUgMTM1IE0gMTM1IDQ1IEwgNDUgMTM1IiBzdHJva2U9IiNlZjQ0NDQiIHN0cm9rZS13aWR0aD0iMjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjwvc3ZnPg==">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxODAgMTgwIj48cmVjdCB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iIzBhMGEwYSIvPjxwYXRoIGQ9Ik0gNDUgNDUgTCAxMzUgMTM1IE0gMTM1IDQ1IEwgNDUgMTM1IiBzdHJva2U9IiNlZjQ0NDQiIHN0cm9rZS13aWR0aD0iMjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjwvc3ZnPg==">
+<meta name="apple-mobile-web-app-title" content="PHY">
 </head>
 <body>
 <div id="grain"></div>
@@ -1006,25 +1024,68 @@ function exState(comp,idx){
 function isBW(ex){return ex.bw||/Plank|Dead Bug|Push.?up|Lunge|Crunch/i.test(ex.n);}
 
 function findPrev(exName,curWeek,curDay){
-  // Check user logs (backward from current)
+  // Helper: search a completion's exercises (including custom/overridden) for exName
+  const searchComp=(c,aid)=>{
+    if(!c?.exercises)return null;
+    const g=GYM[aid];
+    // 1. Standard gym exercise match
+    if(g){
+      const ei=g.ex.findIndex(e=>e.n===exName);
+      if(ei>=0){
+        // Honour an exercise-name override on this slot
+        const ovr=(c.exOverrides||{})[ei];
+        const effName=ovr?ovr.n:g.ex[ei].n;
+        if(effName===exName){
+          const es=exState(c,ei);
+          if(es.sets.some(s=>s?.weight||s?.reps||s?.time))return es.sets;
+        }
+      }
+      // 2. Check overridden slots that now match exName
+      if(c.exOverrides){
+        for(const ei2 of Object.keys(c.exOverrides)){
+          if(c.exOverrides[ei2].n===exName){
+            const es=exState(c,parseInt(ei2));
+            if(es.sets.some(s=>s?.weight||s?.reps||s?.time))return es.sets;
+          }
+        }
+      }
+    }
+    // 3. Custom exercises added to this session
+    if(c.customEx){
+      const ci=c.customEx.findIndex(e=>e.n===exName);
+      if(ci>=0){
+        const cs=(c.customExState||{})[ci];
+        if(cs?.sets?.some(s=>s?.weight||s?.reps||s?.time))return cs.sets;
+      }
+    }
+    return null;
+  };
+
   const curDi=DAYS.indexOf(curDay);
-  for(let w=curWeek;w>=1;w--){
+  // Search user logs backward (include Week 0), honouring overrides
+  for(let w=curWeek;w>=0;w--){
     const maxDi=(w===curWeek)?curDi-1:DAYS.length-1;
     for(let di=maxDi;di>=0;di--){
       const d=DAYS[di];
-      const c=S.completions['w'+w+'-'+d];
-      if(!c?.exercises)continue;
-      const aid=getSchedule(w)?.d[d];
-      if(!aid?.startsWith('gym'))continue;
-      const g=GYM[aid];if(!g)continue;
-      const ei=g.ex.findIndex(e=>e.n===exName);
-      if(ei<0)continue;
-      const es=exState(c,ei);
-      if(es.sets.some(s=>s?.weight||s?.reps))
-        return{sets:es.sets,label:'Wk '+w,source:'log'};
+      const key='w'+w+'-'+d;
+      const c=S.completions[key];
+      if(!c?.exercises&&!c?.customEx)continue;
+      // Use override-aware activity id
+      const aid=(S.overrides&&S.overrides[key])||getSchedule(w)?.d[d];
+      const sets=searchComp(c,aid);
+      if(sets)return{sets,label:'Wk '+w,source:'log'};
     }
   }
-  // Check HIST
+
+  // Search extra (added) sessions, most recent first
+  const extras=(S.extras||[]).slice().sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  for(const ex of extras){
+    if(!ex.done&&!ex.exercises)continue;
+    const sets=searchComp(ex,ex.activityId);
+    if(sets)return{sets,label:ex.date?fmtFullDate(ex.date):'Extra',source:'log'};
+  }
+
+  // Fall back to hardcoded PT history
   let best=null,bestD=null;
   for(const h of HIST){
     if(!h.ex[exName])continue;
@@ -2355,13 +2416,20 @@ function saveChallengeEntry(dateStr,field,val){
 
 // ── CHALLENGE CARDS ─────────────────────────────────────────────────────────
 function getChalExercises(){
+  let list;
   if(S.challenge&&S.challenge.exercises&&S.challenge.exercises.length>0)
-    return S.challenge.exercises;
-  return[
+    list=S.challenge.exercises;
+  else list=[
     {key:'pushups',label:'Push Ups',unit:'reps'},
     {key:'squats', label:'Squats',  unit:'reps'},
     {key:'plank',  label:'Plank',   unit:'sec'},
   ];
+  // Ensure each has target + show defaults
+  return list.map(ex=>({target:0,show:true,...ex}));
+}
+// Exercises visible on the daily/week cards (show !== false)
+function getVisibleChalExercises(){
+  return getChalExercises().filter(ex=>ex.show!==false);
 }
 
 function mkChallengeDayCard(week, day){
@@ -2394,8 +2462,9 @@ function mkChallengeDayCard(week, day){
       const streak = getChallengeStreak(ex.key,dateStr);
       const row = document.createElement('div'); row.className='chal-row';
       const nameCol = document.createElement('div');
+      const tgtTxt=tgt>0?(streak>=tgt?'🏆 '+streak+'/'+tgt+' ✓':'🔥 '+streak+'/'+tgt+' days'):(streak>0?'🔥 '+streak+' day streak':'');
       nameCol.innerHTML = `<div class="chal-exname">${ex.label}</div>
-        <div class="chal-streak">${streak>0?'🔥 '+streak+' day streak':''}</div>`;
+        <div class="chal-streak">${tgtTxt}</div>`;
       const inp = document.createElement('input'); inp.className='chal-inp';
       inp.type='text'; inp.inputMode='numeric'; inp.placeholder='0';
       inp.value = entry[ex.key]||'';
@@ -2434,7 +2503,7 @@ function mkChallengeWeekCard(week){
 
   // Header — shows streaks as of that week
   const hdr=document.createElement('div');hdr.className='chal-hdr';hdr.style.cursor='pointer';
-  const streakBadges=getChalExercises().map(ex=>{
+  const streakBadges=getVisibleChalExercises().map(ex=>{
     const st=getChallengeStreak(ex.key,streakDate);
     return `<span class="chal-badge">${ex.label} ${st>0?'<b style=color:#fb923c>🔥'+st+'d</b>':'—'}</span>`;
   }).join('');
@@ -2445,7 +2514,7 @@ function mkChallengeWeekCard(week){
 
   // Streak row always visible below header
   const sr=document.createElement('div');sr.className='chal-streak-row';
-  getChalExercises().forEach(ex=>{
+  getVisibleChalExercises().forEach(ex=>{
     const st=getChallengeStreak(ex.key,streakDate);
     const sc=document.createElement('div');sc.className='chal-streak-cell';
     sc.innerHTML=`<div class="chal-sc-lbl">${ex.label}</div>
@@ -2559,19 +2628,53 @@ function mkChallengeProgress(){
     {key:'plank',  label:'Plank',   unit:'sec'},
   ];
   const storedEx=(S.challenge&&S.challenge.exercises)||[];
-  const curEx=storedEx.length>0?storedEx:[...CHAL_DFLT];
+  const curEx=(storedEx.length>0?storedEx:[...CHAL_DFLT]).map(e=>({target:0,show:true,...e}));
+
+  // Helper to persist exercise changes
+  const persistEx=(newList)=>{
+    if(!S.challenge)S.challenge={targetDays:0,exercises:[],log:{}};
+    S.challenge.exercises=newList;
+  };
+
   curEx.forEach(ex=>{
     const item=document.createElement('div');item.className='chal-ex-item';
+    // Row 1: name + unit + delete
     const nm=document.createElement('span');nm.className='chal-ex-item-name';nm.textContent=ex.label;
     const un=document.createElement('span');un.className='chal-ex-item-unit';un.textContent=ex.unit;
     const db=document.createElement('button');db.className='chal-del-btn';db.innerHTML='🗑';
-    db.onclick=()=>{
-      if(!S.challenge)S.challenge={targetDays:0,exercises:[],log:{}};
-      const base=S.challenge.exercises.length>0?S.challenge.exercises:[...CHAL_DFLT];
-      S.challenge.exercises=base.filter(e=>e.key!==ex.key);
+    db.onclick=()=>{persistEx(curEx.filter(e=>e.key!==ex.key));save();render();};
+    item.append(nm,un,db);
+
+    // Row 2: target input + show toggle
+    const ctrl=document.createElement('div');ctrl.className='chal-ex-ctrl';
+    const tlbl=document.createElement('span');tlbl.className='chal-tgt-lbl-mini';tlbl.textContent='Target';
+    const tinp=document.createElement('input');tinp.className='chal-tgt-mini';
+    tinp.type='text';tinp.inputMode='numeric';tinp.placeholder='days';tinp.value=ex.target||'';
+    tinp.onclick=e=>e.stopPropagation();
+    tinp.onchange=e=>{
+      const v=parseInt(e.target.value)||0;
+      persistEx(curEx.map(x=>x.key===ex.key?{...x,target:v}:x));
       save();render();
     };
-    item.append(nm,un,db);mgmt.appendChild(item);
+    const tunit=document.createElement('span');tunit.className='chal-tgt-lbl-mini';tunit.textContent='days';
+    // Current streak progress
+    const st=getChallengeStreak(ex.key);
+    const prog=document.createElement('span');prog.className='chal-tgt-prog';
+    if(ex.target>0) prog.textContent=st>=ex.target?'🏆 '+st+'/'+ex.target:'🔥 '+st+'/'+ex.target;
+    else if(st>0) prog.textContent='🔥 '+st+'d';
+    // Show toggle
+    const showT=document.createElement('div');showT.className='chal-show-toggle';
+    const showBox=document.createElement('div');showBox.className='chal-show-box'+(ex.show!==false?' on':'');
+    showBox.textContent=ex.show!==false?'✓':'';
+    showT.append(showBox,document.createTextNode('Show'));
+    showT.onclick=e=>{
+      e.stopPropagation();
+      persistEx(curEx.map(x=>x.key===ex.key?{...x,show:!(x.show!==false)}:x));
+      save();render();
+    };
+    ctrl.append(tlbl,tinp,tunit,prog,showT);
+    item.append(ctrl);
+    mgmt.appendChild(item);
   });
   const addRow=document.createElement('div');addRow.className='chal-add-row';
   const nInp=document.createElement('input');nInp.className='chal-add-inp';
@@ -2580,19 +2683,21 @@ function mkChallengeProgress(){
   ['reps','sec','min','km','steps','kg'].forEach(u=>{
     const o=document.createElement('option');o.value=u;o.textContent=u;uSel.appendChild(o);
   });
+  const tInp=document.createElement('input');tInp.className='chal-tgt-mini';
+  tInp.type='text';tInp.inputMode='numeric';tInp.placeholder='tgt';tInp.title='Target streak days';
   const aBtn=document.createElement('button');aBtn.className='chal-add-btn';aBtn.textContent='+ Add';
   aBtn.onclick=()=>{
     const n2=nInp.value.trim();if(!n2)return nInp.focus();
     if(!S.challenge)S.challenge={targetDays:0,exercises:[],log:{}};
-    const base2=S.challenge.exercises.length>0?S.challenge.exercises:[...CHAL_DFLT];
+    const base2=(S.challenge.exercises.length>0?S.challenge.exercises:[...CHAL_DFLT]).map(e=>({target:0,show:true,...e}));
     if(base2.some(e=>e.label.toLowerCase()===n2.toLowerCase()))return;
     const k=n2.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'')+'_'+Date.now().toString(36);
-    base2.push({key:k,label:n2,unit:uSel.value});
-    S.challenge.exercises=base2;nInp.value='';
+    base2.push({key:k,label:n2,unit:uSel.value,target:parseInt(tInp.value)||0,show:true});
+    S.challenge.exercises=base2;nInp.value='';tInp.value='';
     save();render();
   };
   nInp.onkeydown=e=>{if(e.key==='Enter')aBtn.onclick();};
-  addRow.append(nInp,uSel,aBtn);mgmt.appendChild(addRow);
+  addRow.append(nInp,uSel,tInp,aBtn);mgmt.appendChild(addRow);
   card.appendChild(mgmt);
 
   wrap.appendChild(card);
@@ -2929,7 +3034,20 @@ function calcAchievements(){
       desc:'Hit your '+chalTgt+'-day challenge target. Goal unlocked.',
       ctx:overallStreak+' / '+chalTgt+' days',tier:'gold',cat:'Challenge'});
 
-  // Per-exercise streaks
+  // Per-exercise TARGET achievements — unlocked when streak reaches the user-set target
+  getChalExercises().forEach(ex=>{
+    const st=getChallengeStreak(ex.key);
+    const tgt=ex.target||0;
+    if(tgt>0&&st>=tgt){
+      add({id:'chaltgt-'+ex.key,emoji:'🏆',
+        title:ex.label+' Challenge Complete!',
+        desc:'Reached your '+tgt+'-day '+ex.label.toLowerCase()+' target'+(st>tgt?' and still going!':'.'),
+        ctx:'Current streak: '+st+' days'+(st>tgt?' (+'+(st-tgt)+' beyond target)':''),
+        tier:'gold',cat:'Challenge'});
+    }
+  });
+
+  // Per-exercise milestone streaks
   getChalExercises().forEach(ex=>{
     const st=getChallengeStreak(ex.key);
     const best=getChallengeMax(ex.key);
@@ -3054,6 +3172,313 @@ function mkExEditForm(compKey, exIdx, ex, isCustom, onSave, onCancel, onDelete){
   setTimeout(()=>nameInp.focus(),50);
   return form;
 }
+
+// ── EXPORT / BACKUP ────────────────────────────────────────────────────────
+function getPersonalBests(){
+  const bests={};
+  Object.entries(S.completions||{}).forEach(([key,c])=>{
+    if(!c?.exercises)return;
+    const parts=key.split('-');if(parts.length<2)return;
+    const w=parseInt(parts[0].slice(1)),d=parts[1];
+    if(isNaN(w)||!d)return;
+    const aid=(S.overrides&&S.overrides[key])||getSchedule(w)?.d[d];
+    if(!aid?.startsWith('gym'))return;
+    const g=GYM[aid];if(!g)return;
+    g.ex.forEach((ex,ei)=>{
+      const ovr=(c.exOverrides||{})[ei];
+      const name=ovr?ovr.n:ex.n;
+      const es=exState(c,ei);
+      es.sets.forEach(s=>{
+        const wt=parseFloat(s?.weight),r=parseFloat(s?.reps);
+        if(!isNaN(wt)&&!isNaN(r)&&wt>0&&r>0){
+          const tonnage=wt*r;
+          if(!bests[name]||bests[name].tonnage<tonnage){
+            bests[name]={weight:wt,reps:r,tonnage,week:w,day:d};
+          }
+        }
+      });
+    });
+    // Custom exercises
+    (c.customEx||[]).forEach((ex,ci)=>{
+      const cs=(c.customExState||{})[ci];
+      if(!cs?.sets)return;
+      cs.sets.forEach(s=>{
+        const wt=parseFloat(s?.weight),r=parseFloat(s?.reps);
+        if(!isNaN(wt)&&!isNaN(r)&&wt>0&&r>0){
+          const t=wt*r;
+          if(!bests[ex.n]||bests[ex.n].tonnage<t){
+            bests[ex.n]={weight:wt,reps:r,tonnage:t,week:w,day:d};
+          }
+        }
+      });
+    });
+  });
+  return bests;
+}
+
+function genProgressSummary(){
+  const lines=[];
+  const ph=getSchedule(S.week).ph;
+  const phName=({0:'START',1:'REBUILD',2:'RESTORE',3:'RETURN',4:'ADVANCE'})[ph]||'PHASE';
+
+  lines.push('# PHY — Full Progress Report');
+  lines.push('**'+(S.userName||'User')+'** · Currently Week '+S.week+' · '+phName+' phase · '+fmtFullDate(isoToday()));
+  lines.push('');
+
+  // ── Overall ────────────────────────────────────────────────
+  const totalDone=Object.values(S.completions||{}).filter(c=>c?.done).length;
+  const gymDone=getCompletedSessionCount('gym');
+  const runDone=getCompletedSessionCount('run');
+  const yogaDone=getCompletedSessionCount('yoga');
+  const golfDone=getCompletedSessionCount('golf');
+  const swimDone=getCompletedSessionCount('swim');
+  const lifted=getTotalWeightLifted();
+  lines.push('## Overall Stats');
+  lines.push('- Sessions completed: **'+totalDone+'** (gym: '+gymDone+' · run: '+runDone+' · yoga: '+yogaDone+' · golf: '+golfDone+' · swim: '+swimDone+')');
+  if(lifted>0)lines.push('- Total weight lifted: **'+lifted.toLocaleString()+' kg**');
+  const weeks70=getWeeks70k();
+  if(weeks70>0)lines.push('- Weeks hitting 70k+ steps: **'+weeks70+'**');
+  lines.push('');
+
+  // ── Week-by-week breakdown ─────────────────────────────────
+  const lastWk=Math.max(S.week,...Object.keys(S.completions||{}).map(k=>parseInt(k.split('-')[0].slice(1))).filter(n=>!isNaN(n)));
+  const weekSections=[];
+  for(let w=0;w<=lastWk;w++){
+    const wkLines=[];
+    let hasContent=false;
+    // Sessions completed this week
+    const sessLines=[];
+    DAYS.forEach(d=>{
+      const key='w'+w+'-'+d;
+      const c=S.completions[key];
+      if(!c?.done&&!c?.exercises)return;
+      const aid=(S.overrides&&S.overrides[key])||getSchedule(w)?.d[d];
+      if(!aid||aid==='rest')return;
+      const det=getDetail(aid,w);
+      const dateStr=getExpectedDate(w,d);
+      let s='- **'+DAY_NAMES[d].slice(0,3)+' '+fmtFullDate(dateStr).split(' 20')[0]+'** — '+det.name;
+      if(c.done)s+=' ✓';
+      // Gym details
+      if(aid?.startsWith('gym')){
+        const g=GYM[aid];
+        if(g){
+          const exLines=[];
+          g.ex.forEach((ex,ei)=>{
+            const ovr=(c.exOverrides||{})[ei];
+            const name=ovr?ovr.n:ex.n;
+            const es=exState(c,ei);
+            const valid=es.sets.filter(st=>st?.weight||st?.reps||st?.time);
+            if(valid.length===0)return;
+            const desc=valid.map(st=>{
+              if(st.time)return st.time+'s';
+              if(st.weight&&st.reps)return st.weight+'kg×'+st.reps;
+              return st.reps?st.reps:(st.weight?st.weight+'kg':'—');
+            }).join(', ');
+            exLines.push('  - '+name+': '+desc);
+          });
+          (c.customEx||[]).forEach((ex,ci)=>{
+            const cs=(c.customExState||{})[ci];
+            if(!cs?.sets)return;
+            const valid=cs.sets.filter(st=>st?.weight||st?.reps||st?.time);
+            if(valid.length===0)return;
+            const desc=valid.map(st=>st.weight?(st.weight+'kg×'+(st.reps||'?')):(st.reps||st.time+'s')).join(', ');
+            exLines.push('  - '+ex.n+' (custom): '+desc);
+          });
+          if(exLines.length>0)s+='\n'+exLines.join('\n');
+        }
+      } else if(aid==='run'&&c.actual){
+        s+=' — '+c.actual;
+      }
+      sessLines.push(s);
+      hasContent=true;
+    });
+    if(sessLines.length>0){
+      wkLines.push('**Sessions:**');
+      wkLines.push(sessLines.join('\n'));
+    }
+    // Extras for this week
+    const extras=(S.extras||[]).filter(e=>e.week===w&&(e.done||e.exercises));
+    if(extras.length>0){
+      wkLines.push('**Extra sessions:**');
+      extras.forEach(e=>{
+        const det=getDetail(e.activityId,w);
+        wkLines.push('- '+(e.date?fmtFullDate(e.date):'')+' — '+det.name+(e.done?' ✓':''));
+      });
+      hasContent=true;
+    }
+    // Measurements
+    const m=S.measurements&&S.measurements['w'+w];
+    if(m&&Object.values(m).some(v=>v!==''&&v!==null&&v!==undefined)){
+      const mLines=[];
+      const lbl={weight:'Wt',bodyFat:'BF%',muscleMass:'Muscle',waist:'Waist',chest:'Chest',hips:'Hips',thigh:'Thigh',arm:'Arm',runDist:'Run PB',golfHcp:'Golf'};
+      const u={weight:'kg',bodyFat:'%',muscleMass:'kg',waist:'cm',chest:'cm',hips:'cm',thigh:'cm',arm:'cm',runDist:'km',golfHcp:''};
+      Object.keys(lbl).forEach(k=>{if(m[k])mLines.push(lbl[k]+' '+m[k]+u[k]);});
+      if(mLines.length>0){
+        wkLines.push('**Measurements:** '+mLines.join(' · '));
+        hasContent=true;
+      }
+    }
+    // Steps this week
+    let weekSteps=0;
+    DAYS.forEach(d=>{const r=(S.steps||{})['w'+w+'-'+d];if(r){const n=parseInt(r);if(!isNaN(n))weekSteps+=n;}});
+    if(weekSteps>0){
+      wkLines.push('**Steps total:** '+weekSteps.toLocaleString()+(weekSteps>=70000?' ✓':''));
+      hasContent=true;
+    }
+    if(hasContent){
+      const ws=weekStartDate(w),we=weekEndDate(w);
+      const range=fmtFullDate(localISODate(ws)).split(' 20')[0]+' – '+fmtFullDate(localISODate(we)).split(' 20')[0];
+      const phN=({0:'START',1:'REBUILD',2:'RESTORE',3:'RETURN',4:'ADVANCE'})[getSchedule(w).ph]||'';
+      weekSections.push('### Week '+w+' ('+range+') — '+phN+'\n'+wkLines.join('\n'));
+    }
+  }
+  if(weekSections.length>0){
+    lines.push('## Weekly Breakdown');
+    lines.push('');
+    lines.push(weekSections.join('\n\n'));
+    lines.push('');
+  }
+
+  // ── Personal Bests ─────────────────────────────────────────
+  const bests=getPersonalBests();
+  if(Object.keys(bests).length>0){
+    lines.push('## Personal Bests');
+    Object.entries(bests).sort((a,b)=>b[1].tonnage-a[1].tonnage).slice(0,15).forEach(([name,b])=>{
+      lines.push('- '+name+': **'+b.weight+'kg × '+b.reps+'** (Wk '+b.week+')');
+    });
+    lines.push('');
+  }
+
+  // ── Targets vs Latest ──────────────────────────────────────
+  if(S.targets){
+    const allWeeks=Object.keys(S.measurements||{}).map(k=>parseInt(k.slice(1))).filter(n=>!isNaN(n)).sort((a,b)=>b-a);
+    if(allWeeks.length>0){
+      const latestM=S.measurements['w'+allWeeks[0]];
+      const labels={weight:'Weight',bodyFat:'Body Fat',muscleMass:'Muscle Mass',waist:'Waist',chest:'Chest',arm:'Arm',thigh:'Thigh',runDist:'Run'};
+      const dirs={weight:false,bodyFat:false,muscleMass:true,waist:false,chest:true,arm:true,thigh:false,runDist:true};
+      const u={weight:'kg',bodyFat:'%',muscleMass:'kg',waist:'cm',chest:'cm',arm:'cm',thigh:'cm',runDist:'km'};
+      const rows=[];
+      Object.keys(labels).forEach(k=>{
+        const t=S.targets[k],a=latestM[k];
+        if(t&&a){
+          const hit=dirs[k]?parseFloat(a)>=parseFloat(t):parseFloat(a)<=parseFloat(t);
+          rows.push('- '+labels[k]+': '+a+u[k]+' / target '+t+u[k]+(hit?' ✓':' →'));
+        }
+      });
+      if(rows.length>0){
+        lines.push('## Wk 12 Targets vs Latest (Wk '+allWeeks[0]+')');
+        lines.push(rows.join('\n'));
+        lines.push('');
+      }
+    }
+  }
+
+  // ── Challenge Streaks ──────────────────────────────────────
+  const exs=getChalExercises();
+  const streakLines=[];
+  exs.forEach(ex=>{
+    const st=getChallengeStreak(ex.key);
+    const best=getChallengeMax(ex.key);
+    if(st>0||best>0){
+      let s='- '+ex.label+': 🔥 '+st+' days';
+      if(ex.target>0)s+=' / '+ex.target+' target'+(st>=ex.target?' ✓':'');
+      if(best>0)s+=' · best: '+best+' '+ex.unit;
+      streakLines.push(s);
+    }
+  });
+  if(streakLines.length>0){
+    lines.push('## Challenge Streaks');
+    lines.push(streakLines.join('\n'));
+    const o=getChallengeStreakAll();
+    if(o>0)lines.push('- **All exercises (overall):** '+o+' days');
+    lines.push('');
+  }
+
+  // ── Achievements ───────────────────────────────────────────
+  const achv=calcAchievements();
+  if(achv.length>0){
+    lines.push('## Achievements ('+achv.length+')');
+    const byCat={};
+    achv.forEach(a=>{if(!byCat[a.cat])byCat[a.cat]=[];byCat[a.cat].push(a);});
+    Object.keys(byCat).forEach(cat=>{
+      lines.push('**'+cat+':** '+byCat[cat].map(a=>a.emoji+' '+a.title).join(' · '));
+    });
+    lines.push('');
+  }
+
+  lines.push('---');
+  lines.push('_Generated by PHY app on '+fmtFullDate(isoToday())+'_');
+  return lines.join('\n');
+}
+
+function mkExportSection(){
+  const wrap=document.createElement('div');wrap.style.cssText='margin:1.5rem 1.25rem 1rem';
+  wrap.innerHTML='<div class="seclbl mf" style="margin-bottom:.625rem">💾 BACKUP & SHARE</div>';
+
+  const card=document.createElement('div');
+  card.style.cssText='padding:1rem;border-radius:.875rem;background:rgba(23,23,23,.4);border:1px solid #262626';
+
+  const info=document.createElement('div');
+  info.style.cssText='font-size:.6875rem;color:#737373;line-height:1.6;margin-bottom:.875rem';
+  info.innerHTML='Your data is stored on this device only. Back it up regularly, especially before deleting the app from your Home Screen.';
+  card.appendChild(info);
+
+  // Copy summary button
+  const sumBtn=document.createElement('button');
+  sumBtn.style.cssText='width:100%;padding:.75rem;border-radius:.625rem;background:var(--ac);color:#0a0a0a;font-weight:600;font-size:.8125rem;border:none;cursor:pointer;margin-bottom:.5rem';
+  sumBtn.textContent='📋 Copy Progress Summary';
+  sumBtn.onclick=()=>{
+    const txt=genProgressSummary();
+    if(navigator.clipboard){
+      navigator.clipboard.writeText(txt).then(()=>{
+        sumBtn.textContent='✓ Copied — paste in your trainer chat';
+        setTimeout(()=>{sumBtn.textContent='📋 Copy Progress Summary';},2500);
+      }).catch(()=>{
+        prompt('Copy this summary:',txt);
+      });
+    } else {
+      prompt('Copy this summary:',txt);
+    }
+  };
+  card.appendChild(sumBtn);
+
+  // Download backup button
+  const dlBtn=document.createElement('button');
+  dlBtn.style.cssText='width:100%;padding:.75rem;border-radius:.625rem;background:rgba(96,165,250,.15);color:#60a5fa;font-weight:600;font-size:.8125rem;border:1px solid rgba(96,165,250,.3);cursor:pointer;margin-bottom:.5rem';
+  dlBtn.textContent='💾 Download Backup (JSON)';
+  dlBtn.onclick=()=>{
+    const data=JSON.stringify(S,null,2);
+    const blob=new Blob([data],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;a.download='phy-backup-'+(S.userName||'user')+'-'+isoToday()+'.json';
+    a.click();URL.revokeObjectURL(url);
+    dlBtn.textContent='✓ Downloaded';
+    setTimeout(()=>{dlBtn.textContent='💾 Download Backup (JSON)';},2500);
+  };
+  card.appendChild(dlBtn);
+
+  // Restore from backup
+  const rsBtn=document.createElement('button');
+  rsBtn.style.cssText='width:100%;padding:.625rem;border-radius:.625rem;background:transparent;color:#737373;font-size:.6875rem;border:1px solid #3d3d3d;cursor:pointer';
+  rsBtn.textContent='⤴ Restore from backup (paste JSON)';
+  rsBtn.onclick=()=>{
+    const json=prompt('Paste your backup JSON here:');
+    if(!json)return;
+    try{
+      const restored=JSON.parse(json);
+      if(!restored||typeof restored!=='object')throw new Error('Invalid backup');
+      if(!confirm('Replace ALL current data with this backup? Cannot be undone.'))return;
+      Object.keys(S).forEach(k=>delete S[k]);
+      Object.assign(S,restored);
+      saveNow();render();
+    }catch(e){alert('Restore failed: '+e.message);}
+  };
+  card.appendChild(rsBtn);
+
+  wrap.appendChild(card);
+  return wrap;
+}
 // =========================================================
 // RENDER ENGINE — targeted updates to avoid destroying inputs
 // =========================================================
@@ -3161,7 +3586,7 @@ function mkCard(day,week,isToday){
     </div>
     <div class="cbody">
       <div class="cmr">
-        <span class="cdlbl mf">${DAY_NAMES[day]}${isToday?'<span class="todtag"> · TODAY</span>':''}${isCustom?'<span class="custom-tag">custom</span>':''}</span>
+        <span class="cdlbl mf">${DAY_NAMES[day]} · <b style="color:#fb923c">${fmtFullDate(getExpectedDate(week,day))}</b>${isToday?'<span class="todtag"> · TODAY</span>':''}${isCustom?'<span class="custom-tag">custom</span>':''}</span>
         <span class="chev${expanded?' op':''}">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
         </span>
@@ -3702,7 +4127,9 @@ function mkToday(){
   const pastNav=document.createElement('div');pastNav.className='past-nav';
   const yesterdayBtn=document.createElement('button');
   yesterdayBtn.className='past-nav-btn';
-  yesterdayBtn.innerHTML='← Yesterday';
+  const _yd=new Date();_yd.setDate(_yd.getDate()-1);
+  const _ydLabel=fmtFullDate(localISODate(_yd)).split(' 20')[0];
+  yesterdayBtn.innerHTML='← Yesterday<br><span style="font-size:.5rem;color:#737373">'+_ydLabel+'</span>';
   yesterdayBtn.onclick=()=>{
     // Go to yesterday's day in week view
     const yd=new Date();yd.setDate(yd.getDate()-1);
@@ -3720,11 +4147,19 @@ function mkToday(){
   };
   const editWeekBtn=document.createElement('button');
   editWeekBtn.className='past-nav-btn accent';
-  editWeekBtn.innerHTML='📋 Edit this week';
+  const _ews=weekStartDate(S.week),_ewe=weekEndDate(S.week);
+  const _ewR=fmtFullDate(localISODate(_ews)).split(' 20')[0]+' – '+fmtFullDate(localISODate(_ewe)).split(' 20')[0];
+  editWeekBtn.innerHTML='📋 Edit this week<br><span style="font-size:.5rem;color:#737373">'+_ewR+'</span>';
   editWeekBtn.onclick=()=>{S.tab='week';save();render();};
   const prevWeekBtn=document.createElement('button');
   prevWeekBtn.className='past-nav-btn';
-  prevWeekBtn.innerHTML='← Prev week';
+  if(S.week>0){
+    const _pws=weekStartDate(S.week-1),_pwe=weekEndDate(S.week-1);
+    const _pwR=fmtFullDate(localISODate(_pws)).split(' 20')[0]+' – '+fmtFullDate(localISODate(_pwe)).split(' 20')[0];
+    prevWeekBtn.innerHTML='← Prev week<br><span style="font-size:.5rem;color:#737373">'+_pwR+'</span>';
+  } else {
+    prevWeekBtn.innerHTML='← Prev week';
+  }
   prevWeekBtn.onclick=()=>{if(S.week>0){S.week--;S.tab='week';save();render();}};
   pastNav.append(yesterdayBtn,editWeekBtn,prevWeekBtn);
   div.appendChild(pastNav);
@@ -3937,6 +4372,9 @@ function mkProgress(){
   // Steps progress
   div.appendChild(mkStepsProgress());
 
+  // Backup & Share
+  div.appendChild(mkExportSection());
+
   // Continuation prompt at week 12
   if(S.week>=12) div.appendChild(mkContinuationPrompt());
 
@@ -3999,16 +4437,23 @@ function maybeShowInstall(){
 // =========================================================
 // INIT
 // =========================================================
-// Auto-set to current week on first load (S.week===0 means fresh/default)
+// Auto-advance to current calendar week if S.week is stale
 (function(){
   try{
-    if(S.week===0){
-      const now=new Date();now.setHours(0,0,0,0);
-      for(let w=1;w<=52;w++){
-        const ws=weekStartDate(w),we=weekEndDate(w);
-        ws.setHours(0,0,0,0);we.setHours(23,59,59,999);
-        if(now>=ws&&now<=we){S.week=w;save();break;}
-      }
+    const now=new Date();now.setHours(0,0,0,0);
+    // Find which programme week today actually falls in
+    let currentWk=-1;
+    for(let w=0;w<=52;w++){
+      const ws=weekStartDate(w),we=weekEndDate(w);
+      ws.setHours(0,0,0,0);we.setHours(23,59,59,999);
+      if(now>=ws&&now<=we){currentWk=w;break;}
+    }
+    if(currentWk<0)return;
+    // If stored week is BEFORE current calendar week, advance it
+    if(S.week<currentWk){
+      S.week=currentWk;
+      S.expanded=todayDayKey(); // expand today
+      saveNow();
     }
   }catch(e){}
 })();
