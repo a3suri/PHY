@@ -682,6 +682,7 @@ const ACT={
   'gym-a':{color:'#fb923c',tint:'rgba(251,146,60,0.12)',border:'rgba(251,146,60,0.3)',icon:'🏋',label:'Gym A'},
   'gym-b':{color:'#fb923c',tint:'rgba(251,146,60,0.12)',border:'rgba(251,146,60,0.3)',icon:'🏋',label:'Gym B'},
   'gym-c':{color:'#fb923c',tint:'rgba(251,146,60,0.12)',border:'rgba(251,146,60,0.3)',icon:'🏋',label:'Gym C'},
+  'gym-cal':{color:'#fb923c',tint:'rgba(251,146,60,0.12)',border:'rgba(251,146,60,0.3)',icon:'🤸',label:'Calisthenics'},
   'run':     {color:'#60a5fa',tint:'rgba(96,165,250,0.12)',border:'rgba(96,165,250,0.3)',icon:'🏃',label:'Run'},
   'yoga': {color:'#a3e635',tint:'rgba(163,230,53,0.12)',border:'rgba(163,230,53,0.3)',icon:'🧘',label:'Yoga'},
   'golf': {color:'#c084fc',tint:'rgba(192,132,252,0.12)',border:'rgba(192,132,252,0.3)',icon:'⛳',label:'Golf'},
@@ -743,6 +744,14 @@ const GYM={
     {n:'Kneeling Chin Dip',               s:3,r:'12–15',   rest:'60s'},
     {n:'Bird Dog (10s hold)',          s:5,r:'10s/sd', rest:'20s',bw:1,timed:true},
     {n:'McGill Modified Curl-up',     s:5,r:'10s hold',rest:'20s',bw:1,timed:true},
+  ]},
+  'gym-cal':{name:'Calisthenics',focus:'Full Body · Bodyweight',ex:[
+    {n:'Bodyweight Squat',     s:3,r:'8–20',      rest:'—',bw:1},
+    {n:'Glute Bridge',         s:3,r:'15–20',     rest:'—',bw:1},
+    {n:'Dead Bug',             s:3,r:'20–30',     rest:'—',bw:1},
+    {n:'Step Back Lunge',      s:3,r:'10–15/sd',  rest:'—',bw:1},
+    {n:'Push Up',              s:3,r:'8–20',      rest:'—',bw:1},
+    {n:'Lateral Jump',         s:3,r:'5–8/sd',    rest:'60–90s',bw:1},
   ]},
   'gym-c':{name:'Session C',focus:'Full Body Conditioning',ex:[
     {n:'Suitcase Squat',              s:3,r:'12',   rest:'60s'},
@@ -912,6 +921,13 @@ const VIDEO_URLS={
   // Session C
   'Walking Lunge':   'https://www.youtube.com/results?search_query=walking+lunge+proper+form',
   'Plank':           'https://www.youtube.com/results?search_query=plank+exercise+proper+form+tutorial',
+  // Calisthenics
+  'Bodyweight Squat':       'https://www.youtube.com/results?search_query=bodyweight+squat+proper+form+tutorial',
+  'Glute Bridge':           'https://www.youtube.com/results?search_query=glute+bridge+exercise+tutorial+form',
+  'Dead Bug':               'https://www.youtube.com/results?search_query=dead+bug+core+exercise+tutorial',
+  'Step Back Lunge':        'https://www.youtube.com/results?search_query=reverse+step+back+lunge+technique',
+  'Push Up':                'https://www.youtube.com/results?search_query=push+up+proper+form+tutorial',
+  'Lateral Jump':           'https://www.youtube.com/results?search_query=lateral+jump+exercise+tutorial',
   // Yoga
   'Sun Salutations':                         'https://www.youtube.com/results?search_query=sun+salutations+beginners+step+by+step',
   'Cat-Cow':                                 'https://www.youtube.com/results?search_query=cat+cow+stretch+yoga+tutorial',
@@ -977,6 +993,23 @@ let S=defState();
     if(today<wk1&&S.week>=1)S.week=0;
   }catch(e){}
 })();
+
+// One-time migration: set goal=100 for default push-up/squat challenges if not set
+(function(){
+  try{
+    if(!S.challenge)return;
+    const exs=S.challenge.exercises;
+    if(!Array.isArray(exs))return;
+    let changed=false;
+    exs.forEach(ex=>{
+      if((ex.key==='pushups'||ex.key==='squats')&&(!ex.goal||ex.goal===0)){
+        ex.goal=100;changed=true;
+      }
+    });
+    if(changed)saveNow();
+  }catch(e){}
+})();
+
 
 let _st=null;
 function save(){
@@ -2420,12 +2453,12 @@ function getChalExercises(){
   if(S.challenge&&S.challenge.exercises&&S.challenge.exercises.length>0)
     list=S.challenge.exercises;
   else list=[
-    {key:'pushups',label:'Push Ups',unit:'reps'},
-    {key:'squats', label:'Squats',  unit:'reps'},
+    {key:'pushups',label:'Push Ups',unit:'reps',goal:100},
+    {key:'squats', label:'Squats',  unit:'reps',goal:100},
     {key:'plank',  label:'Plank',   unit:'sec'},
   ];
-  // Ensure each has target + show defaults
-  return list.map(ex=>({target:0,show:true,...ex}));
+  // Ensure each has target + show + goal defaults
+  return list.map(ex=>({target:0,show:true,goal:0,...ex}));
 }
 // Exercises visible on the daily/week cards (show !== false)
 function getVisibleChalExercises(){
@@ -2463,8 +2496,16 @@ function mkChallengeDayCard(week, day){
       const row = document.createElement('div'); row.className='chal-row';
       const nameCol = document.createElement('div');
       const tgtTxt=tgt>0?(streak>=tgt?'🏆 '+streak+'/'+tgt+' ✓':'🔥 '+streak+'/'+tgt+' days'):(streak>0?'🔥 '+streak+' day streak':'');
+      // Rep-goal progression (e.g., reach 100 push-ups)
+      const goal=ex.goal||0;
+      let goalTxt='';
+      if(goal>0){
+        const pb=getChallengeMax(ex.key);
+        const pct=Math.min(100,Math.round((pb/goal)*100));
+        goalTxt='<div class="chal-streak" style="color:'+(pb>=goal?'#fbbf24':'#a3e635')+'">'+(pb>=goal?'🏆 ':'🎯 ')+'PB '+pb+'/'+goal+' '+ex.unit+' ('+pct+'%)</div>';
+      }
       nameCol.innerHTML = `<div class="chal-exname">${ex.label}</div>
-        <div class="chal-streak">${tgtTxt}</div>`;
+        <div class="chal-streak">${tgtTxt}</div>${goalTxt}`;
       const inp = document.createElement('input'); inp.className='chal-inp';
       inp.type='text'; inp.inputMode='numeric'; inp.placeholder='0';
       inp.value = entry[ex.key]||'';
@@ -2647,7 +2688,7 @@ function mkChallengeProgress(){
 
     // Row 2: target input + show toggle
     const ctrl=document.createElement('div');ctrl.className='chal-ex-ctrl';
-    const tlbl=document.createElement('span');tlbl.className='chal-tgt-lbl-mini';tlbl.textContent='Target';
+    const tlbl=document.createElement('span');tlbl.className='chal-tgt-lbl-mini';tlbl.textContent='Days';
     const tinp=document.createElement('input');tinp.className='chal-tgt-mini';
     tinp.type='text';tinp.inputMode='numeric';tinp.placeholder='days';tinp.value=ex.target||'';
     tinp.onclick=e=>e.stopPropagation();
@@ -2656,7 +2697,18 @@ function mkChallengeProgress(){
       persistEx(curEx.map(x=>x.key===ex.key?{...x,target:v}:x));
       save();render();
     };
-    const tunit=document.createElement('span');tunit.className='chal-tgt-lbl-mini';tunit.textContent='days';
+    const tunit=document.createElement('span');tunit.className='chal-tgt-lbl-mini';tunit.textContent='';
+    // Goal: max-rep target (e.g., 100 push-ups)
+    const glbl=document.createElement('span');glbl.className='chal-tgt-lbl-mini';glbl.textContent='Goal';
+    const ginp=document.createElement('input');ginp.className='chal-tgt-mini';
+    ginp.type='text';ginp.inputMode='numeric';ginp.placeholder=ex.unit;ginp.value=ex.goal||'';
+    ginp.onclick=e=>e.stopPropagation();
+    ginp.onchange=e=>{
+      const v=parseInt(e.target.value)||0;
+      persistEx(curEx.map(x=>x.key===ex.key?{...x,goal:v}:x));
+      save();render();
+    };
+    const gunit=document.createElement('span');gunit.className='chal-tgt-lbl-mini';gunit.textContent=ex.unit;
     // Current streak progress
     const st=getChallengeStreak(ex.key);
     const prog=document.createElement('span');prog.className='chal-tgt-prog';
@@ -2672,7 +2724,7 @@ function mkChallengeProgress(){
       persistEx(curEx.map(x=>x.key===ex.key?{...x,show:!(x.show!==false)}:x));
       save();render();
     };
-    ctrl.append(tlbl,tinp,tunit,prog,showT);
+    ctrl.append(tlbl,tinp,tunit,glbl,ginp,gunit,prog,showT);
     item.append(ctrl);
     mgmt.appendChild(item);
   });
@@ -3044,6 +3096,18 @@ function calcAchievements(){
         desc:'Reached your '+tgt+'-day '+ex.label.toLowerCase()+' target'+(st>tgt?' and still going!':'.'),
         ctx:'Current streak: '+st+' days'+(st>tgt?' (+'+(st-tgt)+' beyond target)':''),
         tier:'gold',cat:'Challenge'});
+    }
+    // Rep-goal achievement — unlocked when PB reaches the user-set rep goal
+    const goal=ex.goal||0;
+    if(goal>0){
+      const pb=getChallengeMax(ex.key);
+      if(pb>=goal){
+        add({id:'chalgoal-'+ex.key,emoji:'🎯',
+          title:ex.label+' — '+goal+' '+ex.unit+'!',
+          desc:'Hit your rep goal of '+goal+' '+ex.unit+' in a single day'+(pb>goal?' and exceeded it!':'.'),
+          ctx:'Personal best: '+pb+' '+ex.unit+(pb>goal?' (+'+(pb-goal)+' beyond goal)':''),
+          tier:'gold',cat:'Challenge'});
+      }
     }
   });
 
@@ -3528,6 +3592,7 @@ function mkHeader(){
       <span class="lxs mf" style="color:var(--t4);font-size:.5rem">PERSONAL TRAINER</span>
     </div>
     <h1 class="wtitle sf">Week<span class="wnum">${String(S.week).padStart(2,'0')}</span></h1>
+    <div class="wdates" style="font-family:'JetBrains Mono',monospace;font-size:.8125rem;color:#fb923c;letter-spacing:.05em;margin-top:-.25rem;margin-bottom:.875rem">${fmtFullDate(localISODate(weekStartDate(S.week)))} — ${fmtFullDate(localISODate(weekEndDate(S.week)))}</div>
     <div class="prow">
       <span class="plbl mf">Phase ${ph} · ${pi.name}</span>
       <div class="nbts">
@@ -4372,9 +4437,6 @@ function mkProgress(){
   // Steps progress
   div.appendChild(mkStepsProgress());
 
-  // Backup & Share
-  div.appendChild(mkExportSection());
-
   // Continuation prompt at week 12
   if(S.week>=12) div.appendChild(mkContinuationPrompt());
 
@@ -4412,6 +4474,8 @@ function mkProgress(){
   wpEl.appendChild(wpCard);div.appendChild(wpEl);
 
 rst.onclick=()=>{if(confirm('Reset all completions? Cannot be undone.')){S.completions={};save();render();}};
+  // Backup & Share — at the very bottom
+  div.appendChild(mkExportSection());
   div.appendChild(rst);
 
   return div;
