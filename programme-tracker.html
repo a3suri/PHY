@@ -699,6 +699,29 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
   border:1px solid rgba(96,165,250,.22);font-family:'JetBrains Mono',monospace;font-size:.625rem;color:#60a5fa;letter-spacing:.05em}
 .run-summary{margin:1rem 1.25rem;padding:.875rem 1rem;border-radius:.75rem;background:rgba(23,23,23,.4);border:1px solid #262626}
 .run-sum-row{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:.6875rem;padding:.25rem 0}
+
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:1.5rem;z-index:9999;
+  padding:.8rem 1.1rem;border-radius:.7rem;background:rgba(74,222,128,.16);
+  border:1px solid rgba(74,222,128,.45);color:#4ade80;font-family:'JetBrains Mono',monospace;
+  font-size:.6875rem;letter-spacing:.04em;max-width:88vw;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+
+.sect-hd{margin:1.25rem 1.25rem .5rem;display:flex;align-items:center;gap:.5rem}
+.sect-hd .bar{width:.2rem;height:1rem;border-radius:1rem}
+.sect-hd .txt{font-family:'JetBrains Mono',monospace;font-size:.625rem;letter-spacing:.16em;text-transform:uppercase}
+.chip-row{display:flex;flex-wrap:wrap;gap:.4rem;margin:0 1.25rem .75rem}
+.chip{padding:.45rem .7rem;border-radius:.55rem;background:rgba(23,23,23,.6);border:1px solid #333;
+  font-family:'JetBrains Mono',monospace;font-size:.625rem;color:#a3a3a3;cursor:pointer;white-space:nowrap}
+.chip.on{background:rgba(251,146,60,.16);border-color:rgba(251,146,60,.45);color:#fb923c}
+.cx-card{margin:0 1.25rem .5rem;padding:.75rem .875rem;border-radius:.75rem;background:rgba(23,23,23,.45);border:1px solid #262626}
+.cx-row{display:flex;align-items:center;gap:.5rem}
+.cx-inp{flex:1;min-width:0;background:rgba(23,23,23,.7);border:1px solid #3d3d3d;border-radius:.4rem;padding:.45rem;
+  font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--t1);outline:none;text-align:center;box-sizing:border-box}
+.cx-inp:focus{border-color:var(--ac)}
+.cx-log{display:flex;align-items:center;gap:.5rem;padding:.5rem 0;border-top:1px solid #262626;font-size:.6875rem;color:#a3a3a3}
+.rst-row{display:flex;align-items:center;gap:.5rem;padding:.5rem 0;border-top:1px solid #262626}
+.rst-name{flex:1;font-size:.75rem;color:#d4d4d4}
+.rst-btn{padding:.4rem .7rem;border-radius:.5rem;background:rgba(251,146,60,.12);color:#fb923c;
+  font-size:.625rem;border:1px solid rgba(251,146,60,.32);cursor:pointer;white-space:nowrap}
 </style>
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxODAgMTgwIj48cmVjdCB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iIzBhMGEwYSIvPjxwYXRoIGQ9Ik0gNDUgNDUgTCAxMzUgMTM1IE0gMTM1IDQ1IEwgNDUgMTM1IiBzdHJva2U9IiNlZjQ0NDQiIHN0cm9rZS13aWR0aD0iMjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjwvc3ZnPg==">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxODAgMTgwIj48cmVjdCB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iIzBhMGEwYSIvPjxwYXRoIGQ9Ik0gNDUgNDUgTCAxMzUgMTM1IE0gMTM1IDQ1IEwgNDUgMTM1IiBzdHJva2U9IiNlZjQ0NDQiIHN0cm9rZS13aWR0aD0iMjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjwvc3ZnPg==">
@@ -1009,7 +1032,7 @@ function userKey(n){return n?BASE_KEY+'-'+slugify(n):BASE_KEY;}
 function getUsers(){try{return JSON.parse(localStorage.getItem(USERS_KEY))||[];}catch{return[];}}
 function saveUsers(u){try{localStorage.setItem(USERS_KEY,JSON.stringify(u));}catch{}}
 const DEFAULT_PROG_START='2026-05-11';
-function defState(){return{week:0,tab:'today',progStart:DEFAULT_PROG_START,expanded:todayDayKey(),completions:{},overrides:{},runLog:{},runWeek:0,swapping:null,extras:[],steps:{},measurements:{},targets:{weight:'',bodyFat:'',muscleMass:'',waist:'',chest:'',hips:'',thigh:'',arm:'',runDist:5,golfHcp:'',totalLift:''},_measWeek:undefined,userName:'',heightCm:176,editingName:false,editingEx:null,addingEx:null,challenge:{targetDays:0,exercises:[],log:{}}};}
+function defState(){return{week:0,tab:'today',progStart:DEFAULT_PROG_START,expanded:todayDayKey(),completions:{},overrides:{},runLog:{},runWeek:1,cardioLog:[],_cxMode:'swim',swapping:null,extras:[],steps:{},measurements:{},targets:{weight:'',bodyFat:'',muscleMass:'',waist:'',chest:'',hips:'',thigh:'',arm:'',runDist:5,golfHcp:'',totalLift:''},_measWeek:undefined,userName:'',heightCm:176,editingName:false,editingEx:null,addingEx:null,challenge:{targetDays:0,exercises:[],log:{}}};}
 let S=defState();
 // Load: check for a remembered current user, otherwise try legacy key
 (function(){
@@ -3638,11 +3661,13 @@ function saveArchives(a){
 function archiveAndReset(scope){
   scope=scope||'all';
   const MSG={
+    cardio:'Reset OTHER CARDIO?\n\nAll swim, cross trainer, rowing and walk entries will be cleared. Your run programme and gym programme are untouched.',
+    yoga:'Reset YOGA sessions?\n\nCompleted yoga sessions will be cleared from the schedule. Gym sessions, runs and measurements are untouched.',
     all:'Reset EVERYTHING and start fresh?\n\nGym programme AND run plan will be cleared. Both are saved as an archive first \u2014 viewable below and sharable with your trainer.\n\nYour name, height, Week-12 targets and challenge setup are kept.',
     gym:'Reset the GYM PROGRAMME to Week 0?\n\nSessions, measurements, steps and challenge streaks will be cleared. Your RUN PLAN is left untouched.\n\nEverything is archived first. Name, height, targets and challenge setup are kept.',
     run:'Reset the RUN PLAN to Run Week 1?\n\nAll logged runs will be cleared. Your GYM PROGRAMME is left untouched.\n\nThe run log is archived first.'
   };
-  const TAG={all:'full reset',gym:'gym reset',run:'run reset'};
+  const TAG={all:'full reset',gym:'gym reset',run:'run reset',cardio:'cardio reset',yoga:'yoga reset'};
   if(!confirm(MSG[scope]))return;
 
   // 1. Snapshot current state into archives
@@ -3656,12 +3681,38 @@ function archiveAndReset(scope){
   });
   saveArchives(archives);
 
-  // 2. RUN-ONLY reset \u2014 leave the gym programme completely alone
+  // 2a. CARDIO-EXTRAS-ONLY reset
+  if(scope==='cardio'){
+    S.cardioLog=[];
+    S.tab='cardio';
+    saveNow();render();
+    showToast('\u2713 Other cardio cleared');
+    return;
+  }
+
+  // 2b. YOGA-ONLY reset \u2014 clear only yoga completions
+  if(scope==='yoga'){
+    const c={...(S.completions||{})};
+    Object.keys(c).forEach(k=>{
+      const p=k.split('-');const w=parseInt(p[0].slice(1));
+      const aid=(S.overrides&&S.overrides[k])||(getSchedule(w)&&getSchedule(w).d[p[1]]);
+      if(aid==='yoga')delete c[k];
+    });
+    S.completions=c;
+    S.tab='strength';
+    saveNow();render();
+    showToast('\u2713 Yoga sessions cleared');
+    return;
+  }
+
+  // 2c. RUN-ONLY reset \u2014 leave the gym programme completely alone
   if(scope==='run'){
     S.runLog={};
-    S.runWeek=0;
+    S.runWeek=1;
     S.expanded=null;
+    S.tab='cardio';
     saveNow();render();
+    showToast('\u2713 Run plan reset \u2014 back to Run Week 1');
     return;
   }
 
@@ -3671,7 +3722,8 @@ function archiveAndReset(scope){
   const keepTargets=JSON.parse(JSON.stringify(S.targets||{}));
   const keepChalEx=(S.challenge&&S.challenge.exercises)?S.challenge.exercises.map(e=>({...e})):[];
   const keepRunLog=(scope==='gym')?JSON.parse(JSON.stringify(S.runLog||{})):{};
-  const keepRunWeek=(scope==='gym')?(S.runWeek||0):0;
+  const keepCardio=(scope==='gym')?JSON.parse(JSON.stringify(cardioLog())):[];
+  const keepRunWeek=(scope==='gym')?(S.runWeek||1):1;
 
   const fresh=defState();
   fresh.userName=keepName;
@@ -3679,13 +3731,17 @@ function archiveAndReset(scope){
   fresh.targets=keepTargets;
   fresh.challenge={targetDays:(S.challenge&&S.challenge.targetDays)||0,exercises:keepChalEx,log:{}};
   fresh.runLog=keepRunLog;
+  fresh.cardioLog=keepCardio;
   fresh.runWeek=keepRunWeek;
   fresh.progStart=isoToday();
   fresh.week=0;
-  fresh.tab=(scope==='gym')?'progress':'today';
+  fresh.tab=(scope==='gym')?'strength':'today';
   Object.keys(S).forEach(k=>delete S[k]);
   Object.assign(S,fresh);
   saveNow();render();
+  showToast(scope==='gym'
+    ? '\u2713 Gym programme reset \u2014 now Week 0, runs kept'
+    : '\u2713 Everything reset \u2014 now Week 0');
 }
 
 function copyArchiveSummary(idx,btn){
@@ -4048,8 +4104,9 @@ function mkRunCard(w,i,s){
 
 function mkRun(){
   const div=document.createElement('div');div.className='pgview fade';
-  let rw=S.runWeek;
-  if(!rw||rw<1)rw=Math.min(18,Math.max(1,S.week||1));
+  // Run plan week is independent of the gym programme week
+  let rw=parseInt(S.runWeek);
+  if(!rw||isNaN(rw)||rw<1)rw=1;
   rw=Math.min(18,Math.max(1,rw));
 
   const nav=document.createElement('div');nav.className='run-nav';
@@ -4094,6 +4151,186 @@ function mkRun(){
   return div;
 }
 
+
+// =========================================================
+// CARDIO MODALITIES (beyond the run programme)
+// =========================================================
+const CARDIO_MODES={
+  swim    :{label:'Swim',         icon:'\u{1F3CA}',color:'#22d3ee',unit:'m'},
+  xtrainer:{label:'Cross Trainer',icon:'\u{1F300}',color:'#818cf8',unit:'km'},
+  rowing  :{label:'Rowing',       icon:'\u{1F6A3}',color:'#2dd4bf',unit:'m'},
+  walk    :{label:'Walk',         icon:'\u{1F6B6}',color:'#94a3b8',unit:'km'}
+};
+const STRENGTH_MODES=['gym-a','gym-b','gym-c','gym-cal','yoga'];
+
+function cardioLog(){return Array.isArray(S.cardioLog)?S.cardioLog:[];}
+function addCardio(mode,dist,time,notes){
+  const l=cardioLog().slice();
+  l.push({id:'cx'+Date.now().toString(36),date:isoToday(),mode:mode,dist:dist,time:time,notes:notes});
+  S.cardioLog=l;saveNow();
+}
+function delCardio(id){S.cardioLog=cardioLog().filter(e=>e.id!==id);saveNow();render();}
+
+// =========================================================
+// PROGRAMME REGISTRY \u2014 extensible resets
+// =========================================================
+function programmeList(){
+  return [
+    {key:'gym', label:'Gym Programme',   desc:'Sessions, measurements, steps, streaks',
+     count:Object.values(S.completions||{}).filter(c=>c&&c.done).length},
+    {key:'run', label:'Run Programme',   desc:'All logged runs \u00b7 back to Run Week 1',
+     count:Object.values(S.runLog||{}).filter(e=>e&&e.done).length},
+    {key:'cardio',label:'Other Cardio',  desc:'Swim, cross trainer, rowing, walks',
+     count:cardioLog().length},
+    {key:'yoga', label:'Yoga Programme', desc:'Yoga sessions logged in Strength',
+     count:Object.entries(S.completions||{}).filter(([k,c])=>{
+       const p=k.split('-');const w=parseInt(p[0].slice(1));
+       const aid=(S.overrides&&S.overrides[k])||(getSchedule(w)&&getSchedule(w).d[p[1]]);
+       return aid==='yoga'&&c&&c.done;}).length}
+  ];
+}
+
+function mkSectionHd(txt,color){
+  const d=document.createElement('div');d.className='sect-hd';
+  d.innerHTML='<div class="bar" style="background:'+color+'"></div>'+
+              '<div class="txt" style="color:'+color+'">'+txt+'</div>';
+  return d;
+}
+
+// =========================================================
+// STRENGTH TAB
+// =========================================================
+function mkStrength(){
+  const div=document.createElement('div');div.className='pgview fade';
+  const today=todayDayKey();
+  const key='w'+S.week+'-'+today;
+  const curAid=(S.overrides&&S.overrides[key])||getSchedule(S.week).d[today];
+
+  div.appendChild(mkSectionHd('Today \u00b7 choose your strength session','#fb923c'));
+  const chips=document.createElement('div');chips.className='chip-row';
+  STRENGTH_MODES.forEach(aid=>{
+    const m=ACT[aid];if(!m)return;
+    const c=document.createElement('div');
+    c.className='chip'+(curAid===aid?' on':'');
+    c.textContent=m.icon+' '+m.label;
+    c.onclick=()=>{S.overrides={...(S.overrides||{}),[key]:aid};S.expanded=today;saveNow();render();};
+    chips.appendChild(c);
+  });
+  div.appendChild(chips);
+
+  const note=document.createElement('div');
+  note.style.cssText='margin:0 1.25rem .75rem;font-size:.625rem;color:#525252;line-height:1.6';
+  note.textContent='Warm-up and cool-down cardio (rower, cross trainer, easy jog) belongs in these sessions \u2014 log it in the session notes, not the Cardio tab.';
+  div.appendChild(note);
+
+  div.appendChild(mkSectionHd('This week\u2019s schedule','#fb923c'));
+  div.appendChild(mkWeek());
+
+  const rst=document.createElement('button');
+  rst.style.cssText='width:calc(100% - 2.5rem);margin:.5rem 1.25rem 1.5rem;padding:.75rem;border-radius:.7rem;'+
+    'background:rgba(251,146,60,.12);color:#fb923c;font-weight:600;font-size:.8125rem;'+
+    'border:1px solid rgba(251,146,60,.32);cursor:pointer';
+  rst.textContent='\u21ba Reset Gym Programme to Week 0';
+  rst.onclick=()=>archiveAndReset('gym');
+  div.appendChild(rst);
+  return div;
+}
+
+// =========================================================
+// CARDIO TAB
+// =========================================================
+function mkCardioExtras(){
+  const wrap=document.createElement('div');
+  wrap.appendChild(mkSectionHd('Other cardio','#22d3ee'));
+
+  const draft={mode:S._cxMode||'swim',dist:'',time:'',notes:''};
+  const chips=document.createElement('div');chips.className='chip-row';
+  Object.keys(CARDIO_MODES).forEach(k=>{
+    const m=CARDIO_MODES[k];
+    const c=document.createElement('div');
+    c.className='chip'+(draft.mode===k?' on':'');
+    c.textContent=m.icon+' '+m.label;
+    c.onclick=()=>{S._cxMode=k;save();render();};
+    chips.appendChild(c);
+  });
+  wrap.appendChild(chips);
+
+  const md=CARDIO_MODES[draft.mode];
+  const card=document.createElement('div');card.className='cx-card';
+  const row=document.createElement('div');row.className='cx-row';
+  const dInp=document.createElement('input');dInp.className='cx-inp';dInp.type='text';dInp.inputMode='decimal';
+  dInp.placeholder=md.unit;dInp.oninput=e=>{draft.dist=e.target.value;};
+  const tInp=document.createElement('input');tInp.className='cx-inp';tInp.type='text';tInp.inputMode='numeric';
+  tInp.placeholder='mins';tInp.oninput=e=>{draft.time=e.target.value;};
+  const nInp=document.createElement('input');nInp.className='cx-inp';nInp.type='text';
+  nInp.placeholder='notes';nInp.style.flex='2';nInp.oninput=e=>{draft.notes=e.target.value;};
+  row.append(dInp,tInp,nInp);
+  card.appendChild(row);
+
+  const add=document.createElement('button');
+  add.style.cssText='width:100%;margin-top:.5rem;padding:.6rem;border-radius:.55rem;background:'+md.color+
+    ';color:#0a0a0a;font-weight:600;font-size:.75rem;border:none;cursor:pointer';
+  add.textContent='Log '+md.label+' \u2014 '+fmtFullDate(isoToday());
+  add.onclick=()=>{
+    if(!draft.dist&&!draft.time)return;
+    addCardio(draft.mode,draft.dist,draft.time,draft.notes);
+    render();showToast('\u2713 '+md.label+' logged');
+  };
+  card.appendChild(add);
+
+  const logs=cardioLog().slice().reverse().slice(0,10);
+  logs.forEach(e=>{
+    const m=CARDIO_MODES[e.mode]||CARDIO_MODES.walk;
+    const r=document.createElement('div');r.className='cx-log';
+    const t=document.createElement('span');t.style.flex='1';
+    t.textContent=m.icon+' '+fmtFullDate(e.date).split(' 20')[0]+' \u00b7 '+
+      (e.dist?e.dist+m.unit+' ':'')+(e.time?e.time+' min':'')+(e.notes?' \u00b7 '+e.notes:'');
+    const x=document.createElement('button');
+    x.style.cssText='background:transparent;border:none;color:#525252;font-size:.75rem;cursor:pointer';
+    x.textContent='\u2715';x.onclick=()=>delCardio(e.id);
+    r.append(t,x);card.appendChild(r);
+  });
+  wrap.appendChild(card);
+  return wrap;
+}
+
+function mkCardio(){
+  const div=document.createElement('div');div.className='pgview fade';
+  div.appendChild(mkSectionHd('Run programme','#60a5fa'));
+  div.appendChild(mkRun());
+  div.appendChild(mkCardioExtras());
+  const note=document.createElement('div');
+  note.style.cssText='margin:.25rem 1.25rem 1.5rem;font-size:.625rem;color:#525252;line-height:1.6';
+  note.textContent='Stretching or yoga done as a cool-down after cardio belongs here \u2014 add it to the session notes rather than logging a separate Strength session.';
+  div.appendChild(note);
+  return div;
+}
+
+// =========================================================
+// PROGRAMME RESET HUB
+// =========================================================
+function mkResetHub(){
+  const wrap=document.createElement('div');wrap.style.cssText='margin:1.5rem 1.25rem 0';
+  wrap.innerHTML='<div class="seclbl mf" style="margin-bottom:.625rem">\u21ba PROGRAMME RESETS</div>';
+  const card=document.createElement('div');
+  card.style.cssText='padding:1rem;border-radius:.875rem;background:rgba(23,23,23,.4);border:1px solid #262626';
+  const info=document.createElement('div');
+  info.style.cssText='font-size:.6875rem;color:#737373;line-height:1.6;margin-bottom:.5rem';
+  info.textContent='Each programme resets on its own \u2014 everything is archived first and stays restorable.';
+  card.appendChild(info);
+  programmeList().forEach(p=>{
+    const r=document.createElement('div');r.className='rst-row';
+    const n=document.createElement('div');n.className='rst-name';
+    n.innerHTML=p.label+' <span style="color:#525252;font-size:.625rem">\u00b7 '+p.count+' logged</span>'+
+      '<div style="font-size:.5625rem;color:#525252;margin-top:.1rem">'+p.desc+'</div>';
+    const b=document.createElement('button');b.className='rst-btn';b.textContent='Reset';
+    b.onclick=()=>archiveAndReset(p.key);
+    r.append(n,b);card.appendChild(r);
+  });
+  wrap.appendChild(card);
+  return wrap;
+}
+
 // =========================================================
 // RENDER ENGINE — targeted updates to avoid destroying inputs
 // =========================================================
@@ -4103,12 +4340,15 @@ function render(){
   if(!S.userName){app.appendChild(mkSetupScreen());return;}
   app.appendChild(mkHeader());
   app.appendChild(mkTabs());
+  // migrate legacy tab names
+  if(S.tab==='week')S.tab='strength';
+  if(S.tab==='run')S.tab='cardio';
+  if(S.tab==='achievements')S.tab='progress';
   const renderTab=()=>{
-    if(S.tab==='today')           return mkToday();
-    else if(S.tab==='week')       return mkWeek();
-    else if(S.tab==='run')        return mkRun();
-    else if(S.tab==='achievements')return mkAchievements();
-    else                          return mkProgress();
+    if(S.tab==='today')          return mkToday();
+    else if(S.tab==='strength')  return mkStrength();
+    else if(S.tab==='cardio')    return mkCardio();
+    else                         return mkProgress();
   };
   try{
     app.appendChild(renderTab());
@@ -4165,18 +4405,26 @@ function mkHeader(){
 // =========================================================
 // TABS
 // =========================================================
+function showToast(msg){
+  try{
+    const t=document.createElement('div');t.className='toast';t.textContent=msg;
+    document.body.appendChild(t);
+    setTimeout(()=>{try{t.remove();}catch(e){}},3200);
+  }catch(e){}
+}
+
 function mkTabs(){
   const d=document.createElement('div');d.className='tabwrap';
   d.innerHTML=`<div class="tabs">
     <button class="tab${S.tab==='today'?' on':''}" data-t="today">Today</button>
-    <button class="tab${S.tab==='week'?' on':''}" data-t="week">Week</button>
-    <button class="tab${S.tab==='run'?' on':''}" data-t="run">Run</button>
+    <button class="tab${S.tab==='strength'?' on':''}" data-t="strength">Strength</button>
+    <button class="tab${S.tab==='cardio'?' on':''}" data-t="cardio">Cardio</button>
     <button class="tab${S.tab==='progress'?' on':''}" data-t="progress">Progress</button>
-    <button class="tab${S.tab==='achievements'?' on':''}" data-t="achievements">🏆</button>
   </div>`;
-  d.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{S.tab=b.dataset.t;save();render();});
+  d.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{S.tab=b.dataset.t;S.expanded=null;save();render();});
   return d;
 }
+
 
 // =========================================================
 // ACTIVITY CARD (shared by Today + Week views)
@@ -4757,10 +5005,10 @@ function mkToday(){
     const wkEnd=weekEndDate(S.week);
     wkStart.setHours(0,0,0,0);wkEnd.setHours(23,59,59);yd.setHours(12,0,0);
     if(yd>=wkStart&&yd<=wkEnd){
-      S.tab='week';S.expanded=ydDay;save();render();
+      S.tab='strength';S.expanded=ydDay;save();render();
     } else {
       // Yesterday was in previous week
-      if(S.week>0){S.week--;S.tab='week';S.expanded=ydDay;save();render();}
+      if(S.week>0){S.week--;S.tab='strength';S.expanded=ydDay;save();render();}
     }
   };
   const editWeekBtn=document.createElement('button');
@@ -4768,7 +5016,7 @@ function mkToday(){
   const _ews=weekStartDate(S.week),_ewe=weekEndDate(S.week);
   const _ewR=fmtFullDate(localISODate(_ews)).split(' 20')[0]+' – '+fmtFullDate(localISODate(_ewe)).split(' 20')[0];
   editWeekBtn.innerHTML='📋 Edit this week<br><span style="font-size:.5rem;color:#737373">'+_ewR+'</span>';
-  editWeekBtn.onclick=()=>{S.tab='week';save();render();};
+  editWeekBtn.onclick=()=>{S.tab='strength';save();render();};
   const prevWeekBtn=document.createElement('button');
   prevWeekBtn.className='past-nav-btn';
   if(S.week>0){
@@ -4778,7 +5026,7 @@ function mkToday(){
   } else {
     prevWeekBtn.innerHTML='← Prev week';
   }
-  prevWeekBtn.onclick=()=>{if(S.week>0){S.week--;S.tab='week';save();render();}};
+  prevWeekBtn.onclick=()=>{if(S.week>0){S.week--;S.tab='strength';save();render();}};
   pastNav.append(yesterdayBtn,editWeekBtn,prevWeekBtn);
   div.appendChild(pastNav);
   // Weekly steps summary
@@ -4801,15 +5049,50 @@ function mkToday(){
   if(todayExtras.length>0){
     const ew=document.createElement('div');ew.style.cssText='padding:0 1.25rem';
     todayExtras.forEach(ex=>{const ec=mkExtraCard(ex);if(ec)ew.appendChild(ec);});
-    div.append(dl,cw,stepsW,ew,sw,rw);
+    div.append(dl,mkSectionHd('Strength','#fb923c'),cw,stepsW,ew,
+               mkSectionHd('Cardio','#60a5fa'),mkTodayCardio(),sw,rw);
   } else {
-    div.append(dl,cw,stepsW,sw,rw);
+    div.append(dl,mkSectionHd('Strength','#fb923c'),cw,stepsW,
+               mkSectionHd('Cardio','#60a5fa'),mkTodayCardio(),sw,rw);
   }
   // Add session button for today
   const addW=document.createElement('div');addW.style.cssText='padding:0 1.25rem';
   addW.appendChild(mkAddSessionBtn(S.week,todayDayKey()));
   div.appendChild(addW);
   return div;
+}
+
+function mkTodayCardio(){
+  const wrap=document.createElement('div');wrap.style.cssText='padding:0 1.25rem';
+  let rw=parseInt(S.runWeek);if(!rw||isNaN(rw)||rw<1)rw=1;rw=Math.min(18,Math.max(1,rw));
+  const sess=RUN_PLAN[rw]||[];
+  let idx=sess.findIndex((s,i)=>!runEntry(rw,i).done);
+  const card=document.createElement('div');
+  card.style.cssText='padding:.875rem 1rem;border-radius:.875rem;background:rgba(23,23,23,.45);border:1px solid #262626;cursor:pointer';
+  if(idx<0){
+    card.innerHTML='<div style="font-family:JetBrains Mono,monospace;font-size:.5625rem;letter-spacing:.1em;color:#4ade80">RUN WEEK '+
+      String(rw).padStart(2,'0')+' \u00b7 COMPLETE \u2713</div>'+
+      '<div style="font-size:.8125rem;color:#a3a3a3;margin-top:.2rem">All three sessions done \u2014 tap for next week</div>';
+  } else {
+    const s=sess[idx];const ty=RUN_TYPES[s.t]||RUN_TYPES.easy;
+    card.innerHTML='<div style="font-family:JetBrains Mono,monospace;font-size:.5625rem;letter-spacing:.1em;color:'+ty.color+'">'+
+      ty.icon+' '+ty.label.toUpperCase()+' \u00b7 RUN WEEK '+String(rw).padStart(2,'0')+'</div>'+
+      '<div style="font-size:.9375rem;color:#e5e5e5;margin-top:.2rem">'+s.d+'</div>'+
+      '<div style="font-family:JetBrains Mono,monospace;font-size:.5625rem;color:#525252;margin-top:.3rem">TARGET \u2248 '+s.km+' km \u00b7 tap to log</div>';
+  }
+  card.onclick=()=>{S.tab='cardio';S.expanded=(idx>=0?runKey(rw,idx):null);save();render();};
+  wrap.appendChild(card);
+
+  const chips=document.createElement('div');chips.className='chip-row';chips.style.margin='.5rem 0 0';
+  Object.keys(CARDIO_MODES).forEach(k=>{
+    const m=CARDIO_MODES[k];
+    const c=document.createElement('div');c.className='chip';
+    c.textContent=m.icon+' '+m.label;
+    c.onclick=()=>{S._cxMode=k;S.tab='cardio';save();render();};
+    chips.appendChild(c);
+  });
+  wrap.appendChild(chips);
+  return wrap;
 }
 
 // =========================================================
@@ -5051,6 +5334,8 @@ function mkProgress(){
 
 rst.onclick=()=>{if(confirm('Reset all completions? Cannot be undone.')){S.completions={};save();render();}};
   // Programme settings + Backup & Share — at the very bottom
+  div.appendChild(mkAchievements());
+  div.appendChild(mkResetHub());
   div.appendChild(mkProgSettings());
   div.appendChild(mkArchiveSection());
   div.appendChild(mkExportSection());
