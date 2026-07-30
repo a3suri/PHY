@@ -357,10 +357,13 @@ function runPhaseOf(w){for(const p of RUN_PROGRAMME.phases)if(w>=p.from&&w<=p.to
 let S=defState();
 function slug(u){return u?u.toLowerCase().replace(/[^a-z0-9]/g,''):'default';}
 const LSKEY=()=>'phy2-'+slug(S.user);
-function load(){try{const cur=localStorage.getItem('phy2-current');if(cur){const raw=localStorage.getItem('phy2-'+cur);if(raw){S=Object.assign(defState(),JSON.parse(raw));return;}}const raw=localStorage.getItem('phy2-default');if(raw)S=Object.assign(defState(),JSON.parse(raw));}catch(e){}}
+function load(){try{const cur=localStorage.getItem('phy2-current');let raw=null;if(cur)raw=localStorage.getItem('phy2-'+cur);if(!raw)raw=localStorage.getItem('phy2-default');if(raw){S=Object.assign(defState(),JSON.parse(raw));}}catch(e){}
+  // Menu always comes from code (DEFAULT_MENU), never frozen in storage — keeps items current across versions
+  S.menu=JSON.parse(JSON.stringify(DEFAULT_MENU));
+}
 let _sv;function save(){clearTimeout(_sv);_sv=setTimeout(saveNow,250);}
 function saveNow(){try{localStorage.setItem(LSKEY(),JSON.stringify(stripState()));if(S.user)localStorage.setItem('phy2-current',slug(S.user));}catch(e){}}
-function stripState(){const c=JSON.parse(JSON.stringify(S));delete c._open;return c;}
+function stripState(){const c=JSON.parse(JSON.stringify(S));delete c._open;delete c.menu;return c;}
 function toast(m){const t=el('div','toast');t.textContent=m;document.body.appendChild(t);setTimeout(()=>{try{t.remove();}catch(e){}},2600);}
 function el(t,c,h){const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e;}
 
