@@ -127,11 +127,21 @@ button{cursor:pointer;border:none;background:none}
 .runchip{padding:.4rem .8rem;border-radius:.5rem;background:var(--s2);border:1px solid #333;font-size:.75rem;color:var(--t2)}
 .runchip.on{background:rgba(96,165,250,.16);border-color:rgba(96,165,250,.45);color:#60a5fa}
 .miniarrow{width:1.7rem;height:1.7rem;border-radius:.4rem;background:var(--s2);border:1px solid #333;color:var(--t2);font-size:.85rem}
+
+.ex-top{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin:.35rem 0 .3rem;
+  padding:.35rem .5rem;background:rgba(251,191,36,.10);border:1px solid rgba(251,191,36,.28);border-radius:.4rem}
+.ex-top .et-date{font-size:.5625rem;color:#fbbf24;letter-spacing:.03em;flex:1;min-width:0}
+.ex-yt{display:inline-flex;align-items:center;gap:.25rem;font-size:.5625rem;color:#fbbf24;
+  border:1px solid rgba(251,191,36,.4);border-radius:.35rem;padding:.2rem .45rem;white-space:nowrap;text-decoration:none}
+.ex-memo{width:100%;margin-top:.4rem;padding:.4rem .5rem;background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.15);border-radius:.4rem;font-size:.75rem;color:#fff}
+.ex-memo::placeholder{color:rgba(255,255,255,.35)}
 </style>
 </head>
 <body>
 <div id="app"></div>
 <script>
+
 /* ===== PHY2 CORE v2 — single activity log ===== */
 function isoOf(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 const DEFAULT_START=(()=>{const d=new Date();d.setHours(0,0,0,0);const off=(d.getDay()===0?6:d.getDay()-1);d.setDate(d.getDate()-off);return isoOf(d);})();
@@ -169,7 +179,7 @@ const DEFAULT_MENU=[
   {key:'xtrain',name:'Cross Trainer',group:'cardio',cardio:'xtrain'},
   {key:'walk',name:'Walk',group:'cardio',cardio:'walk'},
   {key:'yoga',name:'Yoga / Mobility',group:'flex'},
-  {key:'golf',name:'Golf',group:'other'}
+  {key:'golf',name:'Golf (walk)',group:'cardio',cardio:'golf'}
 ];
 const GROUP_META={
   bodyweight:{label:'Bodyweight',color:'#f59e0b',icon:'🤸'},
@@ -357,16 +367,14 @@ function runPhaseOf(w){for(const p of RUN_PROGRAMME.phases)if(w>=p.from&&w<=p.to
 let S=defState();
 function slug(u){return u?u.toLowerCase().replace(/[^a-z0-9]/g,''):'default';}
 const LSKEY=()=>'phy2-'+slug(S.user);
-function load(){try{const cur=localStorage.getItem('phy2-current');let raw=null;if(cur)raw=localStorage.getItem('phy2-'+cur);if(!raw)raw=localStorage.getItem('phy2-default');if(raw){S=Object.assign(defState(),JSON.parse(raw));}}catch(e){}
-  // Menu always comes from code (DEFAULT_MENU), never frozen in storage — keeps items current across versions
-  S.menu=JSON.parse(JSON.stringify(DEFAULT_MENU));
-}
+function load(){try{const cur=localStorage.getItem('phy2-current');if(cur){const raw=localStorage.getItem('phy2-'+cur);if(raw){S=Object.assign(defState(),JSON.parse(raw));return;}}const raw=localStorage.getItem('phy2-default');if(raw)S=Object.assign(defState(),JSON.parse(raw));}catch(e){}}
 let _sv;function save(){clearTimeout(_sv);_sv=setTimeout(saveNow,250);}
 function saveNow(){try{localStorage.setItem(LSKEY(),JSON.stringify(stripState()));if(S.user)localStorage.setItem('phy2-current',slug(S.user));}catch(e){}}
-function stripState(){const c=JSON.parse(JSON.stringify(S));delete c._open;delete c.menu;return c;}
+function stripState(){const c=JSON.parse(JSON.stringify(S));delete c._open;return c;}
 function toast(m){const t=el('div','toast');t.textContent=m;document.body.appendChild(t);setTimeout(()=>{try{t.remove();}catch(e){}},2600);}
 function el(t,c,h){const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e;}
 
+function ytUrl(name){return 'https://www.youtube.com/results?search_query='+encodeURIComponent(name+' proper form technique');}
 function upsertActivity(a){const i=S.log.findIndex(x=>x.id===a.id);const clean={id:a.id,date:a.date,defKey:a.defKey,name:a.name,group:a.group,done:a.done,notes:a.notes,fields:a.fields};if(i>=0)S.log[i]=clean;else S.log.push(clean);saveNow();}
 function removeActivity(id){S.log=S.log.filter(x=>x.id!==id);saveNow();}
 function getActivity(id){return S.log.find(x=>x.id===id);}
@@ -450,6 +458,13 @@ function mkStrengthBody(a,body){
     row.appendChild(eh);
 
     if(chosen){
+      // Yellow top band: last-done date + days since + YouTube form link
+      const top=el('div','ex-top');
+      const dt=el('div','et-date mf');
+      dt.textContent=ex.lastDate?('Last: '+fmtNice(ex.lastDate)+' · '+daysAgoLabel(ex.lastDate,a.date)):'First time — set a baseline';
+      const yt=el('a','ex-yt');yt.href=ytUrl(ex.name);yt.target='_blank';yt.rel='noopener';yt.innerHTML='▶ YouTube';
+      top.append(dt,yt);
+      row.appendChild(top);
       (ex.sets||[]).forEach((st,si)=>{
         const line=el('div','setline');
         line.innerHTML='<span class="sn mf">SET '+(si+1)+'</span>';
@@ -459,6 +474,10 @@ function mkStrengthBody(a,body){
         row.appendChild(line);
       });
       const add=el('div','addset','+ add set');add.onclick=()=>{ex.sets.push({weight:'',reps:''});upsertActivity(a);render();};row.appendChild(add);
+      // White memo note (short cue e.g. 'kneeling','sitting')
+      const memo=el('input','ex-memo');memo.type='text';memo.value=ex.memo||'';memo.placeholder='Memo (e.g. kneeling, incline)';
+      memo.oninput=e=>{ex.memo=e.target.value;save();};
+      row.appendChild(memo);
     }
     body.appendChild(row);
   });
@@ -485,7 +504,13 @@ function mkBodyweightBody(a,body){
       const nm=el('span',null,ex.name);nm.style.color=chosen?'var(--t1)':'var(--t3)';left.append(cb,nm);eh.appendChild(left);
       eh.appendChild(el('span','exlast mf',ex.lastDate?daysAgoLabel(ex.lastDate,a.date):'new'));
       row.appendChild(eh);
-      if(chosen){const line=el('div','setline');const inp=el('input');inp.type='text';inp.inputMode='numeric';inp.value=ex.reps||'';inp.placeholder='reps';inp.oninput=e=>{ex.reps=e.target.value;save();};line.append(inp,el('span','u','reps'));row.appendChild(line);}
+      if(chosen){
+        const top=el('div','ex-top');
+        const dt=el('div','et-date mf');dt.textContent=ex.lastDate?('Last: '+fmtNice(ex.lastDate)+' · '+daysAgoLabel(ex.lastDate,a.date)):'First time';
+        const yt=el('a','ex-yt');yt.href=ytUrl(ex.name);yt.target='_blank';yt.rel='noopener';yt.innerHTML='▶ YouTube';top.append(dt,yt);row.appendChild(top);
+        const line=el('div','setline');const inp=el('input');inp.type='text';inp.inputMode='numeric';inp.value=ex.reps||'';inp.placeholder='reps';inp.oninput=e=>{ex.reps=e.target.value;save();};line.append(inp,el('span','u','reps'));row.appendChild(line);
+        const memo=el('input','ex-memo');memo.type='text';memo.value=ex.memo||'';memo.placeholder='Memo (e.g. incline, knees)';memo.oninput=e=>{ex.memo=e.target.value;save();};row.appendChild(memo);
+      }
       body.appendChild(row);
     });
   }
@@ -654,4 +679,5 @@ function render(){
 load();
 if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches)document.body.classList.add('reduce');
 render();
+
 </script></body></html>
