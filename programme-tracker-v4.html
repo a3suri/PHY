@@ -139,6 +139,21 @@ button{cursor:pointer;border:none;background:none}
 
 .setdel{width:1.5rem;height:1.5rem;border-radius:.35rem;background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.3);color:#f87171;font-size:.9rem;flex-shrink:0;display:flex;align-items:center;justify-content:center}
 .carddel{width:1.6rem;height:1.6rem;border-radius:.4rem;background:transparent;border:1px solid #2d2d2d;color:var(--t3);font-size:1.1rem;flex-shrink:0;margin-left:.4rem;display:flex;align-items:center;justify-content:center}
+
+.steps-strip{margin:1.25rem 1.25rem 1rem;padding:1rem 1.1rem;border-radius:.9rem;
+  background:rgba(96,165,250,.12);border:1.5px solid rgba(96,165,250,.4)}
+.steps-strip.hit{background:rgba(74,222,128,.13);border-color:rgba(74,222,128,.5)}
+.ss-top{display:flex;align-items:center;gap:.6rem;margin-bottom:.6rem}
+.ss-ico{font-size:1.4rem}
+.ss-lbl{font-size:.75rem;letter-spacing:.14em;color:#93c5fd;flex:1}
+.steps-strip.hit .ss-lbl{color:#86efac}
+.ss-tgt{font-size:.9375rem;color:#dbeafe;font-weight:600}
+.steps-strip.hit .ss-tgt{color:#bbf7d0}
+.ss-inp{width:100%;background:rgba(10,10,10,.5);border:1px solid rgba(96,165,250,.3);border-radius:.5rem;
+  padding:.7rem;font-size:1.1rem;color:#fff;text-align:center;font-family:'JetBrains Mono',monospace}
+.ss-inp:focus{border-color:#60a5fa}
+.ss-bar{height:.4rem;background:rgba(10,10,10,.5);border-radius:1rem;margin-top:.6rem;overflow:hidden}
+.ss-fill{height:100%;border-radius:1rem;transition:width .3s}
 </style>
 </head>
 <body>
@@ -161,6 +176,7 @@ function weekOf(iso){const d=parseISO(iso);const off=(d.getDay()===0?6:d.getDay(
 function addDays(iso,n){const d=parseISO(iso);d.setDate(d.getDate()+n);return isoOf(d);}
 function weekDates(m){return Array.from({length:7},(_,i)=>addDays(m,i));}
 function monthDates(iso){const d=parseISO(iso);const y=d.getFullYear(),m=d.getMonth();const n=new Date(y,m+1,0).getDate();return Array.from({length:n},(_,i)=>isoOf(new Date(y,m,i+1)));}
+function stepTarget(iso){const d=parseISO(iso).getDay();return (d===0||d===6)?10000:7000;}
 function uid(){return 'a'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
 
 const DEFAULT_MENU=[
@@ -182,16 +198,18 @@ const DEFAULT_MENU=[
   {key:'xtrain',name:'Cross Trainer',group:'cardio',cardio:'xtrain'},
   {key:'walk',name:'Walk',group:'cardio',cardio:'walk'},
   {key:'yoga',name:'Yoga / Mobility',group:'flex'},
-  {key:'golf',name:'Golf (walk)',group:'cardio',cardio:'golf'}
+  {key:'golf',name:'Golf (walk)',group:'cardio',cardio:'golf'},
+  {key:'body',name:'Body Measurements',group:'body',measure:true}
 ];
 const GROUP_META={
   bodyweight:{label:'Bodyweight',color:'#f59e0b',icon:'🤸'},
   strength :{label:'Strength',  color:'#fb923c',icon:'🏋'},
   cardio   :{label:'Cardio',    color:'#60a5fa',icon:'🏃'},
   flex     :{label:'Yoga / Mobility',color:'#a3e635',icon:'🧘'},
-  other    :{label:'Other',     color:'#c084fc',icon:'⛳'}
+  other    :{label:'Other',     color:'#c084fc',icon:'⛳'},
+  body     :{label:'Body',       color:'#f472b6',icon:'📏'}
 };
-const GROUP_ORDER=['bodyweight','strength','cardio','flex','other'];
+const GROUP_ORDER=['bodyweight','strength','cardio','flex','other','body'];
 
 function defState(){return{version:2,user:'',heightCm:176,progStart:DEFAULT_START,
   goals:{weight:'',bodyFat:'',muscle:'',waist:'',targetDate:''},
@@ -258,6 +276,12 @@ function makeActivity(S,defKey,iso){
       a.fields.avgHR=prev?prev.fields.avgHR||'':'';
     }
     a._prevDate=prev?prev.date:null;
+  } else if(def.group==='body'){
+    // circumferences stored as INCHES; weight/fat/muscle/bone/visceral as-is
+    const F=['weight','bodyFat','muscle','bone','visceral','waist','chest','hips','armL','armR','thighL','thighR'];
+    F.forEach(k=>{a.fields[k]=prev?prev.fields[k]||'':'';});
+    a._prevDate=prev?prev.date:null;
+    a._prevFields=prev?prev.fields:null;
   } else {
     a.fields.duration=prev?prev.fields.duration||'':'';
     a._prevDate=prev?prev.date:null;
@@ -370,10 +394,13 @@ function runPhaseOf(w){for(const p of RUN_PROGRAMME.phases)if(w>=p.from&&w<=p.to
 let S=defState();
 function slug(u){return u?u.toLowerCase().replace(/[^a-z0-9]/g,''):'default';}
 const LSKEY=()=>'phy2-'+slug(S.user);
-function load(){try{const cur=localStorage.getItem('phy2-current');if(cur){const raw=localStorage.getItem('phy2-'+cur);if(raw){S=Object.assign(defState(),JSON.parse(raw));return;}}const raw=localStorage.getItem('phy2-default');if(raw)S=Object.assign(defState(),JSON.parse(raw));}catch(e){}}
+function load(){try{const cur=localStorage.getItem('phy2-current');let raw=null;if(cur)raw=localStorage.getItem('phy2-'+cur);if(!raw)raw=localStorage.getItem('phy2-default');if(raw){S=Object.assign(defState(),JSON.parse(raw));}}catch(e){}
+  // Menu always comes from code (DEFAULT_MENU), never frozen in storage — keeps items current across versions
+  S.menu=JSON.parse(JSON.stringify(DEFAULT_MENU));
+}
 let _sv;function save(){clearTimeout(_sv);_sv=setTimeout(saveNow,250);}
 function saveNow(){try{localStorage.setItem(LSKEY(),JSON.stringify(stripState()));if(S.user)localStorage.setItem('phy2-current',slug(S.user));}catch(e){}}
-function stripState(){const c=JSON.parse(JSON.stringify(S));delete c._open;return c;}
+function stripState(){const c=JSON.parse(JSON.stringify(S));delete c._open;delete c.menu;return c;}
 function toast(m){const t=el('div','toast');t.textContent=m;document.body.appendChild(t);setTimeout(()=>{try{t.remove();}catch(e){}},2600);}
 function el(t,c,h){const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e;}
 
@@ -422,6 +449,7 @@ function mkActivityCard(a){
   if(a.group==='strength')mkStrengthBody(a,body);
   else if(a.group==='bodyweight')mkBodyweightBody(a,body);
   else if(a.group==='cardio')mkCardioBody(a,body);
+  else if(a.group==='body')mkMeasureBody(a,body);
   else mkSimpleBody(a,body);
 
   const nt=el('textarea','notes-in');nt.rows=2;nt.placeholder='Notes for this activity…';nt.value=a.notes||'';nt.oninput=e=>{a.notes=e.target.value;save();};body.appendChild(nt);
@@ -597,6 +625,53 @@ function lastRunSession(wk,sessIdx,beforeIso,selfId){
   return past[0]||null;
 }
 
+function mkMeasureBody(a,body){
+  const F=a.fields;
+  // weight with live BMI + lbs
+  const wRow=el('div','fld');wRow.style.marginTop='.6rem';wRow.innerHTML='<div class="flbl mf">WEIGHT (kg)</div>';
+  const wInp=el('input');wInp.type='text';wInp.inputMode='decimal';wInp.value=F.weight||'';wInp.placeholder='kg';
+  const wHint=el('div');wHint.style.cssText='font-size:.5625rem;color:#f472b6;margin-top:.2rem';
+  const updW=()=>{const kg=parseFloat(wInp.value);if(!isNaN(kg)&&kg>0){const lbs=(kg*2.20462).toFixed(1);const hM=(S.heightCm||176)/100;const bmi=(kg/(hM*hM)).toFixed(1);wHint.textContent='≈ '+lbs+' lbs · BMI '+bmi;}else wHint.textContent='';};
+  updW();wInp.oninput=e=>{F.weight=e.target.value;updW();save();};
+  wRow.append(wInp,wHint);body.appendChild(wRow);
+
+  // simple singles
+  const g=el('div','fgrid');
+  [['bodyFat','BODY FAT %'],['muscle','MUSCLE (kg)'],['bone','BONE (kg)'],['visceral','VISCERAL']].forEach(([k,lbl])=>{
+    const f=el('div','fld');f.innerHTML='<div class="flbl mf">'+lbl+'</div>';const inp=el('input');inp.type='text';inp.inputMode='decimal';inp.value=F[k]||'';inp.oninput=e=>{F[k]=e.target.value;save();};f.appendChild(inp);g.appendChild(f);
+  });
+  body.appendChild(g);
+
+  // circumferences: dual inch<->cm
+  const sect=el('div');sect.style.cssText='font-size:.5625rem;color:var(--t3);margin:.75rem 0 .35rem;letter-spacing:.05em';sect.textContent='CIRCUMFERENCES — inch ↔ cm (stored as inches)';body.appendChild(sect);
+  [['waist','Waist'],['chest','Chest'],['hips','Hips'],['armL','Left Arm'],['armR','Right Arm'],['thighL','Left Thigh'],['thighR','Right Thigh']].forEach(([k,lbl])=>{
+    const fd=el('div');fd.style.marginBottom='.5rem';
+    const l=el('div','flbl mf');l.style.marginBottom='.2rem';l.textContent=lbl;fd.appendChild(l);
+    const dual=el('div');dual.style.cssText='display:flex;gap:.4rem';
+    const inW=el('div');inW.style.cssText='flex:1;display:flex;flex-direction:column;gap:.15rem';
+    const inI=el('input');inI.type='text';inI.inputMode='decimal';inI.placeholder='in';inI.style.textAlign='center';
+    const inU=el('div','flbl mf');inU.style.textAlign='center';inU.textContent='INCHES';inW.append(inI,inU);
+    const cmW=el('div');cmW.style.cssText='flex:1;display:flex;flex-direction:column;gap:.15rem';
+    const cmI=el('input');cmI.type='text';cmI.inputMode='decimal';cmI.placeholder='cm';cmI.style.textAlign='center';
+    const cmU=el('div','flbl mf');cmU.style.textAlign='center';cmU.textContent='CM';cmW.append(cmI,cmU);
+    const stored=parseFloat(F[k]);if(!isNaN(stored)){inI.value=stored.toFixed(2);cmI.value=(stored*2.54).toFixed(1);}
+    inI.oninput=e=>{const v=parseFloat(e.target.value);if(!isNaN(v)){F[k]=v;cmI.value=(v*2.54).toFixed(1);}else{F[k]='';cmI.value='';}save();};
+    cmI.oninput=e=>{const c=parseFloat(e.target.value);if(!isNaN(c)){const inch=c/2.54;F[k]=parseFloat(inch.toFixed(2));inI.value=inch.toFixed(2);}else{F[k]='';inI.value='';}save();};
+    dual.append(inW,cmW);fd.appendChild(dual);body.appendChild(fd);
+  });
+
+  // BLD export
+  const bld=el('button');bld.style.cssText='width:100%;margin-top:.6rem;padding:.7rem;border-radius:.55rem;background:rgba(34,211,238,.14);color:#22d3ee;font-weight:600;font-size:.8125rem;border:1px solid rgba(34,211,238,.35)';
+  bld.textContent='Export to BLD';
+  bld.onclick=()=>{
+    const num=v=>{const n=parseFloat(v);return isNaN(n)?null:n;};
+    const out={date:a.date,source:'PHY',weight:num(F.weight),fat:num(F.bodyFat),muscle:num(F.muscle),bone:num(F.bone),visceral:num(F.visceral),waist:num(F.waist),chest:num(F.chest),hips:num(F.hips),armL:num(F.armL),armR:num(F.armR),thighL:num(F.thighL),thighR:num(F.thighR)};
+    const txt=JSON.stringify(out,null,2);
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(()=>toast('✓ Copied to clipboard')).catch(()=>prompt('Copy BLD JSON:',txt));}else prompt('Copy BLD JSON:',txt);
+  };
+  body.appendChild(bld);
+}
+
 function mkSimpleBody(a,body){const g=el('div','fgrid');const f=el('div','fld');f.innerHTML='<div class="flbl mf">DURATION (min)</div>';const inp=el('input');inp.type='text';inp.inputMode='numeric';inp.value=a.fields.duration||'';inp.oninput=e=>{a.fields.duration=e.target.value;save();};f.appendChild(inp);g.appendChild(f);body.appendChild(g);}
 
 /* ===== PICKER ===== */
@@ -610,12 +685,32 @@ function openPicker(){
 }
 
 /* ===== TODAY ===== */
+function mkStepsStrip(iso){
+  S.steps=S.steps||{};
+  const val=S.steps[iso]||'';
+  const tgt=stepTarget(iso);
+  const n=parseInt(String(val).replace(/,/g,''))||0;
+  const hit=n>=tgt;
+  const pct=Math.min(100,Math.round((n/tgt)*100));
+  const wrap=el('div','steps-strip'+(hit?' hit':''));
+  const top=el('div','ss-top');
+  top.innerHTML='<span class="ss-ico">👟</span><span class="ss-lbl mf">STEPS</span><span class="ss-tgt mf">'+(n?n.toLocaleString():'—')+' / '+tgt.toLocaleString()+(hit?' ✓':'')+'</span>';
+  wrap.appendChild(top);
+  const inp=el('input','ss-inp');inp.type='text';inp.inputMode='numeric';inp.value=val;inp.placeholder='Enter steps for '+fmtShort(iso).split(' ').slice(0,1)+'…';
+  inp.oninput=e=>{S.steps[iso]=e.target.value;save();};
+  inp.onblur=()=>render();
+  wrap.appendChild(inp);
+  const bar=el('div','ss-bar');const fill=el('div','ss-fill');fill.style.width=pct+'%';fill.style.background=hit?'#4ade80':'#60a5fa';bar.appendChild(fill);wrap.appendChild(bar);
+  return wrap;
+}
+
 function mkToday(){
   const wrap=el('div');wrap.appendChild(mkDayNav());
   const acts=activitiesOn(S,S.cursor);
   if(!acts.length)wrap.appendChild(el('div','empty','No activities logged for this day yet.<br>Tap ➕ Add activity to begin.'));
   else{const byG={};acts.forEach(a=>{(byG[a.group]=byG[a.group]||[]).push(a);});GROUP_ORDER.forEach(g=>{if(!byG[g])return;const gm=GROUP_META[g];wrap.appendChild(mkSH(gm.label,gm.color));byG[g].forEach(a=>wrap.appendChild(mkActivityCard(a)));});}
   const add=el('button','addbtn','➕  Add activity');add.onclick=openPicker;wrap.appendChild(add);
+  wrap.appendChild(mkStepsStrip(S.cursor));
   return wrap;
 }
 
