@@ -74,7 +74,10 @@ button{cursor:pointer;border:none;background:none}
 .addset{font-size:.625rem;color:var(--ac);padding:.3rem 0;margin-top:.1rem}
 
 /* generic field grid */
-.fgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.45rem;margin-top:.6rem}
+.fgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.35rem;margin-top:.55rem}
+.fgrid .fld{min-width:0}
+.fgrid .flbl{font-size:.4375rem;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fgrid input{padding:.4rem .2rem;font-size:.8125rem;min-width:0;width:100%}
 .fld{display:flex;flex-direction:column;gap:.2rem}
 .flbl{font-size:.5rem;color:var(--t3);letter-spacing:.05em}
 .fld input{text-align:center;font-size:.8125rem}
@@ -154,6 +157,11 @@ button{cursor:pointer;border:none;background:none}
 .ss-inp:focus{border-color:#60a5fa}
 .ss-bar{height:.4rem;background:rgba(10,10,10,.5);border-radius:1rem;margin-top:.6rem;overflow:hidden}
 .ss-fill{height:100%;border-radius:1rem;transition:width .3s}
+
+.fgrid2{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.55rem}
+.fgrid2 .fld{min-width:0}
+.fgrid2 .flbl{font-size:.5rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fgrid2 input{padding:.5rem .3rem;font-size:.875rem;width:100%;min-width:0;text-align:center}
 </style>
 </head>
 <body>
@@ -602,7 +610,7 @@ function mkRunBody(a,body){
   if(sess.seg){
     // segment logging: reps done, actual walk/jog times
     const tgt=sess.seg;
-    const grid=el('div','fgrid');
+    const grid=el('div','fgrid2');
     const mkF=(k,lbl,ph)=>{const f=el('div','fld');f.innerHTML='<div class="flbl mf">'+lbl+'</div>';const inp=el('input');inp.type='text';inp.inputMode='decimal';inp.value=(a.fields.seg&&a.fields.seg[k])||'';inp.placeholder=ph;inp.oninput=e=>{a.fields.seg=a.fields.seg||{};a.fields.seg[k]=e.target.value;save();};f.appendChild(inp);return f;};
     if(tgt.walk!=null)grid.appendChild(mkF('walk','WALK (min)',String(tgt.walk)));
     if(tgt.jog!=null)grid.appendChild(mkF('jog','JOG (min)',String(tgt.jog)));
@@ -611,7 +619,7 @@ function mkRunBody(a,body){
     const note=el('div');note.style.cssText='font-size:.5625rem;color:var(--t3);margin-top:.35rem';note.textContent='Target: '+(tgt.walk!=null?tgt.walk+' walk / ':'')+(tgt.jog!=null?tgt.jog+' jog ':'')+'× '+tgt.reps+' reps';body.appendChild(note);
   }
   // always allow distance+time+HR
-  const g2=el('div','fgrid');
+  const g2=el('div','fgrid2');
   [['distance','DISTANCE (km)'],['time','TOTAL TIME (min)'],['avgHR','AVG HR']].forEach(([k,l])=>{
     const f=el('div','fld');f.innerHTML='<div class="flbl mf">'+l+'</div>';const inp=el('input');inp.type='text';inp.inputMode='decimal';inp.value=a.fields[k]||'';inp.placeholder=(k==='distance'?'~'+sess.km:'');inp.oninput=e=>{a.fields[k]=e.target.value;save();updPace();};f.appendChild(inp);g2.appendChild(f);
   });
