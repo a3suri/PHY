@@ -182,6 +182,12 @@ button{cursor:pointer;border:none;background:none}
 .pb-name{font-size:.8125rem;color:var(--t1)}
 .pb-val{font-size:.625rem;color:var(--t2);margin-top:.15rem}
 .pbtn{width:calc(100% - 2.5rem);margin:.4rem 1.25rem;padding:.85rem;border-radius:.7rem;background:var(--s1);border:1px solid var(--line);color:var(--t1);font-size:.8125rem;font-weight:600}
+
+.gymsel{display:flex;align-items:center;gap:.4rem;margin:.3rem 0 .6rem}
+.gymsel-lbl{font-size:.5625rem;letter-spacing:.1em;color:var(--t3);margin-right:.2rem}
+.gymchip{padding:.35rem .7rem;border-radius:.5rem;background:var(--s2);border:1px solid #333;font-size:.6875rem;color:var(--t2)}
+.gymchip.on{background:rgba(251,146,60,.16);border-color:rgba(251,146,60,.5);color:var(--ac);font-weight:600}
+.ex-ref{font-size:.5rem;color:var(--t3);margin:.15rem 0 .3rem;padding:.2rem .45rem;background:rgba(255,255,255,.03);border-radius:.35rem;border:1px dashed #333}
 </style>
 </head>
 <body>
@@ -251,12 +257,33 @@ function lastActivity(S,defKey,beforeIso){
   return past[0]||null;
 }
 // last time a specific exercise (by name) was done in any session of this defKey
-function lastExercise(S,defKey,exName,beforeIso){
-  const past=S.log.filter(a=>a.defKey===defKey&&a.date<=beforeIso&&a.done&&a.fields.ex);
+function GYMS(){return ['UK','CH','Other'];}
+function buildStrengthEx(S,defKey,exList,iso,gym){
+  const ex={};
+  exList.forEach((n,i)=>{
+    const le=lastExercise(S,defKey,n,addDays(iso,-1),gym);          // this gym
+    // reference: most recent at a DIFFERENT gym
+    let ref=null;
+    GYMS().forEach(g=>{if(g!==gym){const r=lastExercise(S,defKey,n,addDays(iso,-1),g);if(r&&(!ref||r.date>ref.date))ref={gym:g,date:r.date,ex:r.ex};}});
+    ex[i]={
+      name:n,
+      chosen:true,
+      sets:le&&le.ex.sets?JSON.parse(JSON.stringify(le.ex.sets)):[{weight:'',reps:''},{weight:'',reps:''},{weight:'',reps:''}],
+      lastDate:le?le.date:null,
+      memo:le&&le.ex.memo?le.ex.memo:'',
+      refGym:ref?ref.gym:null,
+      refSets:ref?ref.ex.sets:null,
+      refDate:ref?ref.date:null
+    };
+  });
+  return ex;
+}
+function lastExercise(S,defKey,exName,beforeIso,gym){
+  const past=S.log.filter(a=>a.defKey===defKey&&a.date<=beforeIso&&a.done&&a.fields.ex&&(gym==null||a.fields.gym===gym));
   past.sort((a,b)=>b.date.localeCompare(a.date)||b.id.localeCompare(a.id));
   for(const a of past){
     const keys=Object.keys(a.fields.ex);
-    for(const k of keys){const ex=a.fields.ex[k];if(ex&&ex.name===exName&&(ex.chosen!==false)){return{date:a.date,ex:ex};}}
+    for(const k of keys){const ex=a.fields.ex[k];if(ex&&ex.name===exName&&(ex.chosen!==false)){return{date:a.date,ex:ex,gym:a.fields.gym||null};}}
   }
   return null;
 }
@@ -269,16 +296,10 @@ function makeActivity(S,defKey,iso){
 
   if(def.group==='strength'){
     const exList=def.ex&&def.ex.length?def.ex:['Exercise 1'];
-    a.fields.ex={};
-    exList.forEach((n,i)=>{
-      const le=lastExercise(S,defKey,n,addDays(iso,-1));
-      a.fields.ex[i]={
-        name:n,
-        chosen:le?true:true, // default all chosen first time; smart-hide handled in UI via lastDate
-        sets:le&&le.ex.sets?JSON.parse(JSON.stringify(le.ex.sets)):[{weight:'',reps:''},{weight:'',reps:''},{weight:'',reps:''}],
-        lastDate:le?le.date:null
-      };
-    });
+    // gym location: default to most recent gym used for this programme, else 'UK'
+    const lastAny=lastActivity(S,defKey,addDays(iso,-1));
+    a.fields.gym=(lastAny&&lastAny.fields&&lastAny.fields.gym)||'UK';
+    a.fields.ex=buildStrengthEx(S,defKey,exList,iso,a.fields.gym);
   } else if(def.group==='bodyweight'){
     if(def.single){
       a.fields.single=def.single; // 'reps' or 'hold'
@@ -772,7 +793,7 @@ function buildTrainerExport(){
   // full data (compact JSON)
   s+='--- FULL DATA (JSON) ---\n';
   const data={exported:now,user:S.user,heightCm:S.heightCm,goals:goals,
-    sessions:L.map(a=>({date:a.date,type:a.defKey,group:a.group,
+    sessions:L.map(a=>({date:a.date,type:a.defKey,group:a.group,gym:a.fields.gym,
       ex:a.fields.ex?Object.values(a.fields.ex).filter(e=>e&&e.chosen!==false).map(e=>({n:e.name,sets:(e.sets||[]).filter(st=>st.weight||st.reps),reps:e.reps,memo:e.memo})):undefined,
       dist:a.fields.distance,time:a.fields.time,hr:a.fields.avgHR,intervals:a.fields.seg,runWk:a.fields.runWeek,
       value:a.fields.value,dur:a.fields.duration,notes:a.notes})),
@@ -900,14 +921,31 @@ function mkActivityCard(a){
 
 /* ---- STRENGTH: per-exercise checkbox, done-last-time float to top ---- */
 function mkStrengthBody(a,body){
+  // Gym-location selector (UK / CH / Other) — separate weight history per gym
+  if(!a.fields.gym)a.fields.gym='UK';
+  const gymRow=el('div','gymsel');
+  const gl=el('div','gymsel-lbl mf');gl.textContent='GYM';gymRow.appendChild(gl);
+  ['UK','CH','Other'].forEach(g=>{
+    const c=el('button','gymchip'+(a.fields.gym===g?' on':''));c.textContent=g;
+    c.onclick=()=>{
+      a.fields.gym=g;
+      // rebuild pre-fill from THIS gym's history (preserve any values already typed today? no—switch context)
+      const def=defByKey(S,a.defKey);
+      const exList=(def.ex&&def.ex.length)?def.ex:Object.values(a.fields.ex).map(e=>e.name);
+      a.fields.ex=buildStrengthEx(S,a.defKey,exList,a.date,g);
+      upsertActivity(a);render();
+    };
+    gymRow.appendChild(c);
+  });
+  body.appendChild(gymRow);
+
   const keys=Object.keys(a.fields.ex);
-  // split: with lastDate (done before) vs new; sort done group by most-recent first
   const withHist=keys.filter(k=>a.fields.ex[k].lastDate).sort((x,y)=>a.fields.ex[y].lastDate.localeCompare(a.fields.ex[x].lastDate));
   const noHist=keys.filter(k=>!a.fields.ex[k].lastDate);
   const ordered=withHist.concat(noHist);
 
   const tip=el('div');tip.style.cssText='font-size:.5625rem;color:var(--t3);margin:.2rem 0 .5rem;letter-spacing:.03em';
-  tip.textContent='TICK THE EXERCISES YOU\u2019RE DOING TODAY · done-before shown first';
+  tip.textContent='TICK THE EXERCISES YOU\u2019RE DOING TODAY · '+a.fields.gym+' weights';
   body.appendChild(tip);
 
   ordered.forEach(ei=>{
@@ -931,10 +969,15 @@ function mkStrengthBody(a,body){
       // Yellow top band: last-done date + days since + YouTube form link
       const top=el('div','ex-top');
       const dt=el('div','et-date mf');
-      dt.textContent=ex.lastDate?('Last: '+fmtNice(ex.lastDate)+' · '+daysAgoLabel(ex.lastDate,a.date)):'First time — set a baseline';
+      dt.textContent=ex.lastDate?('Last @'+(a.fields.gym||'UK')+': '+fmtNice(ex.lastDate).replace(/ \d{4}$/,'')+' · '+daysAgoLabel(ex.lastDate,a.date)):('First time @'+(a.fields.gym||'UK')+' — set a baseline');
       const yt=el('a','ex-yt');yt.href=ytUrl(ex.name);yt.target='_blank';yt.rel='noopener';yt.innerHTML='▶ YouTube';
       top.append(dt,yt);
       row.appendChild(top);
+      // Greyed reference from another gym
+      if(ex.refGym&&ex.refSets&&ex.refSets.length){
+        const refTxt=ex.refSets.filter(s=>s.weight||s.reps).map(s=>(s.weight||'–')+'×'+(s.reps||'–')).join(', ');
+        if(refTxt){const rf=el('div','ex-ref mf');rf.textContent='@'+ex.refGym+' ('+fmtNice(ex.refDate).replace(/ \d{4}$/,'')+'): '+refTxt;row.appendChild(rf);}
+      }
       (ex.sets||[]).forEach((st,si)=>{
         const line=el('div','setline');
         line.innerHTML='<span class="sn mf">SET '+(si+1)+'</span>';
