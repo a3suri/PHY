@@ -830,7 +830,65 @@ function mkProgress(){
   exp.onclick=()=>{const txt=buildTrainerExport();copyOrPrompt(txt,'Trainer summary copied \u2014 paste it to your trainer');};
   wrap.appendChild(exp);
 
+  // BACKUP — download all data as a file (your safety net)
+  const bk=el('button','pbtn');bk.textContent='\ud83d\udcbe Backup all data (download file)';
+  bk.onclick=()=>backupData();
+  wrap.appendChild(bk);
+
+  // RESTORE — load data from a backup file
+  const rs=el('button','pbtn');rs.textContent='\u21ba Restore from backup file';
+  rs.onclick=()=>restoreData();
+  wrap.appendChild(rs);
+
+  const note=el('div');note.style.cssText='margin:.5rem 1.25rem;font-size:.625rem;color:var(--t3);line-height:1.5';
+  note.textContent='Tip: tap Backup before switching app versions. The file saves to your device \u2014 you can always Restore it if anything goes wrong.';
+  wrap.appendChild(note);
+
   return wrap;
+}
+
+function backupData(){
+  const data={version:'phy-v10',exported:new Date().toISOString(),state:{
+    user:S.user,heightCm:S.heightCm,progStart:S.progStart,goals:S.goals,
+    log:S.log,measurements:S.measurements,steps:S.steps,runWeek:S.runWeek
+  }};
+  const json=JSON.stringify(data,null,2);
+  const blob=new Blob([json],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  const stamp=todayISO();
+  a.href=url;a.download='PHY-backup-'+stamp+'.json';
+  document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(url);a.remove();},1000);
+  toast('\u2713 Backup saved to your device');
+}
+
+function restoreData(){
+  const inp=document.createElement('input');inp.type='file';inp.accept='.json,application/json';
+  inp.onchange=e=>{
+    const file=e.target.files&&e.target.files[0];if(!file)return;
+    const reader=new FileReader();
+    reader.onload=ev=>{
+      try{
+        const data=JSON.parse(ev.target.result);
+        const st=data.state||data;
+        if(!st.log&&!st.measurements){toast('That file has no PHY data');return;}
+        if(!confirm('Restore this backup? It will REPLACE your current data in this app.'))return;
+        if(st.user)S.user=st.user;
+        if(st.heightCm)S.heightCm=st.heightCm;
+        if(st.progStart)S.progStart=st.progStart;
+        if(st.goals)S.goals=st.goals;
+        S.log=st.log||[];
+        S.measurements=st.measurements||[];
+        S.steps=st.steps||{};
+        if(st.runWeek)S.runWeek=st.runWeek;
+        saveNow();S.view='progress';render();
+        toast('\u2713 Restored '+(S.log.length)+' activities');
+      }catch(err){toast('Could not read that backup file');}
+    };
+    reader.readAsText(file);
+  };
+  document.body.appendChild(inp);inp.click();setTimeout(()=>inp.remove(),1000);
 }
 
 /* ===== EXPORT TO TRAINER ===== */
