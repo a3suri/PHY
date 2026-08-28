@@ -12,7 +12,7 @@
 :root{--bg:#0a0a0a;--s1:#141414;--s2:#1c1c1c;--t1:#e5e5e5;--t2:#a3a3a3;--t3:#525252;--ac:#fb923c;--line:#262626}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{background:var(--bg);color:var(--t1);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-  -webkit-font-smoothing:antialiased;overscroll-behavior-y:none}
+  -webkit-font-smoothing:antialiased;overscroll-behavior-y:none;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
 body{max-width:640px;margin:0 auto;padding-bottom:6rem;min-height:100vh}
 .mf{font-family:'JetBrains Mono','SF Mono',ui-monospace,monospace}
 .sf{font-family:Georgia,'Times New Roman',serif}
@@ -30,8 +30,8 @@ button{cursor:pointer;border:none;background:none}
 .hd .drange{font-size:.8125rem;color:var(--ac);letter-spacing:.04em}
 
 /* view links */
-.vlinks{display:flex;gap:1.25rem;padding:.75rem 1.25rem;border-bottom:1px solid var(--line)}
-.vlink{font-size:.8125rem;letter-spacing:.03em;color:var(--t3);padding-bottom:.35rem;position:relative}
+.vlinks{display:flex;gap:.9rem;padding:.75rem 1.1rem;border-bottom:1px solid var(--line);overflow-x:auto;-webkit-overflow-scrolling:touch}
+.vlink{font-size:.9375rem;letter-spacing:.02em;color:var(--t3);padding-bottom:.4rem;position:relative;font-weight:500}
 .vlink.on{color:var(--t1)}
 .vlink.on:after{content:'';position:absolute;left:0;right:0;bottom:-.76rem;height:2px;background:var(--ac)}
 
@@ -241,7 +241,7 @@ button{cursor:pointer;border:none;background:none}
 .upflag{background:transparent;border:1px solid #3d3d3d;border-radius:.4rem;padding:.15rem .35rem;font-size:.7rem;color:var(--t3);line-height:1;opacity:.6}
 .upflag.on{border-color:rgba(74,222,128,.6);background:rgba(74,222,128,.12);opacity:1}
 
-.gearbtn{position:absolute;top:0;right:0;background:transparent;border:none;font-size:1.4rem;padding:.3rem;cursor:pointer}
+.gearbtn{position:absolute;top:.2rem;right:0;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:.6rem;font-size:1.3rem;padding:.4rem .55rem;cursor:pointer;z-index:5}
 .setgroup{margin:.3rem 0 .8rem}
 .set-gtitle{font-size:.625rem;letter-spacing:.12em;color:var(--ac);margin:.6rem 1.25rem .4rem}
 .setfld{display:flex;align-items:center;margin:0 1.25rem .35rem;gap:.6rem}
@@ -2150,6 +2150,7 @@ function render(){
   app.appendChild(mkHeader());app.appendChild(mkLinks());
   let v;try{if(S.view==='week')v=mkWeek();else if(S.view==='month')v=mkMonth();else if(S.view==='progress')v=mkProgress();else if(S.view==='nutrition')v=mkNutrition();else v=mkToday();}catch(e){v=el('div','empty','Render error: '+e.message);}
   app.appendChild(v);
+  try{window.scrollTo(0,0);}catch(e){}
 }
 load();
 if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches)document.body.classList.add('reduce');
