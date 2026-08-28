@@ -417,7 +417,7 @@ function makeActivity(S,defKey,iso){
   } else if(def.group==='body'){
     // circumferences stored as INCHES; weight/fat/muscle/bone/visceral as-is
     const F=['weight','bodyFat','muscle','bone','visceral','waist','chest','hips','armL','armR','thighL','thighR'];
-    F.forEach(k=>{a.fields[k]=prev?prev.fields[k]||'':'';});
+    F.forEach(k=>{a.fields[k]='';}); // blank — each measurement is a fresh reading, never inherit previous
     a._prevDate=prev?prev.date:null;
     a._prevFields=prev?prev.fields:null;
   } else {
@@ -1897,23 +1897,31 @@ function mkMeasureStrip(iso){
   top.innerHTML='<span class="ss-ico">\ud83d\udccf</span><span class="ss-lbl mf">MEASUREMENTS</span><span class="ss-tgt mf">'+lw+ld+'</span>';
   wrap.appendChild(top);
   if(S._expMeas){
-    // find or make today's body activity
-    let body=S.log.find(a=>a.group==='body'&&a.date===iso);
     const info=el('div');info.style.cssText='font-size:.625rem;color:var(--t3);margin:.5rem 0 .3rem';
-    info.textContent='Weekly is fine \u2014 log weight & waist to track goals.';
+    const todayBody=S.log.find(a=>a.group==='body'&&a.date===iso);
+    info.textContent=todayBody?('Editing '+fmtShort(iso)):('New entry for '+fmtShort(iso)+' \u00b7 weekly is fine');
     wrap.appendChild(info);
     const grid=el('div','nutgrid');grid.style.marginLeft='0';grid.style.marginRight='0';
-    const tmp=body||{fields:{}};
-    const mf=(lbl,key,unit)=>{const fl=el('div','nutfld');fl.innerHTML='<div class="flbl mf">'+lbl+'</div>';const ip=el('input');ip.type='text';ip.inputMode='decimal';ip.value=(tmp.fields&&tmp.fields[key])||'';ip.placeholder=unit;ip.oninput=e=>{
-      if(!body){body=makeActivity(S,'body',iso);body.done=true;upsertActivity(body);}
-      body.fields[key]=e.target.value;upsertActivity(body);};
-    fl.appendChild(ip);grid.appendChild(fl);};
+    const mf=(lbl,key,unit)=>{
+      const fl=el('div','nutfld');fl.innerHTML='<div class="flbl mf">'+lbl+'</div>';
+      const ip=el('input');ip.type='text';ip.inputMode='decimal';
+      // read straight from today's entry (if any) — NOT from any previous date
+      const existing=S.log.find(a=>a.group==='body'&&a.date===iso);
+      ip.value=(existing&&existing.fields[key])||'';ip.placeholder=unit;
+      ip.oninput=e=>{
+        let body=S.log.find(a=>a.group==='body'&&a.date===iso);
+        if(!body){body=makeActivity(S,'body',iso);body.done=true;body.date=iso;upsertActivity(body);}
+        body.fields[key]=e.target.value;upsertActivity(body);
+      };
+      fl.appendChild(ip);grid.appendChild(fl);
+    };
     mf('WEIGHT (kg)','weight','kg');mf('WAIST (in)','waist','in');mf('BODY FAT %','bodyFat','%');mf('MUSCLE (kg)','muscle','kg');
     wrap.appendChild(grid);
   }
   top.onclick=()=>{S._expMeas=!S._expMeas;save();render();};
   return wrap;
 }
+
 function isActiveDay(S,iso){
   // active if any workout logged that day (gym/run/golf/etc), else rest
   return S.log.some(a=>a.date===iso&&a.done&&['strength','cardio'].indexOf(a.group)>=0);
