@@ -295,8 +295,9 @@ const DEFAULT_MENU=[
   {key:'yoga',name:'Yoga / Mobility',group:'flex'},
   {key:'golf',name:'Golf (walk)',group:'cardio',cardio:'golf'},
   {key:'cycle',name:'Cycling',group:'cardio',cardio:'cycle'},
-  {key:'body',name:'Body Measurements',group:'body',measure:true},
+  
   {key:'alcohol',name:'Alcohol',group:'other',alcohol:true},
+  {key:'body',name:'Body Measurements',group:'body',measure:true,hidden:true},
   {key:'rest',name:'Rest Day',group:'rest',rest:true}
 ];
 const GROUP_META={
@@ -1837,7 +1838,7 @@ function openPicker(){
   const bg=el('div','sheet-bg');bg.onclick=e=>{if(e.target===bg)bg.remove();};
   const sheet=el('div','sheet');
   const hd=el('div','sheet-hd');hd.innerHTML='<div class="st sf">Add activity</div>';const x=el('button','sx','×');x.onclick=()=>bg.remove();hd.appendChild(x);sheet.appendChild(hd);
-  const groups={};S.menu.forEach(d=>{(groups[d.group]=groups[d.group]||[]).push(d);});
+  const groups={};S.menu.forEach(d=>{if(d.hidden)return;(groups[d.group]=groups[d.group]||[]).push(d);});
   GROUP_ORDER.forEach(g=>{if(!groups[g])return;const gm=GROUP_META[g]||{label:g,color:'#888',icon:'•'};const gd=el('div','mgroup');gd.appendChild(el('div','mglabel mf',gm.label));groups[g].forEach(d=>{const it=el('div','mitem');const ico=el('div','mi-ico');ico.style.cssText='background:'+gm.color+'22;border:1px solid '+gm.color+'55';ico.textContent=gm.icon;it.append(ico,el('div','mi-name',d.name));it.onclick=()=>{const a=makeActivity(S,d.key,S.cursor);upsertActivity(a);S._open=a.id;bg.remove();render();};gd.appendChild(it);});sheet.appendChild(gd);});
   bg.appendChild(sheet);document.body.appendChild(bg);
 }
@@ -1888,7 +1889,7 @@ function mkNutritionStrip(iso){
   return wrap;
 }
 function mkMeasureStrip(iso){
-  const ms=(S.measurements||[]).concat(S.log.filter(a=>a.group==='body'));
+  const ms=S.log.filter(a=>a.group==='body');
   let latest=null;ms.forEach(a=>{if(!latest||a.date>latest.date)latest=a;});
   const wrap=el('div','steps-strip');wrap.style.borderColor='rgba(244,114,182,.3)';
   const top=el('div','ss-top');
@@ -1897,26 +1898,15 @@ function mkMeasureStrip(iso){
   top.innerHTML='<span class="ss-ico">\ud83d\udccf</span><span class="ss-lbl mf">MEASUREMENTS</span><span class="ss-tgt mf">'+lw+ld+'</span>';
   wrap.appendChild(top);
   if(S._expMeas){
-    const info=el('div');info.style.cssText='font-size:.625rem;color:var(--t3);margin:.5rem 0 .3rem';
-    const todayBody=S.log.find(a=>a.group==='body'&&a.date===iso);
-    info.textContent=todayBody?('Editing '+fmtShort(iso)):('New entry for '+fmtShort(iso)+' \u00b7 weekly is fine');
+    // find or CREATE today's body entry, then render the full measurement editor into it
+    let bodyAct=S.log.find(a=>a.group==='body'&&a.date===iso);
+    if(!bodyAct){bodyAct=makeActivity(S,'body',iso);bodyAct.done=true;bodyAct.date=iso;upsertActivity(bodyAct);}
+    const info=el('div');info.style.cssText='font-size:.625rem;color:var(--t3);margin:.5rem 0 .1rem';
+    info.textContent='Entry for '+fmtShort(iso)+' \u00b7 weekly is fine \u2014 log weight & waist to track goals';
     wrap.appendChild(info);
-    const grid=el('div','nutgrid');grid.style.marginLeft='0';grid.style.marginRight='0';
-    const mf=(lbl,key,unit)=>{
-      const fl=el('div','nutfld');fl.innerHTML='<div class="flbl mf">'+lbl+'</div>';
-      const ip=el('input');ip.type='text';ip.inputMode='decimal';
-      // read straight from today's entry (if any) — NOT from any previous date
-      const existing=S.log.find(a=>a.group==='body'&&a.date===iso);
-      ip.value=(existing&&existing.fields[key])||'';ip.placeholder=unit;
-      ip.oninput=e=>{
-        let body=S.log.find(a=>a.group==='body'&&a.date===iso);
-        if(!body){body=makeActivity(S,'body',iso);body.done=true;body.date=iso;upsertActivity(body);}
-        body.fields[key]=e.target.value;upsertActivity(body);
-      };
-      fl.appendChild(ip);grid.appendChild(fl);
-    };
-    mf('WEIGHT (kg)','weight','kg');mf('WAIST (in)','waist','in');mf('BODY FAT %','bodyFat','%');mf('MUSCLE (kg)','muscle','kg');
-    wrap.appendChild(grid);
+    const editor=el('div');editor.style.cssText='margin-top:.2rem';
+    mkMeasureBody(bodyAct,editor);
+    wrap.appendChild(editor);
   }
   top.onclick=()=>{S._expMeas=!S._expMeas;save();render();};
   return wrap;
@@ -1949,7 +1939,7 @@ function mkToday(){
   const wrap=el('div');wrap.appendChild(mkDayNav());
   const acts=activitiesOn(S,S.cursor);
   if(!acts.length)wrap.appendChild(el('div','empty','No activities logged for this day yet.<br>Tap ➕ Add activity to begin.'));
-  else{const byG={};acts.forEach(a=>{(byG[a.group]=byG[a.group]||[]).push(a);});GROUP_ORDER.forEach(g=>{if(!byG[g])return;const gm=GROUP_META[g];wrap.appendChild(mkSH(gm.label,gm.color));byG[g].forEach(a=>wrap.appendChild(mkActivityCard(a)));});}
+  else{const byG={};acts.forEach(a=>{if(a.group==='body')return;(byG[a.group]=byG[a.group]||[]).push(a);});GROUP_ORDER.forEach(g=>{if(!byG[g])return;const gm=GROUP_META[g];wrap.appendChild(mkSH(gm.label,gm.color));byG[g].forEach(a=>wrap.appendChild(mkActivityCard(a)));});}
   const add=el('button','addbtn','➕  Add activity');add.onclick=openPicker;wrap.appendChild(add);
   wrap.appendChild(mkSH('Daily log','#60a5fa'));
   wrap.appendChild(mkStepsStrip(S.cursor));
