@@ -1779,54 +1779,103 @@ function lastRunSession(wk,sessIdx,beforeIso,selfId){
   return past[0]||null;
 }
 
+function extraLoggedOn(S,iso){
+  const b=S.log.find(a=>a.group==='body'&&a.date===iso);
+  if(!b)return false;
+  const extra=['waist','chest','hips','armL','armR','thighL','thighR','bone','visceral'];
+  return extra.some(k=>b.fields[k]!==''&&b.fields[k]!=null);
+}
+function fullMeasureReminderDue(S,iso){
+  // Check-in window = a Sunday and its immediately following Monday, treated together.
+  const dow=parseISO(iso).getDay(); // 0=Sun,1=Mon
+  if(dow!==0&&dow!==1)return false;
+  // find the Sunday + Monday of THIS check-in window
+  let sun,mon;
+  if(dow===0){sun=iso;mon=addDays(iso,1);}
+  else{sun=addDays(iso,-1);mon=iso;} // Monday -> Sunday just past
+  // done if either the Sunday or the Monday of the window has an extra logged
+  if(extraLoggedOn(S,sun)||extraLoggedOn(S,mon))return false;
+  return true;
+}
+function measureMoreDoneThisWeek(S,iso){
+  // helper kept for compatibility: true if the Sun/Mon window around iso has an extra
+  const dow=parseISO(iso).getDay();
+  let sun,mon;
+  if(dow===0){sun=iso;mon=addDays(iso,1);}
+  else if(dow===1){sun=addDays(iso,-1);mon=iso;}
+  else{return extraLoggedOn(S,iso);}
+  return extraLoggedOn(S,sun)||extraLoggedOn(S,mon);
+}
 function mkMeasureBody(a,body,onEdit){
   const _ping=()=>{try{if(onEdit)onEdit();}catch(e){}if(a._savedNote){a._savedNote.style.opacity='1';setTimeout(()=>{if(a._savedNote)a._savedNote.style.opacity='0';},1200);}};
   const F=a.fields;
-  // weight with live BMI + lbs
+  // ---- PRIMARY: weight (with BMI) + body fat + muscle ----
   const wRow=el('div','fld');wRow.style.marginTop='.6rem';wRow.innerHTML='<div class="flbl mf">WEIGHT (kg)</div>';
   const wInp=el('input');wInp.type='text';wInp.inputMode='decimal';wInp.value=F.weight||'';wInp.placeholder='kg';
   const wHint=el('div');wHint.style.cssText='font-size:.5625rem;color:#f472b6;margin-top:.2rem';
-  const updW=()=>{const kg=parseFloat(wInp.value);if(!isNaN(kg)&&kg>0){const lbs=(kg*2.20462).toFixed(1);const hM=(S.heightCm||176)/100;const bmi=(kg/(hM*hM)).toFixed(1);wHint.textContent='≈ '+lbs+' lbs · BMI '+bmi;}else wHint.textContent='';};
+  const updW=()=>{const kg=parseFloat(wInp.value);if(!isNaN(kg)&&kg>0){const lbs=(kg*2.20462).toFixed(1);const hM=(S.heightCm||176)/100;const bmi=(kg/(hM*hM)).toFixed(1);wHint.textContent='\u2248 '+lbs+' lbs \u00b7 BMI '+bmi;}else wHint.textContent='';};
   updW();wInp.oninput=e=>{F.weight=e.target.value;updW();save();_ping();};
   wRow.append(wInp,wHint);body.appendChild(wRow);
 
-  // simple singles
   const g=el('div','fgrid');
-  [['bodyFat','BODY FAT %'],['muscle','MUSCLE (kg)'],['bone','BONE (kg)'],['visceral','VISCERAL']].forEach(([k,lbl])=>{
+  [['bodyFat','BODY FAT %'],['muscle','MUSCLE (kg)']].forEach(([k,lbl])=>{
     const f=el('div','fld');f.innerHTML='<div class="flbl mf">'+lbl+'</div>';const inp=el('input');inp.type='text';inp.inputMode='decimal';inp.value=F[k]||'';inp.oninput=e=>{F[k]=e.target.value;save();_ping();};f.appendChild(inp);g.appendChild(f);
   });
   body.appendChild(g);
 
-  // circumferences: dual inch<->cm
-  const sect=el('div');sect.style.cssText='font-size:.5625rem;color:var(--t3);margin:.75rem 0 .35rem;letter-spacing:.05em';sect.textContent='CIRCUMFERENCES — inch ↔ cm (stored as inches)';body.appendChild(sect);
-  [['waist','Waist'],['chest','Chest'],['hips','Hips'],['armL','Left Arm'],['armR','Right Arm'],['thighL','Left Thigh'],['thighR','Right Thigh']].forEach(([k,lbl])=>{
-    const fd=el('div');fd.style.marginBottom='.5rem';
-    const l=el('div','flbl mf');l.style.marginBottom='.2rem';l.textContent=lbl;fd.appendChild(l);
-    const dual=el('div');dual.style.cssText='display:flex;gap:.4rem';
-    const inW=el('div');inW.style.cssText='flex:1;display:flex;flex-direction:column;gap:.15rem';
-    const inI=el('input');inI.type='text';inI.inputMode='decimal';inI.placeholder='in';inI.style.textAlign='center';
-    const inU=el('div','flbl mf');inU.style.textAlign='center';inU.textContent='INCHES';inW.append(inI,inU);
-    const cmW=el('div');cmW.style.cssText='flex:1;display:flex;flex-direction:column;gap:.15rem';
-    const cmI=el('input');cmI.type='text';cmI.inputMode='decimal';cmI.placeholder='cm';cmI.style.textAlign='center';
-    const cmU=el('div','flbl mf');cmU.style.textAlign='center';cmU.textContent='CM';cmW.append(cmI,cmU);
-    const stored=parseFloat(F[k]);if(!isNaN(stored)){inI.value=stored.toFixed(2);cmI.value=(stored*2.54).toFixed(1);}
-    inI.oninput=e=>{const v=parseFloat(e.target.value);if(!isNaN(v)){F[k]=v;cmI.value=(v*2.54).toFixed(1);}else{F[k]='';cmI.value='';}save();_ping();};
-    cmI.oninput=e=>{const c=parseFloat(e.target.value);if(!isNaN(c)){const inch=c/2.54;F[k]=parseFloat(inch.toFixed(2));inI.value=inch.toFixed(2);}else{F[k]='';inI.value='';}save();_ping();};
-    dual.append(inW,cmW);fd.appendChild(dual);body.appendChild(fd);
-  });
+  // ---- Weekly reminder (Sun + Mon-if-missed) shown ABOVE the More button ----
+  if(fullMeasureReminderDue(S,a.date)){
+    const rem=el('div');rem.style.cssText='margin:.7rem 0 .2rem;padding:.55rem .7rem;border-radius:.5rem;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.45);color:#f87171;font-size:.6875rem;line-height:1.4';
+    rem.textContent='\ud83d\udccf Weekly check-in \u2014 log your full measurements (waist, etc.) under \u201cMore\u201d below.';
+    body.appendChild(rem);
+  }
 
-  // BLD export
-  const bldWrap=el('div');bldWrap.style.cssText='text-align:right;margin-top:.7rem';
-  const bld=el('button');bld.style.cssText='background:transparent;border:none;color:#22d3ee;font-size:.6875rem;opacity:.7;padding:.2rem;cursor:pointer;text-decoration:underline;text-underline-offset:2px';
-  bld.textContent='\u2197 Export to BLD';
-  bld.onclick=()=>{
-    const num=v=>{const n=parseFloat(v);return isNaN(n)?null:n;};
-    const out={date:a.date,source:'PHY',weight:num(F.weight),fat:num(F.bodyFat),muscle:num(F.muscle),bone:num(F.bone),visceral:num(F.visceral),waist:num(F.waist),chest:num(F.chest),hips:num(F.hips),armL:num(F.armL),armR:num(F.armR),thighL:num(F.thighL),thighR:num(F.thighR)};
-    const txt=JSON.stringify(out,null,2);
-    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(()=>toast('✓ Copied to clipboard')).catch(()=>prompt('Copy BLD JSON:',txt));}else prompt('Copy BLD JSON:',txt);
-  };
-  bldWrap.appendChild(bld);body.appendChild(bldWrap);
+  // ---- MORE toggle: everything else ----
+  const moreBtn=el('button');moreBtn.style.cssText='width:100%;margin-top:.5rem;padding:.55rem;border-radius:.5rem;background:var(--s1);border:1px solid var(--line);color:var(--t2);font-size:.75rem;cursor:pointer';
+  const isOpen=!!S._measMore;
+  moreBtn.textContent=(isOpen?'\u2212 Fewer measurements':'\uff0b More measurements (waist, circumferences, body comp)');
+  moreBtn.onclick=()=>{S._measMore=!S._measMore;save();render();};
+  body.appendChild(moreBtn);
+
+  if(isOpen){
+    const more=el('div');more.style.marginTop='.5rem';
+    // bone + visceral
+    const g2=el('div','fgrid');
+    [['bone','BONE (kg)'],['visceral','VISCERAL']].forEach(([k,lbl])=>{
+      const f=el('div','fld');f.innerHTML='<div class="flbl mf">'+lbl+'</div>';const inp=el('input');inp.type='text';inp.inputMode='decimal';inp.value=F[k]||'';inp.oninput=e=>{F[k]=e.target.value;save();_ping();};f.appendChild(inp);g2.appendChild(f);
+    });
+    more.appendChild(g2);
+    const sect=el('div');sect.style.cssText='font-size:.5625rem;color:var(--t3);margin:.75rem 0 .35rem;letter-spacing:.05em';sect.textContent='CIRCUMFERENCES \u2014 inch \u2194 cm (stored as inches)';more.appendChild(sect);
+    [['waist','Waist'],['chest','Chest'],['hips','Hips'],['armL','Left Arm'],['armR','Right Arm'],['thighL','Left Thigh'],['thighR','Right Thigh']].forEach(([k,lbl])=>{
+      const fd=el('div');fd.style.marginBottom='.5rem';
+      const l=el('div','flbl mf');l.style.marginBottom='.2rem';l.textContent=lbl;fd.appendChild(l);
+      const dual=el('div');dual.style.cssText='display:flex;gap:.4rem';
+      const inW=el('div');inW.style.cssText='flex:1;display:flex;flex-direction:column;gap:.15rem';
+      const inI=el('input');inI.type='text';inI.inputMode='decimal';inI.placeholder='in';inI.style.textAlign='center';
+      const inU=el('div','flbl mf');inU.style.textAlign='center';inU.textContent='INCHES';inW.append(inI,inU);
+      const cmW=el('div');cmW.style.cssText='flex:1;display:flex;flex-direction:column;gap:.15rem';
+      const cmI=el('input');cmI.type='text';cmI.inputMode='decimal';cmI.placeholder='cm';cmI.style.textAlign='center';
+      const cmU=el('div','flbl mf');cmU.style.textAlign='center';cmU.textContent='CM';cmW.append(cmI,cmU);
+      const stored=parseFloat(F[k]);if(!isNaN(stored)){inI.value=stored.toFixed(2);cmI.value=(stored*2.54).toFixed(1);}
+      inI.oninput=e=>{const v=parseFloat(e.target.value);if(!isNaN(v)){F[k]=v;cmI.value=(v*2.54).toFixed(1);}else{F[k]='';cmI.value='';}save();_ping();};
+      cmI.oninput=e=>{const c=parseFloat(e.target.value);if(!isNaN(c)){const inch=c/2.54;F[k]=parseFloat(inch.toFixed(2));inI.value=inch.toFixed(2);}else{F[k]='';inI.value='';}save();_ping();};
+      dual.append(inW,cmW);fd.appendChild(dual);more.appendChild(fd);
+    });
+    // BLD export (inside more)
+    const bldWrap=el('div');bldWrap.style.cssText='text-align:right;margin-top:.7rem';
+    const bld=el('button');bld.style.cssText='background:transparent;border:none;color:#22d3ee;font-size:.6875rem;opacity:.7;padding:.2rem;cursor:pointer;text-decoration:underline;text-underline-offset:2px';
+    bld.textContent='\u2197 Export to BLD';
+    bld.onclick=()=>{
+      const num=v=>{const n=parseFloat(v);return isNaN(n)?null:n;};
+      const out={date:a.date,source:'PHY',weight:num(F.weight),fat:num(F.bodyFat),muscle:num(F.muscle),bone:num(F.bone),visceral:num(F.visceral),waist:num(F.waist),chest:num(F.chest),hips:num(F.hips),armL:num(F.armL),armR:num(F.armR),thighL:num(F.thighL),thighR:num(F.thighR)};
+      const txt=JSON.stringify(out,null,2);
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(()=>toast('\u2713 Copied to clipboard')).catch(()=>prompt('Copy BLD JSON:',txt));}else prompt('Copy BLD JSON:',txt);
+    };
+    bldWrap.appendChild(bld);more.appendChild(bldWrap);
+    body.appendChild(more);
+  }
 }
+
 
 function mkSimpleBody(a,body){
   const g=el('div','fgrid2');
@@ -1938,7 +1987,9 @@ function mkMeasureStrip(iso){
       if(!b){ // nothing entered yet — create then mark done
         b=makeActivity(S,'body',iso);b.date=iso;S.log.push(b);
       }
-      b.done=!b.done;saveNow();render();
+      b.done=!b.done;
+      if(b.done)S._expMeas=false; // collapse back to compact strip once done
+      saveNow();render();
     };
     wrap.appendChild(doneRow);
     const savedNote=el('div','saved-note mf');savedNote.style.cssText='font-size:.625rem;color:#4ade80;margin:.4rem 0 0;opacity:0;transition:opacity .2s';
