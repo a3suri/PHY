@@ -1779,20 +1779,21 @@ function lastRunSession(wk,sessIdx,beforeIso,selfId){
   return past[0]||null;
 }
 
-function mkMeasureBody(a,body){
+function mkMeasureBody(a,body,onEdit){
+  const _ping=()=>{try{if(onEdit)onEdit();}catch(e){}if(a._savedNote){a._savedNote.style.opacity='1';setTimeout(()=>{if(a._savedNote)a._savedNote.style.opacity='0';},1200);}};
   const F=a.fields;
   // weight with live BMI + lbs
   const wRow=el('div','fld');wRow.style.marginTop='.6rem';wRow.innerHTML='<div class="flbl mf">WEIGHT (kg)</div>';
   const wInp=el('input');wInp.type='text';wInp.inputMode='decimal';wInp.value=F.weight||'';wInp.placeholder='kg';
   const wHint=el('div');wHint.style.cssText='font-size:.5625rem;color:#f472b6;margin-top:.2rem';
   const updW=()=>{const kg=parseFloat(wInp.value);if(!isNaN(kg)&&kg>0){const lbs=(kg*2.20462).toFixed(1);const hM=(S.heightCm||176)/100;const bmi=(kg/(hM*hM)).toFixed(1);wHint.textContent='≈ '+lbs+' lbs · BMI '+bmi;}else wHint.textContent='';};
-  updW();wInp.oninput=e=>{F.weight=e.target.value;updW();save();};
+  updW();wInp.oninput=e=>{F.weight=e.target.value;updW();save();_ping();};
   wRow.append(wInp,wHint);body.appendChild(wRow);
 
   // simple singles
   const g=el('div','fgrid');
   [['bodyFat','BODY FAT %'],['muscle','MUSCLE (kg)'],['bone','BONE (kg)'],['visceral','VISCERAL']].forEach(([k,lbl])=>{
-    const f=el('div','fld');f.innerHTML='<div class="flbl mf">'+lbl+'</div>';const inp=el('input');inp.type='text';inp.inputMode='decimal';inp.value=F[k]||'';inp.oninput=e=>{F[k]=e.target.value;save();};f.appendChild(inp);g.appendChild(f);
+    const f=el('div','fld');f.innerHTML='<div class="flbl mf">'+lbl+'</div>';const inp=el('input');inp.type='text';inp.inputMode='decimal';inp.value=F[k]||'';inp.oninput=e=>{F[k]=e.target.value;save();_ping();};f.appendChild(inp);g.appendChild(f);
   });
   body.appendChild(g);
 
@@ -1809,21 +1810,22 @@ function mkMeasureBody(a,body){
     const cmI=el('input');cmI.type='text';cmI.inputMode='decimal';cmI.placeholder='cm';cmI.style.textAlign='center';
     const cmU=el('div','flbl mf');cmU.style.textAlign='center';cmU.textContent='CM';cmW.append(cmI,cmU);
     const stored=parseFloat(F[k]);if(!isNaN(stored)){inI.value=stored.toFixed(2);cmI.value=(stored*2.54).toFixed(1);}
-    inI.oninput=e=>{const v=parseFloat(e.target.value);if(!isNaN(v)){F[k]=v;cmI.value=(v*2.54).toFixed(1);}else{F[k]='';cmI.value='';}save();};
-    cmI.oninput=e=>{const c=parseFloat(e.target.value);if(!isNaN(c)){const inch=c/2.54;F[k]=parseFloat(inch.toFixed(2));inI.value=inch.toFixed(2);}else{F[k]='';inI.value='';}save();};
+    inI.oninput=e=>{const v=parseFloat(e.target.value);if(!isNaN(v)){F[k]=v;cmI.value=(v*2.54).toFixed(1);}else{F[k]='';cmI.value='';}save();_ping();};
+    cmI.oninput=e=>{const c=parseFloat(e.target.value);if(!isNaN(c)){const inch=c/2.54;F[k]=parseFloat(inch.toFixed(2));inI.value=inch.toFixed(2);}else{F[k]='';inI.value='';}save();_ping();};
     dual.append(inW,cmW);fd.appendChild(dual);body.appendChild(fd);
   });
 
   // BLD export
-  const bld=el('button');bld.style.cssText='width:100%;margin-top:.6rem;padding:.7rem;border-radius:.55rem;background:rgba(34,211,238,.14);color:#22d3ee;font-weight:600;font-size:.8125rem;border:1px solid rgba(34,211,238,.35)';
-  bld.textContent='Export to BLD';
+  const bldWrap=el('div');bldWrap.style.cssText='text-align:right;margin-top:.7rem';
+  const bld=el('button');bld.style.cssText='background:transparent;border:none;color:#22d3ee;font-size:.6875rem;opacity:.7;padding:.2rem;cursor:pointer;text-decoration:underline;text-underline-offset:2px';
+  bld.textContent='\u2197 Export to BLD';
   bld.onclick=()=>{
     const num=v=>{const n=parseFloat(v);return isNaN(n)?null:n;};
     const out={date:a.date,source:'PHY',weight:num(F.weight),fat:num(F.bodyFat),muscle:num(F.muscle),bone:num(F.bone),visceral:num(F.visceral),waist:num(F.waist),chest:num(F.chest),hips:num(F.hips),armL:num(F.armL),armR:num(F.armR),thighL:num(F.thighL),thighR:num(F.thighR)};
     const txt=JSON.stringify(out,null,2);
     if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(()=>toast('✓ Copied to clipboard')).catch(()=>prompt('Copy BLD JSON:',txt));}else prompt('Copy BLD JSON:',txt);
   };
-  body.appendChild(bld);
+  bldWrap.appendChild(bld);body.appendChild(bldWrap);
 }
 
 function mkSimpleBody(a,body){
@@ -1889,24 +1891,60 @@ function mkNutritionStrip(iso){
   return wrap;
 }
 function mkMeasureStrip(iso){
-  const ms=S.log.filter(a=>a.group==='body');
+  const ms=S.log.filter(a=>a.group==='body'&&a.fields&&a.fields.weight);
   let latest=null;ms.forEach(a=>{if(!latest||a.date>latest.date)latest=a;});
   const wrap=el('div','steps-strip');wrap.style.borderColor='rgba(244,114,182,.3)';
   const top=el('div','ss-top');
-  const lw=latest&&latest.fields.weight?latest.fields.weight+'kg':'\u2014';
-  const ld=latest?' \u00b7 '+fmtShort(latest.date):'';
-  top.innerHTML='<span class="ss-ico">\ud83d\udccf</span><span class="ss-lbl mf">MEASUREMENTS</span><span class="ss-tgt mf">'+lw+ld+'</span>';
+  const hdr=el('span','ss-tgt mf');
+  const setHdr=()=>{
+    const cur=S.log.find(a=>a.group==='body'&&a.date===iso);
+    if(cur&&cur.fields.weight){hdr.textContent=(cur.done?'\u2713 ':'')+cur.fields.weight+'kg \u00b7 '+fmtShort(iso);hdr.style.color='#4ade80';}
+    else if(latest){hdr.textContent=latest.fields.weight+'kg \u00b7 '+fmtShort(latest.date);hdr.style.color='';}
+    else{hdr.textContent='\u2014';hdr.style.color='';}
+  };
+  top.innerHTML='<span class="ss-ico">\ud83d\udccf</span><span class="ss-lbl mf">MEASUREMENTS</span>';
+  setHdr();top.appendChild(hdr);
   wrap.appendChild(top);
   if(S._expMeas){
-    // find or CREATE today's body entry, then render the full measurement editor into it
-    let bodyAct=S.log.find(a=>a.group==='body'&&a.date===iso);
-    if(!bodyAct){bodyAct=makeActivity(S,'body',iso);bodyAct.done=true;bodyAct.date=iso;upsertActivity(bodyAct);}
     const info=el('div');info.style.cssText='font-size:.625rem;color:var(--t3);margin:.5rem 0 .1rem';
-    info.textContent='Entry for '+fmtShort(iso)+' \u00b7 weekly is fine \u2014 log weight & waist to track goals';
+    const existing=S.log.find(a=>a.group==='body'&&a.date===iso);
+    info.textContent=(existing&&existing.fields.weight?'Editing ':'New entry for ')+fmtShort(iso)+' \u00b7 weekly is fine';
     wrap.appendChild(info);
+    // ensure an entry object exists to bind inputs to, but DON'T persist until user types
+    let bodyAct=S.log.find(a=>a.group==='body'&&a.date===iso);
+    let isNew=false;
+    if(!bodyAct){bodyAct=makeActivity(S,'body',iso);bodyAct.done=false;bodyAct.date=iso;isNew=true;}
+    // wrapper that persists on first real edit + live-updates the header
+    const persist=()=>{
+      const hasAny=Object.keys(bodyAct.fields).some(k=>bodyAct.fields[k]!=='' && bodyAct.fields[k]!=null);
+      if(hasAny){
+        if(isNew&&!S.log.some(a=>a.id===bodyAct.id)){S.log.push(bodyAct);isNew=false;}
+        saveNow();
+      }
+      setHdr();
+    };
     const editor=el('div');editor.style.cssText='margin-top:.2rem';
-    mkMeasureBody(bodyAct,editor);
+    mkMeasureBody(bodyAct,editor,persist);
     wrap.appendChild(editor);
+    // Mark-as-done row (like gym/run) — confirms the measurement session is complete for this date
+    const doneRow=el('div');doneRow.style.cssText='display:flex;align-items:center;gap:.6rem;margin:.8rem 0 .2rem;padding:.6rem .7rem;border-radius:.55rem;background:var(--s1);border:1px solid var(--line)';
+    const curEntry=S.log.find(a=>a.group==='body'&&a.date===iso);
+    const isDone=!!(curEntry&&curEntry.done);
+    const dtick=el('div','atick'+(isDone?' on':''));dtick.textContent=isDone?'\u2713':'';
+    const dlbl=el('div');dlbl.style.cssText='flex:1;font-size:.8125rem;color:var(--t1)';dlbl.textContent=isDone?'Measurements logged for '+fmtShort(iso):'Mark measurements done';
+    doneRow.append(dtick,dlbl);
+    doneRow.onclick=()=>{
+      let b=S.log.find(a=>a.group==='body'&&a.date===iso);
+      if(!b){ // nothing entered yet — create then mark done
+        b=makeActivity(S,'body',iso);b.date=iso;S.log.push(b);
+      }
+      b.done=!b.done;saveNow();render();
+    };
+    wrap.appendChild(doneRow);
+    const savedNote=el('div','saved-note mf');savedNote.style.cssText='font-size:.625rem;color:#4ade80;margin:.4rem 0 0;opacity:0;transition:opacity .2s';
+    savedNote.textContent='\u2713 Saved';
+    wrap.appendChild(savedNote);
+    bodyAct._savedNote=savedNote;
   }
   top.onclick=()=>{S._expMeas=!S._expMeas;save();render();};
   return wrap;
