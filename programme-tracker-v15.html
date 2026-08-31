@@ -249,6 +249,9 @@ button{cursor:pointer;border:none;background:none}
 .set-inwrap{display:flex;align-items:center;gap:.3rem;background:var(--s1);border:1px solid var(--line);border-radius:.5rem;padding:.35rem .5rem}
 .set-inwrap input{width:4.5rem;background:transparent;border:none;color:var(--t1);font-size:.875rem;text-align:right;outline:none}
 .set-unit{font-size:.625rem;color:var(--t3);min-width:2rem}
+
+.pill{padding:.45rem .7rem;border-radius:.5rem;background:var(--s1);border:1px solid var(--line);color:var(--t2);font-size:.8125rem;cursor:pointer}
+.pill.on{background:rgba(192,132,252,.18);border-color:rgba(192,132,252,.6);color:#e9d5ff}
 </style>
 </head>
 <body>
@@ -324,17 +327,38 @@ function defState(){return{version:2,user:'',heightCm:176,progStart:DEFAULT_STAR
   runWeek:1,view:'today',cursor:todayISO(),nutrition:{},_freqRange:8,targets:{}};}
 
 /* ===== ALCOHOL: drink catalogue + units ===== */
+const DRINK_CATS=[
+  {key:'spirits',name:'Spirits',emoji:'\ud83e\udd43',types:['Whisky','Gin','Cognac'],sizes:[25,50],abv:0.43,kcalPerMl:2.41},
+  {key:'wine',name:'Wine',emoji:'\ud83c\udf77',types:['Red','White','Bubbly'],sizes:[100,125,150,175],abv:0.13,abvBubbly:0.12,kcalPerMl:0.83},
+  {key:'aperitif',name:'Aperitifs',emoji:'\ud83c\udf78',types:['Campari','Martini'],sizes:[25,50],abv:0.25,abvByType:{Campari:0.25,Martini:0.15},kcalPerMl:1.2},
+  {key:'beer',name:'Beer',emoji:'\ud83c\udf7a',types:['Beer'],sizes:[330,500,568],abv:0.045,kcalPerMl:0.43}
+];
+function catDef(k){return DRINK_CATS.find(c=>c.key===k);}
+function sizeLabel(cat,ml){if(cat==='beer'){return ml===568?'Pint':ml+'ml';}return ml+'ml';}
+function calcUnits(cat,type,ml){const c=catDef(cat);if(!c)return 0;let abv=c.abv;if(c.abvByType&&c.abvByType[type]!=null)abv=c.abvByType[type];else if(cat==='wine'&&type==='Bubbly')abv=c.abvBubbly;return Math.round((ml*abv/10)*10)/10;}
+function calcKcal(cat,type,ml){const c=catDef(cat);if(!c)return 0;return Math.round(ml*c.kcalPerMl);}
+// Legacy catalogue kept so old {whisky:n} data still reads
 const DRINKS=[
-  {key:'whisky',name:'Whisky 50ml',emoji:'\ud83e\udd43',units:2.0,kcal:113},
+  {key:'whisky',name:'Whisky 25ml',emoji:'\ud83e\udd43',units:1.0,kcal:56},
   {key:'wine',name:'Wine 125ml',emoji:'\ud83c\udf77',units:1.6,kcal:90},
   {key:'beer',name:'Beer 330ml',emoji:'\ud83c\udf7a',units:1.7,kcal:140},
-  {key:'gin',name:'G&T 50ml',emoji:'\ud83c\udf78',units:2.0,kcal:120},
+  {key:'gin',name:'Gin 25ml',emoji:'\ud83c\udf78',units:1.0,kcal:60},
   {key:'champagne',name:'Bubbly 125ml',emoji:'\ud83e\udd42',units:1.5,kcal:95}
 ];
 function drinkDef(k){return DRINKS.find(d=>d.key===k);}
-function drinksUnits(drinks){let u=0;if(drinks)Object.keys(drinks).forEach(k=>{const d=drinkDef(k);if(d)u+=d.units*(drinks[k]||0);});return Math.round(u*10)/10;}
-function drinksKcal(drinks){let c=0;if(drinks)Object.keys(drinks).forEach(k=>{const d=drinkDef(k);if(d)c+=d.kcal*(drinks[k]||0);});return Math.round(c);}
-function drinksCount(drinks){let n=0;if(drinks)Object.keys(drinks).forEach(k=>{n+=(drinks[k]||0);});return n;}
+function drinksUnits(drinks){let u=0;if(!drinks)return 0;
+  if(Array.isArray(drinks.log))drinks.log.forEach(e=>{u+=(e.units||0)*(e.qty||1);});
+  Object.keys(drinks).forEach(k=>{if(k==='log')return;const d=drinkDef(k);if(d)u+=d.units*(drinks[k]||0);});
+  return Math.round(u*10)/10;}
+function drinksKcal(drinks){let c=0;if(!drinks)return 0;
+  if(Array.isArray(drinks.log))drinks.log.forEach(e=>{c+=(e.kcal||0)*(e.qty||1);});
+  Object.keys(drinks).forEach(k=>{if(k==='log')return;const d=drinkDef(k);if(d)c+=d.kcal*(drinks[k]||0);});
+  return Math.round(c);}
+function drinksCount(drinks){let n=0;if(!drinks)return 0;
+  if(Array.isArray(drinks.log))drinks.log.forEach(e=>{n+=(e.qty||1);});
+  Object.keys(drinks).forEach(k=>{if(k==='log')return;n+=(drinks[k]||0);});
+  return n;}
+function drinkLogList(drinks){return (drinks&&Array.isArray(drinks.log))?drinks.log:[];}
 
 /* ===== NUTRITION per-day accessor ===== */
 function nutOn(S,iso){return (S.nutrition&&S.nutrition[iso])||null;}
@@ -869,7 +893,7 @@ const NUT_CARDS=[
     '<b>\u26a0\ufe0f Moderate:</b> paneer \u2264150g \u00b7 brown rice \u2264120g cooked (active days) \u00b7 sweet potato \u00b7 oats \u00b7 fruit \u00b7 nuts (portion-controlled)',
     '<b>\ud83d\udeab Hard eliminate:</b> fried foods \u00b7 crisps/namkeen \u00b7 mithai']},
   {t:'\ud83c\udf77 Alcohol \u00b7 Treats \u00b7 Limits',c:[
-    '<b>Weekly cap: 14 units.</b> 50ml whisky = 2.0 units \u00b7 125ml wine = 1.6 units.',
+    '<b>Weekly cap: 14 units.</b> 25ml whisky = 1.0 unit (50ml double = 2.0) \u00b7 125ml wine = 1.6 units.',
     '<b>Two lighter drink days:</b> 2\u00d7whisky OR 2\u00d7wine OR one of each.',
     '<b>One heavier (golf day):</b> up to 2\u00d7wine + 2\u00d7whisky, or 3\u00d7wine + 1\u00d7whisky.',
     'One treat per day: nuts OR alcohol OR small dessert (200\u2013300 kcal). Alcohol IS the treat on drink days.',
@@ -1895,6 +1919,54 @@ function openPicker(){
 }
 
 /* ===== TODAY ===== */
+function ensureDrinkLog(n){if(!n.drinks)n.drinks={};if(!Array.isArray(n.drinks.log))n.drinks.log=[];return n.drinks.log;}
+
+function openDrinkPicker(iso,catKey){
+  const cat=catDef(catKey);if(!cat)return;
+  const n=ensureNut(S,iso);
+  const st={type:cat.types[0],ml:cat.sizes[0],qty:1};
+  const bg=el('div','sheet-bg');bg.onclick=e=>{if(e.target===bg)bg.remove();};
+  const sheet=el('div','sheet');
+  const hd=el('div','sheet-hd');hd.innerHTML='<div class="st sf">'+cat.emoji+' '+cat.name+'</div>';
+  const x=el('button','sx','\u00d7');x.onclick=()=>bg.remove();hd.appendChild(x);sheet.appendChild(hd);
+
+  const body=el('div');body.style.padding='0 1.25rem 1rem';
+  // live unit readout
+  const readout=el('div');readout.style.cssText='text-align:center;margin:.4rem 0 .8rem;font-size:1.1rem;color:#c084fc;font-weight:600';
+  const updRead=()=>{const u=calcUnits(catKey,st.type,st.ml);const k=calcKcal(catKey,st.type,st.ml);readout.textContent=(u*st.qty).toFixed(1)+' units \u00b7 '+(k*st.qty)+' kcal';};
+
+  const pillRow=(label,opts,cur,onPick,fmt)=>{
+    const w=el('div');w.style.marginBottom='.7rem';
+    const l=el('div','flbl mf');l.style.marginBottom='.35rem';l.textContent=label;w.appendChild(l);
+    const row=el('div');row.style.cssText='display:flex;flex-wrap:wrap;gap:.4rem';
+    opts.forEach(o=>{
+      const b=el('button','pill'+(o===cur()?' on':''));
+      b.textContent=fmt?fmt(o):o;
+      b.onclick=()=>{onPick(o);rebuild();};
+      row.appendChild(b);
+    });
+    w.appendChild(row);return w;
+  };
+  let typeW,sizeW,qtyW;
+  const rebuild=()=>{
+    body.innerHTML='';
+    if(cat.types.length>1)body.appendChild(pillRow('TYPE',cat.types,()=>st.type,o=>st.type=o));
+    body.appendChild(pillRow('SIZE',cat.sizes,()=>st.ml,o=>st.ml=o,o=>sizeLabel(catKey,o)));
+    body.appendChild(pillRow('HOW MANY',[1,2,3,4,5,6],()=>st.qty,o=>st.qty=o));
+    body.appendChild(readout);updRead();
+    const add=el('button','pbtn');add.style.cssText+='background:var(--ac);color:#0a0a0a;font-weight:600;margin-top:.3rem';
+    add.textContent='Add '+st.qty+' \u00d7 '+st.type+' '+sizeLabel(catKey,st.ml);
+    add.onclick=()=>{
+      const log=ensureDrinkLog(n);
+      log.push({cat:catKey,type:st.type,ml:st.ml,units:calcUnits(catKey,st.type,st.ml),kcal:calcKcal(catKey,st.type,st.ml),qty:st.qty});
+      saveNow();bg.remove();render();
+    };
+    body.appendChild(add);
+  };
+  rebuild();
+  sheet.appendChild(body);bg.appendChild(sheet);document.body.appendChild(bg);
+}
+
 function mkDrinkStrip(iso){
   const n=ensureNut(S,iso);
   const box=el('div','steps-strip');box.style.borderColor='rgba(192,132,252,.3)';
@@ -1902,21 +1974,36 @@ function mkDrinkStrip(iso){
   top.innerHTML='<span class="ss-ico">\ud83c\udf77</span><span class="ss-lbl mf">ALCOHOL</span><span class="ss-tgt mf">'+drinksUnits(n.drinks)+'u \u00b7 '+drinksKcal(n.drinks)+' kcal</span>';
   box.appendChild(top);
   if(S._expAlc){
+    // 4 category buttons
     const dp=el('div','drinkpick');dp.style.margin='.6rem 0 0';
-    DRINKS.forEach(d=>{
-      const cnt=(n.drinks&&n.drinks[d.key])||0;
-      const chip=el('div','drinkchip'+(cnt>0?' on':''));
-      chip.innerHTML='<span class="dc-emoji">'+d.emoji+'</span><span class="dc-name">'+d.name+'</span><span class="dc-cnt mf">'+(cnt>0?'\u00d7'+cnt:'')+'</span>';
-      chip.onclick=()=>{if(!n.drinks)n.drinks={};n.drinks[d.key]=(n.drinks[d.key]||0)+1;save();render();};
-      const minus=el('button','dc-minus');minus.textContent='\u2212';
-      minus.onclick=e=>{e.stopPropagation();if(n.drinks&&n.drinks[d.key]>0){n.drinks[d.key]--;if(!n.drinks[d.key])delete n.drinks[d.key];save();render();}};
-      chip.appendChild(minus);dp.appendChild(chip);
+    DRINK_CATS.forEach(c=>{
+      const chip=el('div','drinkchip');
+      chip.innerHTML='<span class="dc-emoji">'+c.emoji+'</span><span class="dc-name">'+c.name+'</span>';
+      chip.onclick=()=>openDrinkPicker(iso,c.key);
+      dp.appendChild(chip);
     });
     box.appendChild(dp);
+    // logged drinks today (removable)
+    const log=drinkLogList(n.drinks);
+    if(log.length){
+      const list=el('div');list.style.cssText='margin:.6rem 0 0';
+      log.forEach((e,idx)=>{
+        const row=el('div');row.style.cssText='display:flex;align-items:center;gap:.5rem;padding:.4rem .5rem;border-radius:.45rem;background:var(--s1);border:1px solid var(--line);margin-bottom:.3rem';
+        const em=(catDef(e.cat)||{}).emoji||'\ud83c\udf77';
+        row.innerHTML='<span>'+em+'</span><span style="flex:1;font-size:.75rem;color:var(--t1)">'+e.qty+'\u00d7 '+e.type+' '+sizeLabel(e.cat,e.ml)+'</span><span class="mf" style="font-size:.6875rem;color:#c084fc">'+((e.units*e.qty).toFixed(1))+'u</span>';
+        const del=el('button','dc-minus');del.textContent='\u00d7';
+        del.onclick=()=>{const l=ensureDrinkLog(n);l.splice(idx,1);saveNow();render();};
+        row.appendChild(del);list.appendChild(row);
+      });
+      box.appendChild(list);
+    }
+    // legacy count-based drinks (from before this version) shown so old data is visible
+    if(n.drinks){Object.keys(n.drinks).forEach(k=>{if(k==='log')return;const d=drinkDef(k);if(d&&n.drinks[k]>0){const row=el('div');row.style.cssText='display:flex;align-items:center;gap:.5rem;padding:.4rem .5rem;font-size:.7rem;color:var(--t2)';row.textContent=d.emoji+' '+n.drinks[k]+'\u00d7 '+d.name+' (older entry)';box.appendChild(row);}});}
   }
   top.onclick=()=>{S._expAlc=!S._expAlc;save();render();};
   return box;
 }
+
 
 function mkNutritionStrip(iso){
   const n=ensureNut(S,iso);
