@@ -1967,12 +1967,34 @@ function openDrinkPicker(iso,catKey){
   sheet.appendChild(body);bg.appendChild(sheet);document.body.appendChild(bg);
 }
 
+function weekAlcoholUnits(S,iso){
+  const days=weekDates(weekOf(iso));let u=0;
+  days.forEach(d=>{const n=(S.nutrition||{})[d];if(n)u+=drinksUnits(n.drinks);});
+  return Math.round(u*10)/10;
+}
 function mkDrinkStrip(iso){
   const n=ensureNut(S,iso);
   const box=el('div','steps-strip');box.style.borderColor='rgba(192,132,252,.3)';
   const top=el('div','ss-top');
   top.innerHTML='<span class="ss-ico">\ud83c\udf77</span><span class="ss-lbl mf">ALCOHOL</span><span class="ss-tgt mf">'+drinksUnits(n.drinks)+'u \u00b7 '+drinksKcal(n.drinks)+' kcal</span>';
   box.appendChild(top);
+  // ALWAYS-VISIBLE weekly budget (today · week · remaining) — collapsed or expanded
+  {
+    const cap=TGT().alcUnits;
+    const wk=weekAlcoholUnits(S,iso);
+    const today=drinksUnits(n.drinks);
+    const remaining=Math.round((cap-wk)*10)/10;
+    const over=remaining<0;
+    const bud=el('div');bud.style.cssText='margin:.55rem 0 .2rem;padding:.6rem .7rem;border-radius:.55rem;background:var(--s1);border:1px solid var(--line);display:flex;justify-content:space-between;gap:.4rem;font-size:.6875rem';
+    bud.innerHTML='<span style="color:var(--t2)">Today <b style="color:var(--t1)">'+today+'u</b></span>'+
+      '<span style="color:var(--t2)">Week <b style="color:'+(wk>cap?'#f87171':'var(--t1)')+'">'+wk+'u</b></span>'+
+      '<span style="color:var(--t2)">Left <b style="color:'+(over?'#f87171':'#4ade80')+'">'+(over?remaining:('+'+remaining))+'u</b> / '+cap+'</span>';
+    box.appendChild(bud);
+    const barBg=el('div');barBg.style.cssText='height:5px;border-radius:3px;background:var(--s2);margin:0 0 .2rem;overflow:hidden';
+    const bar=el('div');const pct=Math.min(100,Math.round(wk/cap*100));
+    bar.style.cssText='height:100%;width:'+pct+'%;background:'+(wk>cap?'#f87171':(wk>cap*0.8?'#fbbf24':'#4ade80'))+';transition:width .2s';
+    barBg.appendChild(bar);box.appendChild(barBg);
+  }
   if(S._expAlc){
     // 4 category buttons
     const dp=el('div','drinkpick');dp.style.margin='.6rem 0 0';
