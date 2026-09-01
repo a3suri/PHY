@@ -252,6 +252,10 @@ button{cursor:pointer;border:none;background:none}
 
 .pill{padding:.45rem .7rem;border-radius:.5rem;background:var(--s1);border:1px solid var(--line);color:var(--t2);font-size:.8125rem;cursor:pointer}
 .pill.on{background:rgba(192,132,252,.18);border-color:rgba(192,132,252,.6);color:#e9d5ff}
+
+.remind-bar{margin:.5rem 1.25rem 0;padding:.6rem .8rem;border-radius:.55rem;background:rgba(239,68,68,.14);border:1px solid rgba(239,68,68,.5);color:#fca5a5;font-size:.75rem;line-height:1.4;display:flex;align-items:center;justify-content:space-between;gap:.6rem;cursor:pointer}
+.remind-bar b{color:#fecaca}
+.remind-x{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:.6875rem;padding:.25rem .6rem;border-radius:.4rem;flex-shrink:0}
 </style>
 </head>
 <body>
@@ -1197,9 +1201,10 @@ function mkProgress(){
 }
 
 function backupData(){
-  const data={version:'phy-v11',exported:new Date().toISOString(),state:{
+  const data={version:'phy-v15',exported:new Date().toISOString(),state:{
     user:S.user,heightCm:S.heightCm,progStart:S.progStart,goals:S.goals,
-    log:S.log,measurements:S.measurements,steps:S.steps,runWeek:S.runWeek
+    log:S.log,measurements:S.measurements,steps:S.steps,runWeek:S.runWeek,
+    nutrition:S.nutrition,targets:S.targets,menu:S.menu
   }};
   const json=JSON.stringify(data,null,2);
   const blob=new Blob([json],{type:'application/json'});
@@ -1221,7 +1226,7 @@ function restoreData(){
       try{
         const data=JSON.parse(ev.target.result);
         const st=data.state||data; // accept raw state too
-        if(!st.log&&!st.measurements){toast('That file has no PHY data');return;}
+        if(!st.log&&!st.measurements&&!st.nutrition&&!st.steps){toast('That file has no PHY data');return;}
         if(!confirm('Restore this backup? It will REPLACE your current data in this app.'))return;
         if(st.user)S.user=st.user;
         if(st.heightCm)S.heightCm=st.heightCm;
@@ -1230,9 +1235,12 @@ function restoreData(){
         S.log=st.log||[];
         S.measurements=st.measurements||[];
         S.steps=st.steps||{};
+        S.nutrition=st.nutrition||{};
+        if(st.targets)S.targets=st.targets;
         if(st.runWeek)S.runWeek=st.runWeek;
+        const nutDays=Object.keys(S.nutrition).length;
         saveNow();S.view='progress';render();
-        toast('\u2713 Restored '+(S.log.length)+' activities');
+        toast('\u2713 Restored '+S.log.length+' activities, '+nutDays+' nutrition days');
       }catch(err){toast('Could not read that backup file');}
     };
     reader.readAsText(file);
@@ -2340,10 +2348,54 @@ function mkSetup(){
   wrap.append(lbl,inp,btn);return wrap;
 }
 
+function checkinKey(iso){
+  // Sunday + its following Monday share one key = that Sunday's date
+  const dow=parseISO(iso).getDay();
+  if(dow===0)return iso;            // Sunday itself
+  if(dow===1)return addDays(iso,-1);// Monday -> the Sunday just past
+  return weekOf(iso);              // other days: fall back to week
+}
+function backupDoneThisWeek(S,iso){
+  return (S._backupDone&&S._backupDone[checkinKey(iso)])===true;
+}
+function markBackupDone(S,iso){
+  if(!S._backupDone)S._backupDone={};
+  S._backupDone[checkinKey(iso)]=true;
+}
+function mkReminderBar(){
+  const iso=S.cursor||todayISO();
+  const today=todayISO();
+  // reminders key off the ACTUAL today, not the browsed date
+  const dow=parseISO(today).getDay(); // 0 Sun,1 Mon
+  if(dow!==0&&dow!==1)return null;
+  const bars=[];
+  // measurement reminder — outstanding if not done this week
+  if(fullMeasureReminderDue(S,today)){
+    const b=el('div','remind-bar');
+    b.innerHTML='\ud83d\udccf <b>Weekly check-in</b> \u2014 log your full body measurements (waist etc.)';
+    b.onclick=()=>{S.view='today';S._expMeas=true;S._measMore=true;save();render();};
+    bars.push(b);
+  }
+  // backup reminder — outstanding unless done/dismissed this week
+  if(!backupDoneThisWeek(S,today)){
+    const b=el('div','remind-bar');
+    const txt=el('span');txt.innerHTML='\ud83d\udcbe <b>Weekly backup</b> \u2014 tap to back up your data';
+    txt.onclick=()=>{backupData();markBackupDone(S,today);save();render();};
+    b.appendChild(txt);
+    const dis=el('button','remind-x');dis.textContent='Done';
+    dis.onclick=(e)=>{e.stopPropagation();markBackupDone(S,today);save();render();};
+    b.appendChild(dis);
+    bars.push(b);
+  }
+  if(!bars.length)return null;
+  const wrap=el('div');bars.forEach(x=>wrap.appendChild(x));
+  return wrap;
+}
 function render(){
   const app=document.getElementById('app');app.innerHTML='';
   if(!S.user){app.appendChild(mkSetup());return;}
   app.appendChild(mkHeader());app.appendChild(mkLinks());
+  const rb=mkReminderBar();if(rb)app.appendChild(rb);
   let v;try{if(S.view==='week')v=mkWeek();else if(S.view==='month')v=mkMonth();else if(S.view==='progress')v=mkProgress();else if(S.view==='nutrition')v=mkNutrition();else v=mkToday();}catch(e){v=el('div','empty','Render error: '+e.message);}
   app.appendChild(v);
   try{window.scrollTo(0,0);}catch(e){}
