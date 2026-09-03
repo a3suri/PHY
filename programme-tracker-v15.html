@@ -238,8 +238,9 @@ button{cursor:pointer;border:none;background:none}
 .ds-sum{font-size:.75rem;color:#c084fc}
 .drinkstrip .drinkpick{padding:0}
 
-.upflag{background:transparent;border:1px solid #3d3d3d;border-radius:.4rem;padding:.15rem .35rem;font-size:.7rem;color:var(--t3);line-height:1;opacity:.6}
-.upflag.on{border-color:rgba(74,222,128,.6);background:rgba(74,222,128,.12);opacity:1}
+.exgrade{display:flex;gap:.3rem;margin:.3rem 0 .1rem}
+.exgbtn{background:transparent;border:1px solid #3d3d3d;border-radius:.45rem;padding:.15rem .45rem;font-size:.95rem;line-height:1;opacity:.55}
+.exgbtn.on{opacity:1}
 
 .gearbtn{position:absolute;top:.2rem;right:0;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:.6rem;font-size:1.3rem;padding:.4rem .55rem;cursor:pointer;z-index:5}
 .setgroup{margin:.3rem 0 .8rem}
@@ -295,12 +296,12 @@ const DEFAULT_MENU=[
    ex:['Suitcase Squat','DB Bench','Lat Pulldown','Walking Lunge','Tricep Pushdown','Bicep Curl','Plank','Face Pulls']},
   {key:'lift',name:'Custom Lift',group:'strength',ex:['Exercise 1']},
   {key:'run',name:'5K→10K Run Programme',group:'cardio',runProg:true},
+  {key:'golf',name:'Golf (walk)',group:'cardio',cardio:'golf'},
   {key:'swim',name:'Swim',group:'cardio',cardio:'swim'},
   {key:'row',name:'Rowing',group:'cardio',cardio:'row'},
   {key:'xtrain',name:'Cross Trainer',group:'cardio',cardio:'xtrain'},
   {key:'walk',name:'Walk',group:'cardio',cardio:'walk'},
   {key:'yoga',name:'Yoga / Mobility',group:'flex'},
-  {key:'golf',name:'Golf (walk)',group:'cardio',cardio:'golf'},
   {key:'cycle',name:'Cycling',group:'cardio',cardio:'cycle'},
   
   {key:'alcohol',name:'Alcohol',group:'other',alcohol:true},
@@ -389,7 +390,9 @@ function buildStrengthEx(S,defKey,exList,iso,gym){
       lastDate:le?le.date:null,
       memo:le&&le.ex.memo?le.ex.memo:'',
       progressHint:le&&le.ex.progress?true:false,
+      gradeHint:le&&le.ex.grade?le.ex.grade:'',
       progress:false,
+      grade:'',
       refGym:ref?ref.gym:null,
       refSets:ref?ref.ex.sets:null,
       refDate:ref?ref.date:null
@@ -433,10 +436,9 @@ function makeActivity(S,defKey,iso){
     }
   } else if(def.group==='cardio'){
     if(def.runProg){
-      const wk=S.runWeek||1;
-      a.fields.runWeek=wk;
-      a.fields.session=0; // which of the 3 sessions
-      a.fields.segments=[]; // filled when session chosen in UI
+      a.fields.runStep=(S.runStep!=null?S.runStep:0); // ladder level 0-29
+      a.fields.effort=''; // graded after run
+      a.fields.segments=[];
       a.fields.distance='';a.fields.time='';a.fields.avgHR='';
     } else {
       // Open-ended cardio (golf/walk/swim/rowing/cross-trainer/cycling): always blank, no progression pre-fill
@@ -490,72 +492,24 @@ function monthByActivity(S,cursorIso){
 
 
 /* 18-week run programme — segment-loggable */
-const RUN_PROGRAMME={
-  phases:[
-    {name:'BASE',from:1,to:4,note:'Walk-jog, build the habit. 30 min sessions.'},
-    {name:'CONTINUOUS',from:5,to:9,note:'Bridge to continuous running. 30 min.'},
-    {name:'5K',from:10,to:14,note:'Own the 5K, add speed. 35–45 min.'},
-    {name:'10K',from:15,to:18,note:'Extend the long run. 45–60 min.'}
-  ],
-  // each session: {type, desc, log:'segment'|'distance', seg:{walk,jog,reps}, km}
-  weeks:{
-    1:[{type:'walkjog',desc:'Walk 2 · Jog 1 × 10',seg:{walk:2,jog:1,reps:10},km:2.5},
-       {type:'walkjog',desc:'Walk 2 · Jog 1 × 10',seg:{walk:2,jog:1,reps:10},km:2.5},
-       {type:'long',desc:'Brisk walk 40 min',km:4}],
-    2:[{type:'walkjog',desc:'Walk 2 · Jog 2 × 8',seg:{walk:2,jog:2,reps:8},km:3},
-       {type:'walkjog',desc:'Walk 2 · Jog 2 × 8',seg:{walk:2,jog:2,reps:8},km:3},
-       {type:'long',desc:'Brisk walk 45 min',km:4.5}],
-    3:[{type:'walkjog',desc:'Walk 1 · Jog 3 × 8',seg:{walk:1,jog:3,reps:8},km:3.5},
-       {type:'walkjog',desc:'Walk 1 · Jog 3 × 8',seg:{walk:1,jog:3,reps:8},km:3.5},
-       {type:'long',desc:'Walk-jog 50 min',km:5}],
-    4:[{type:'walkjog',desc:'Walk 1 · Jog 4 × 6 (deload)',seg:{walk:1,jog:4,reps:6},km:3.5},
-       {type:'walkjog',desc:'Walk 1 · Jog 4 × 6',seg:{walk:1,jog:4,reps:6},km:3.5},
-       {type:'long',desc:'Brisk walk 45 min',km:4.5}],
-    5:[{type:'interval',desc:'Jog 10 min × 3 (2 min walk between)',seg:{jog:10,walk:2,reps:3},km:4},
-       {type:'walkjog',desc:'Walk 1 · Jog 5 × 5',seg:{walk:1,jog:5,reps:5},km:4.5},
-       {type:'long',desc:'Walk-jog 55 min',km:5.5}],
-    6:[{type:'easy',desc:'Jog 20 min + 10 min walk',km:4},
-       {type:'walkjog',desc:'Walk 1 · Jog 6 × 4',seg:{walk:1,jog:6,reps:4},km:4.5},
-       {type:'long',desc:'Jog-walk 60 min',km:6}],
-    7:[{type:'easy',desc:'Jog 25 min + 5 min walk',km:4.5},
-       {type:'interval',desc:'6 × 1 min brisk / 2 min walk',seg:{jog:1,walk:2,reps:6},km:3.5},
-       {type:'long',desc:'Jog 25 min easy',km:4}],
-    8:[{type:'easy',desc:'Continuous jog 30 min',km:5},
-       {type:'interval',desc:'6 × 90s brisk / 2 min walk',seg:{jog:1.5,walk:2,reps:6},km:4},
-       {type:'long',desc:'Jog 30 min easy',km:5}],
-    9:[{type:'easy',desc:'Jog 25 min + 5 walk (deload)',km:4.5},
-       {type:'easy',desc:'Jog 20 min easy',km:3.5},
-       {type:'long',desc:'Jog 25 min easy',km:4}],
-    10:[{type:'easy',desc:'Jog 35 min easy',km:6},
-        {type:'interval',desc:'5 × 2 min brisk / 2 min jog',seg:{jog:2,walk:2,reps:5},km:5},
-        {type:'long',desc:'5K continuous — time trial 🎯',km:5}],
-    11:[{type:'easy',desc:'37 min easy',km:6},
-        {type:'tempo',desc:'10 easy + 20 steady + 7 easy',km:6},
-        {type:'long',desc:'5.5 km easy',km:5.5}],
-    12:[{type:'easy',desc:'40 min easy',km:6.5},
-        {type:'interval',desc:'8 × 400m brisk / 90s jog',seg:{reps:8},km:6},
-        {type:'long',desc:'6 km easy',km:6}],
-    13:[{type:'easy',desc:'42 min easy',km:7},
-        {type:'tempo',desc:'10 easy + 25 steady + 7 easy',km:7},
-        {type:'long',desc:'6.5 km easy',km:6.5}],
-    14:[{type:'easy',desc:'35 min easy (deload)',km:6},
-        {type:'easy',desc:'30 min easy',km:5},
-        {type:'long',desc:'5 km easy',km:5}],
-    15:[{type:'easy',desc:'45 min easy',km:7.5},
-        {type:'interval',desc:'5 × 800m brisk / 2 min jog',seg:{reps:5},km:6.5},
-        {type:'long',desc:'7.5 km easy',km:7.5}],
-    16:[{type:'easy',desc:'50 min easy',km:8},
-        {type:'tempo',desc:'10 easy + 30 steady + 10 easy',km:8},
-        {type:'long',desc:'8.5 km easy',km:8.5}],
-    17:[{type:'easy',desc:'55 min easy',km:9},
-        {type:'interval',desc:'4 × 1 km at 10K pace / 2 min jog',seg:{reps:4},km:8},
-        {type:'long',desc:'9.5 km easy',km:9.5}],
-    18:[{type:'easy',desc:'25 min easy · taper',km:4},
-        {type:'easy',desc:'20 min + 4 strides',km:3.5},
-        {type:'long',desc:'10K — GOAL RUN 🎯',km:10}]
-  }
-};
-function runPhaseOf(w){for(const p of RUN_PROGRAMME.phases)if(w>=p.from&&w<=p.to)return p;return RUN_PROGRAMME.phases[3];}
+const RUN_LADDER=(function(){
+  const jogs=[1,2,3,4,5,6,8,10,12,15];
+  const walks=[2.0,1.5,1.0];
+  const steps=[];
+  jogs.forEach(j=>walks.forEach(w=>steps.push({jog:j,walk:w})));
+  return steps; // 30 steps, index 0..29
+})();
+function runStep(idx){return RUN_LADDER[Math.max(0,Math.min(RUN_LADDER.length-1,idx))];}
+function runStepLabel(idx){const s=runStep(idx);return 'Jog '+s.jog+' min · Walk '+s.walk+' min';}
+function runStepReps(idx){const s=runStep(idx);const cycle=s.jog+s.walk;return Math.max(1,Math.ceil(30/cycle));} // ≥30 min
+function runPhaseName(idx){const s=runStep(idx);if(s.jog<=2)return 'BASE';if(s.jog<=5)return 'BUILDING';if(s.jog<=10)return 'CONTINUOUS';return '5K+';}
+// map a logged jog-time + walk-interval to the nearest ladder step (for auto-adapt)
+function runStepFromValues(jog,walk){
+  let best=0,bestD=1e9;
+  RUN_LADDER.forEach((s,i)=>{const d=Math.abs(s.jog-jog)*10+Math.abs(s.walk-walk);if(d<bestD){bestD=d;best=i;}});
+  return best;
+}
+// (runPhaseOf removed — ladder model uses runPhaseName)
 
 /* Import from v1 (prgm-v2-*) into v5 activity-log shape */
 function scanV1Users(){
@@ -1300,7 +1254,7 @@ function buildTrainerExport(){
   const data={exported:now,user:S.user,heightCm:S.heightCm,goals:goals,
     sessions:L.map(a=>({date:a.date,type:a.defKey,group:a.group,gym:a.fields.gym,
       ex:a.fields.ex?Object.values(a.fields.ex).filter(e=>e&&e.chosen!==false).map(e=>({n:e.name,sets:(e.sets||[]).filter(st=>st.weight||st.reps),reps:e.reps,memo:e.memo})):undefined,
-      dist:a.fields.distance,time:a.fields.time,hr:a.fields.avgHR,intervals:a.fields.seg,runWk:a.fields.runWeek,
+      dist:a.fields.distance,time:a.fields.time,hr:a.fields.avgHR,intervals:a.fields.seg,runStep:a.fields.runStep,
       value:a.fields.value,dur:a.fields.duration,notes:a.notes})),
     measurements:measurementSeries(S,'weight').map(p=>p.date).filter((v,i,arr)=>arr.indexOf(v)===i).map(d=>{
       const m=(S.measurements||[]).concat(S.log.filter(a=>a.group==='body')).find(a=>a.date===d);
@@ -1642,16 +1596,23 @@ function mkStrengthBody(a,body){
     cb.onclick=()=>{ex.chosen=!chosen;upsertActivity(a);render();};
     const nm=el('span',null,ex.name);nm.style.cssText='color:'+(chosen?'var(--t1)':'var(--t3)');
     left.append(cb,nm);
-    // ⬆️ ready-to-progress flag (per exercise) — tick when it felt easy; reminds you next session
-    const upbtn=el('button','upflag'+(ex.progress?' on':''));
-    upbtn.innerHTML=ex.progress?'\u2b06\ufe0f':'\u2b06';
-    upbtn.title='Ready to add weight next time';
-    upbtn.onclick=(e)=>{e.stopPropagation();ex.progress=!ex.progress;upsertActivity(a);render();};
-    left.appendChild(upbtn);
     eh.appendChild(left);
     if(ex.lastDate){const ld=el('span','exlast mf',fmtNice(ex.lastDate).replace(/ \d{4}$/,'')+' · '+daysAgoLabel(ex.lastDate,a.date));eh.appendChild(ld);}
     else {const ld=el('span','exlast mf','new');eh.appendChild(ld);}
     row.appendChild(eh);
+      // per-exercise effort grade (🙃 Easy / 😈 Medium / 🫪 Hard) — sets next-session cue
+      if(chosen){
+        const gr=el('div','exgrade');
+        [['easy','\ud83d\ude43','#4ade80'],['medium','\ud83d\ude08','#fbbf24'],['hard','\ud83e\udeea','#f87171']].forEach(([key,emo,col])=>{
+          const sel=ex.grade===key;
+          const gb=el('button','exgbtn'+(sel?' on':''));
+          gb.textContent=emo;
+          if(sel){gb.style.borderColor=col;gb.style.background=col+'22';}
+          gb.onclick=(e)=>{e.stopPropagation();ex.grade=(ex.grade===key?'':key);ex.progress=(ex.grade==='easy');upsertActivity(a);render();};
+          gr.appendChild(gb);
+        });
+        row.appendChild(gr);
+      }
 
     if(chosen){
       // Yellow top band: last-done date + days since + YouTube form link
@@ -1670,9 +1631,13 @@ function mkStrengthBody(a,body){
         row.appendChild(asn);
       }
       // "You flagged ⬆️ last time" reminder — weights still pre-filled, but nudge to go heavier
-      if(ex.progressHint){
+      if(ex.gradeHint){
+        const map={easy:['Last \ud83d\ude43 \u279c \u2b06\ufe0f weight','#4ade80'],medium:['Last \ud83d\ude08 \u279c \u2795 reps','#fbbf24'],hard:['Last \ud83e\udeea \u279c \u2b07\ufe0f reps/weight','#f87171']};
+        const m=map[ex.gradeHint];
+        if(m){const ph=el('div','ex-ref mf');ph.style.borderColor=m[1]+'88';ph.style.color=m[1];ph.style.background=m[1]+'12';ph.textContent=m[0];row.appendChild(ph);}
+      } else if(ex.progressHint){
         const ph=el('div','ex-ref mf');ph.style.borderColor='rgba(74,222,128,.5)';ph.style.color='#4ade80';ph.style.background='rgba(74,222,128,.07)';
-        ph.textContent='\u2b06\ufe0f Last time you flagged this \u2014 try adding weight';
+        ph.textContent='Last \ud83d\ude43 \u279c \u2b06\ufe0f weight';
         row.appendChild(ph);
       }
       // Greyed reference from another gym
@@ -1738,7 +1703,7 @@ function mkBodyweightBody(a,body){
 
 /* ---- CARDIO ---- */
 function mkCardioBody(a,body){
-  if(a.fields.runWeek){mkRunBody(a,body);return;}
+  if(a.defKey==='run'||a.fields.runStep!=null||a.fields.runWeek){mkRunBody(a,body);return;}
   const g=el('div','fgrid');
   [['distance','DISTANCE (km)'],['time','TIME (min)'],['avgHR','AVG HR']].forEach(([k,l])=>{
     const f=el('div','fld');f.innerHTML='<div class="flbl mf">'+l+'</div>';const inp=el('input');inp.type='text';inp.inputMode='decimal';inp.value=a.fields[k]||'';inp.oninput=e=>{a.fields[k]=e.target.value;save();updPace();};f.appendChild(inp);g.appendChild(f);
@@ -1748,68 +1713,84 @@ function mkCardioBody(a,body){
 }
 
 /* ---- RUN PROGRAMME body: week + session picker + segment logging ---- */
+function currentRunStep(a){
+  // step stored on the activity, else baseline, else 0
+  if(a.fields.runStep!=null)return a.fields.runStep;
+  if(S.runStep!=null)return S.runStep;
+  return 0;
+}
 function mkRunBody(a,body){
-  const wk=a.fields.runWeek||1;
-  const phase=runPhaseOf(wk);
-  const sessions=RUN_PROGRAMME.weeks[wk]||[];
+  if(a.fields.runStep==null)a.fields.runStep=(S.runStep!=null?S.runStep:0);
+  const idx=a.fields.runStep;
+  const step=runStep(idx);
+  const reps=runStepReps(idx);
 
-  // week selector
+  // level selector (step up/down the ladder)
   const wkRow=el('div');wkRow.style.cssText='display:flex;align-items:center;justify-content:space-between;margin:.4rem 0 .2rem';
-  const wl=el('div');wl.style.cssText='font-size:.75rem;color:var(--t1)';wl.innerHTML='Run Week <b style="color:#60a5fa">'+wk+'</b> / 18 · <span class="mf" style="font-size:.625rem;color:var(--t3)">'+phase.name+'</span>';
+  const wl=el('div');wl.style.cssText='font-size:.8125rem;color:var(--t1)';
+  wl.innerHTML='<b style="color:#60a5fa">'+runStepLabel(idx)+'</b><br><span class="mf" style="font-size:.5625rem;color:var(--t3)">Level '+(idx+1)+'/30 · '+runPhaseName(idx)+'</span>';
   const wkBtns=el('div');wkBtns.style.cssText='display:flex;gap:.3rem';
-  const wm=el('button','miniarrow','‹');wm.onclick=()=>{a.fields.runWeek=Math.max(1,wk-1);a.fields.session=0;upsertActivity(a);render();};
-  const wp=el('button','miniarrow','›');wp.onclick=()=>{a.fields.runWeek=Math.min(18,wk+1);a.fields.session=0;upsertActivity(a);render();};
+  const wm=el('button','miniarrow','\u2039');wm.onclick=()=>{const ni=Math.max(0,idx-1);a.fields.runStep=ni;S.runStep=ni;upsertActivity(a);render();};
+  const wp=el('button','miniarrow','\u203a');wp.onclick=()=>{const ni=Math.min(RUN_LADDER.length-1,idx+1);a.fields.runStep=ni;S.runStep=ni;upsertActivity(a);render();};
   wkBtns.append(wm,wp);wkRow.append(wl,wkBtns);body.appendChild(wkRow);
 
-  const pn=el('div');pn.style.cssText='font-size:.5625rem;color:var(--t3);margin-bottom:.5rem;line-height:1.5';pn.textContent=phase.note;body.appendChild(pn);
+  const pn=el('div');pn.style.cssText='font-size:.5625rem;color:var(--t3);margin-bottom:.5rem;line-height:1.5';
+  pn.textContent='Minimum 30 min \u00b7 ~'+reps+' cycles of jog '+step.jog+'/walk '+step.walk+'. Do more if you feel good.';
+  body.appendChild(pn);
 
-  // session chips
-  const chips=el('div');chips.style.cssText='display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.6rem';
-  sessions.forEach((s,i)=>{
-    const on=(a.fields.session||0)===i;
-    const c=el('button');c.className='runchip'+(on?' on':'');
-    c.textContent='S'+(i+1);
-    c.onclick=()=>{a.fields.session=i;initRunSegments(a,s);upsertActivity(a);render();};
-    chips.appendChild(c);
-  });
-  body.appendChild(chips);
+  // session description
+  const sd=el('div');sd.style.cssText='font-size:.9375rem;color:var(--t1);margin-bottom:.5rem;font-weight:500';
+  sd.textContent='Jog '+step.jog+' min \u00b7 Walk '+step.walk+' min \u00d7 '+reps;
+  body.appendChild(sd);
 
-  const sess=sessions[a.fields.session||0];
-  if(!sess)return;
-  const sd=el('div');sd.style.cssText='font-size:.875rem;color:var(--t1);margin-bottom:.5rem';sd.textContent=sess.desc;body.appendChild(sd);
+  // last time at this level
+  const prevRun=S.log.filter(x=>x.defKey==='run'&&x.done&&x.date<a.date&&x.fields&&x.fields.runStep===idx).sort((p,q)=>q.date.localeCompare(p.date))[0];
+  if(prevRun){const pl=el('div');pl.style.cssText='font-size:.5625rem;color:var(--t3);margin-bottom:.4rem';pl.textContent='Last did this level '+fmtNice(prevRun.date)+' \u00b7 '+daysAgoLabel(prevRun.date,a.date);body.appendChild(pl);}
 
-  // ensure segments initialised
-  initRunSegments(a,sess);
+  // segment logging (walk/jog/reps) prefilled from target
+  const grid=el('div','fgrid2');
+  const mkF=(k,lbl,ph)=>{const f=el('div','fld');f.innerHTML='<div class="flbl mf">'+lbl+'</div>';const inp=el('input');inp.type='text';inp.inputMode='decimal';inp.value=(a.fields.seg&&a.fields.seg[k]!=null)?a.fields.seg[k]:'';inp.placeholder=ph;inp.oninput=e=>{a.fields.seg=a.fields.seg||{};a.fields.seg[k]=e.target.value;save();};f.appendChild(inp);return f;};
+  grid.appendChild(mkF('jog','JOG (min)',String(step.jog)));
+  grid.appendChild(mkF('walk','WALK (min)',String(step.walk)));
+  grid.appendChild(mkF('reps','REPS DONE','of '+reps));
+  body.appendChild(grid);
 
-  // find last time this same week+session was logged
-  const prevRun=lastRunSession(wk,a.fields.session,a.date,a.id);
-  if(prevRun){const pl=el('div');pl.style.cssText='font-size:.5625rem;color:var(--t3);margin-bottom:.4rem';pl.textContent='Last did this session '+fmtNice(prevRun.date)+' · '+daysAgoLabel(prevRun.date,a.date);body.appendChild(pl);}
-
-  if(sess.seg){
-    // segment logging: reps done, actual walk/jog times
-    const tgt=sess.seg;
-    const grid=el('div','fgrid2');
-    const mkF=(k,lbl,ph)=>{const f=el('div','fld');f.innerHTML='<div class="flbl mf">'+lbl+'</div>';const inp=el('input');inp.type='text';inp.inputMode='decimal';inp.value=(a.fields.seg&&a.fields.seg[k])||'';inp.placeholder=ph;inp.oninput=e=>{a.fields.seg=a.fields.seg||{};a.fields.seg[k]=e.target.value;save();};f.appendChild(inp);return f;};
-    if(tgt.walk!=null)grid.appendChild(mkF('walk','WALK (min)',String(tgt.walk)));
-    if(tgt.jog!=null)grid.appendChild(mkF('jog','JOG (min)',String(tgt.jog)));
-    grid.appendChild(mkF('reps','REPS DONE','of '+tgt.reps));
-    body.appendChild(grid);
-    const note=el('div');note.style.cssText='font-size:.5625rem;color:var(--t3);margin-top:.35rem';note.textContent='Target: '+(tgt.walk!=null?tgt.walk+' walk / ':'')+(tgt.jog!=null?tgt.jog+' jog ':'')+'× '+tgt.reps+' reps';body.appendChild(note);
-  }
-  // always allow distance+time+HR
+  // distance / time / HR
   const g2=el('div','fgrid2');
   [['distance','DISTANCE (km)'],['time','TOTAL TIME (min)'],['avgHR','AVG HR']].forEach(([k,l])=>{
-    const f=el('div','fld');f.innerHTML='<div class="flbl mf">'+l+'</div>';const inp=el('input');inp.type='text';inp.inputMode='decimal';inp.value=a.fields[k]||'';inp.placeholder=(k==='distance'?'~'+sess.km:'');inp.oninput=e=>{a.fields[k]=e.target.value;save();updPace();};f.appendChild(inp);g2.appendChild(f);
+    const f=el('div','fld');f.innerHTML='<div class="flbl mf">'+l+'</div>';const inp=el('input');inp.type='text';inp.inputMode='decimal';inp.value=a.fields[k]||'';inp.oninput=e=>{a.fields[k]=e.target.value;save();updPace();};f.appendChild(inp);g2.appendChild(f);
   });
   body.appendChild(g2);
-  const pace=el('div','pace mf');const updPace=()=>{const d=parseFloat(a.fields.distance),t=parseFloat(a.fields.time);if(!isNaN(d)&&!isNaN(t)&&d>0){const p=t/d,mm=Math.floor(p),ss=Math.round((p-mm)*60);pace.textContent='Pace ≈ '+mm+':'+String(ss).padStart(2,'0')+' /km';}else pace.textContent='';};updPace();body.appendChild(pace);
+  const pace=el('div','pace mf');const updPace=()=>{const d=parseFloat(a.fields.distance),t=parseFloat(a.fields.time);if(!isNaN(d)&&!isNaN(t)&&d>0){const p=t/d,mm=Math.floor(p),ss=Math.round((p-mm)*60);pace.textContent='Pace \u2248 '+mm+':'+String(ss).padStart(2,'0')+' /km';}else pace.textContent='';};updPace();body.appendChild(pace);
+
+  // EFFORT GRADING — sets next level
+  const gl=el('div');gl.style.cssText='font-size:.625rem;color:var(--t2);margin:.7rem 0 .3rem';gl.textContent='How did it feel? (sets your next run level)';body.appendChild(gl);
+  const grow=el('div');grow.style.cssText='display:flex;gap:.4rem';
+  const grades=[['easy','\ud83d\ude43 Easy','#4ade80',1],['medium','\ud83d\ude08 Medium','#fbbf24',0],['hard','\ud83e\udeea Hard','#f87171',-1]];
+  grades.forEach(([key,lbl,col,delta])=>{
+    const gb=el('button');const sel=a.fields.effort===key;
+    gb.style.cssText='flex:1;padding:.5rem;border-radius:.5rem;border:1px solid '+(sel?col:'var(--line)')+';background:'+(sel?col+'22':'var(--s1)')+';color:'+(sel?col:'var(--t2)')+';font-size:.75rem';
+    gb.textContent=lbl;
+    gb.onclick=()=>{
+      a.fields.effort=key;
+      // compute next level and store as the baseline for the NEXT run
+      const nextIdx=Math.max(0,Math.min(RUN_LADDER.length-1,idx+delta));
+      S.runStep=nextIdx;S._nextRunStep=nextIdx;
+      upsertActivity(a);render();
+    };
+    grow.appendChild(gb);
+  });
+  body.appendChild(grow);
+  if(a.fields.effort){
+    const delta=a.fields.effort==='easy'?1:(a.fields.effort==='hard'?-1:0);
+    const nextIdx=Math.max(0,Math.min(RUN_LADDER.length-1,idx+delta));
+    const nx=el('div');nx.style.cssText='font-size:.625rem;color:#4ade80;margin-top:.4rem';
+    nx.textContent=(delta===0?'\u2192 Next run: same level \u2014 '+runStepLabel(nextIdx):(delta>0?'\u2191 Next run steps up to: '+runStepLabel(nextIdx):'\u2193 Next run eases to: '+runStepLabel(nextIdx)));
+    body.appendChild(nx);
+  }
 }
 function initRunSegments(a,sess){if(sess&&sess.seg&&!a.fields.seg){a.fields.seg={};}}
-function lastRunSession(wk,sessIdx,beforeIso,selfId){
-  const past=S.log.filter(x=>x.defKey==='run'&&x.done&&x.date<beforeIso&&x.fields&&x.fields.runWeek===wk&&(x.fields.session||0)===sessIdx&&x.id!==selfId);
-  past.sort((a,b)=>b.date.localeCompare(a.date));
-  return past[0]||null;
-}
+
 
 function extraLoggedOn(S,iso){
   const b=S.log.find(a=>a.group==='body'&&a.date===iso);
@@ -2145,7 +2126,9 @@ function mkToday(){
   const wrap=el('div');wrap.appendChild(mkDayNav());
   const acts=activitiesOn(S,S.cursor);
   if(!acts.length)wrap.appendChild(el('div','empty','No activities logged for this day yet.<br>Tap ➕ Add activity to begin.'));
-  else{const byG={};acts.forEach(a=>{if(a.group==='body')return;(byG[a.group]=byG[a.group]||[]).push(a);});GROUP_ORDER.forEach(g=>{if(!byG[g])return;const gm=GROUP_META[g];wrap.appendChild(mkSH(gm.label,gm.color));byG[g].forEach(a=>wrap.appendChild(mkActivityCard(a)));});}
+  else{const byG={};acts.forEach(a=>{if(a.group==='body')return;(byG[a.group]=byG[a.group]||[]).push(a);});
+    const menuIdx=(k)=>{const i=DEFAULT_MENU.findIndex(m=>m.key===k);return i<0?999:i;};
+    GROUP_ORDER.forEach(g=>{if(!byG[g])return;const gm=GROUP_META[g];wrap.appendChild(mkSH(gm.label,gm.color));byG[g].slice().sort((x,y)=>menuIdx(x.defKey)-menuIdx(y.defKey)).forEach(a=>wrap.appendChild(mkActivityCard(a)));});}
   const add=el('button','addbtn','➕  Add activity');add.onclick=openPicker;wrap.appendChild(add);
   wrap.appendChild(mkSH('Daily log','#60a5fa'));
   wrap.appendChild(mkStepsStrip(S.cursor));
@@ -2391,6 +2374,7 @@ function mkReminderBar(){
   const wrap=el('div');bars.forEach(x=>wrap.appendChild(x));
   return wrap;
 }
+let _lastView=null;
 function render(){
   const app=document.getElementById('app');app.innerHTML='';
   if(!S.user){app.appendChild(mkSetup());return;}
@@ -2398,7 +2382,7 @@ function render(){
   const rb=mkReminderBar();if(rb)app.appendChild(rb);
   let v;try{if(S.view==='week')v=mkWeek();else if(S.view==='month')v=mkMonth();else if(S.view==='progress')v=mkProgress();else if(S.view==='nutrition')v=mkNutrition();else v=mkToday();}catch(e){v=el('div','empty','Render error: '+e.message);}
   app.appendChild(v);
-  try{window.scrollTo(0,0);}catch(e){}
+  try{if(_lastView!==S.view){window.scrollTo(0,0);_lastView=S.view;}}catch(e){}
 }
 load();
 if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches)document.body.classList.add('reduce');
