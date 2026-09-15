@@ -1126,7 +1126,7 @@ function mkProgress(){
     card.innerHTML='<div class="pc-lbl mf" style="margin-bottom:.2rem;color:'+color+'">'+emoji+' '+label+'</div>'+mkLineChart(vals,wkLbl,color,unit);
     wrap.appendChild(card);
   };
-  trendCard('\ud83c\udfcb\ufe0f','Weight lifted / week (tonnes)',tWeeks.map(w=>Math.round(weightLiftedTotal(S,w,addDays(w,6))/1000*10)/10),'#fb923c',' MT');
+  trendCard('\ud83c\udfcb\ufe0f','Weight lifted / week (tons)',tWeeks.map(w=>Math.round(weightLiftedTotal(S,w,addDays(w,6))/1000*10)/10),'#fb923c',' tons');
   trendCard('\ud83c\udfc3','Run distance / week',tWeeks.map(w=>Math.round(sumField(S,['run'],'distance',w,addDays(w,6))*10)/10),'#60a5fa','km');
   trendCard('\ud83d\udc63','Steps / week (000s)',tWeeks.map(w=>Math.round(stepsTotal(S,w,addDays(w,6))/1000*10)/10),'#4ade80','k');
   // avg steps/day per week — mini bar chart under the steps line
@@ -1884,7 +1884,7 @@ function initRunSegments(a,sess){if(sess&&sess.seg&&!a.fields.seg){a.fields.seg=
 function extraLoggedOn(S,iso){
   const b=S.log.find(a=>a.group==='body'&&a.date===iso);
   if(!b)return false;
-  const extra=['waist','chest','hips','armL','armR','thighL','thighR','bone','visceral'];
+  const extra=['weight','bodyFat','muscle','waist','chest','hips','armL','armR','thighL','thighR','bone','visceral'];
   return extra.some(k=>b.fields[k]!==''&&b.fields[k]!=null);
 }
 function fullMeasureReminderDue(S,iso){
@@ -2055,12 +2055,13 @@ function alcoholLedger(S,iso){
   const LEDGER_START='2026-08-31'; // week ledger begins
   const cap=TGT().alcUnits;
   const curWk=weekOf(iso);
-  // build list of week-start dates from max(LEDGER_START, 3 weeks before current) up to current
+  // running debt ledger over prior weeks: excess ADDS to debt, being under PAYS IT DOWN
+  // (floored at 0 each step so under-weeks never bank credit above the cap).
+  // window: up to 3 prior weeks (4-week window incl current), from LEDGER_START.
   const weeks=[];
   for(let i=3;i>=1;i--){const w=weekOf(addDays(curWk,-7*i));if(w>=LEDGER_START)weeks.push(w);}
-  // debt = sum of max(0, weekUnits - cap) over those prior weeks (last up-to-3 prior weeks => 4-week window incl current)
   let debt=0;
-  weeks.forEach(w=>{const u=weekAlcoholUnits(S,w);debt+=Math.max(0,u-cap);});
+  weeks.forEach(w=>{const u=weekAlcoholUnits(S,w);debt=Math.max(0,debt+(u-cap));});
   // 2-week average = (this week + last week) / 2
   const thisU=weekAlcoholUnits(S,curWk);
   const lastWk=weekOf(addDays(curWk,-7));
@@ -2095,14 +2096,14 @@ function mkDrinkStrip(iso){
     barBg.appendChild(bar);box.appendChild(barBg);
     // 2-week average + rolling make-up ledger
     const led=alcoholLedger(S,iso);
-    const l2=el('div');l2.style.cssText='display:flex;justify-content:space-between;gap:.4rem;font-size:.625rem;margin:.35rem 0 0;color:var(--t3)';
     const avgCol=led.avg2>cap?'#f87171':(led.avg2>cap*0.85?'#fbbf24':'#4ade80');
-    l2.innerHTML='<span>2-wk avg <b style="color:'+avgCol+'">'+led.avg2+'u/wk</b></span>'+
-      '<span>Can have this wk <b style="color:'+(led.canHave>0?'#4ade80':'#f87171')+'">'+led.canHave+'u</b></span>';
+    const l2=el('div');l2.style.cssText='margin:.4rem 0 .2rem;padding:.65rem .7rem;border-radius:.55rem;background:var(--s1);border:1px solid var(--line);display:flex;justify-content:space-between;gap:.4rem;font-size:.8125rem';
+    l2.innerHTML='<span style="color:var(--t2)">2-wk avg <b style="color:'+avgCol+';font-size:.9375rem">'+led.avg2+'u</b><span style="color:var(--t3);font-size:.625rem">/wk</span></span>'+
+      '<span style="color:var(--t2)">Can have this wk <b style="color:'+(led.canHave>0?'#4ade80':'#f87171')+';font-size:.9375rem">'+led.canHave+'u</b></span>';
     box.appendChild(l2);
     if(led.debt>0){
-      const dnote=el('div');dnote.style.cssText='font-size:.5625rem;color:#fbbf24;margin:.2rem 0 0';
-      dnote.textContent='\u21ba Carryover from recent excess: '+led.debt+'u \u2014 allowance this week '+led.allowance+'u';
+      const dnote=el('div');dnote.style.cssText='font-size:.625rem;color:#fbbf24;margin:.1rem 0 .2rem;text-align:center';
+      dnote.textContent='\u21ba Carryover '+led.debt+'u \u2014 allowance this week '+led.allowance+'u';
       box.appendChild(dnote);
     }
   }
