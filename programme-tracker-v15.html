@@ -923,6 +923,30 @@ function mkNutrition(){
     card.c.forEach(line=>{const p=el('div','nc-line');p.innerHTML=line;c.appendChild(p);});
     wrap.appendChild(c);
   });
+
+  // ---- Run Plan reference (30-level ladder) ----
+  wrap.appendChild(mkSH('\ud83c\udfc3 Run plan \u00b7 5K\u219210K','#60a5fa'));
+  const rc=el('div','nutcard');
+  const rh=el('div','nc-title');rh.textContent='30 levels \u00b7 grade to advance';rc.appendChild(rh);
+  const intro=el('div','nc-line');intro.innerHTML='Each run-time has 3 weeks (walk taper 2.0\u21921.5\u21921.0), then the next run-time. <b>\ud83d\ude43 Easy</b> steps up \u00b7 <b>\ud83d\ude08 Medium</b> stays \u00b7 <b>\ud83e\udeea Hard</b> eases back. Min 30 min/session.';rc.appendChild(intro);
+  // build compact table
+  const cur=(S.runStep!=null?S.runStep:0);
+  const tbl=el('div');tbl.style.cssText='margin-top:.5rem;font-family:monospace;font-size:.6875rem';
+  const hdr=el('div');hdr.style.cssText='display:flex;color:var(--t3);border-bottom:1px solid var(--line);padding-bottom:.2rem;margin-bottom:.15rem';
+  hdr.innerHTML='<span style="width:2.2rem">Lvl</span><span style="flex:1">Run \u00b7 Walk</span><span style="width:5rem">Phase</span><span style="width:2.5rem;text-align:right">Cyc</span>';
+  tbl.appendChild(hdr);
+  RUN_LADDER.forEach((s,i)=>{
+    const isCur=i===cur;
+    const row=el('div');row.style.cssText='display:flex;padding:.12rem 0;'+(isCur?'background:rgba(96,165,250,.15);border-radius:.3rem;color:#93c5fd;font-weight:600':'color:var(--t2)');
+    const reps=Math.max(1,Math.ceil(30/(s.jog+s.walk)));
+    row.innerHTML='<span style="width:2.2rem">'+(isCur?'\u25b6':'')+(i+1)+'</span>'+
+      '<span style="flex:1">Run '+s.jog+' \u00b7 Walk '+s.walk+'</span>'+
+      '<span style="width:5rem;color:var(--t3)">'+runPhaseName(i)+'</span>'+
+      '<span style="width:2.5rem;text-align:right;color:var(--t3)">'+reps+'</span>';
+    tbl.appendChild(row);
+  });
+  rc.appendChild(tbl);
+  wrap.appendChild(rc);
   return wrap;
 }
 function hitRateStats(S,weeks){
@@ -1205,26 +1229,6 @@ function mkProgress(){
   mw.forEach(m=>{const s=el('div');s.style.cssText='flex:1;text-align:center;font-size:.7rem';s.textContent=m.logged?'\u2705':'\u00b7';mrow.appendChild(s);});
   wrap.appendChild(mrow);
 
-  // ===== DATA (export/backup) =====
-  wrap.appendChild(mkSH('Data','#c084fc'));
-  const exp=el('button','pbtn');exp.style.cssText+='background:var(--ac);color:#0a0a0a';exp.textContent='\ud83d\udce4 Export to Trainer';
-  exp.onclick=()=>{const txt=buildTrainerExport();copyOrPrompt(txt,'Trainer summary copied \u2014 paste it to your trainer');};
-  wrap.appendChild(exp);
-
-  // BACKUP — download all data as a file (your safety net)
-  const bk=el('button','pbtn');bk.textContent='\ud83d\udcbe Backup all data (download file)';
-  bk.onclick=()=>backupData();
-  wrap.appendChild(bk);
-
-  // RESTORE — load data from a backup file
-  const rs=el('button','pbtn');rs.textContent='\u21ba Restore from backup file';
-  rs.onclick=()=>restoreData();
-  wrap.appendChild(rs);
-
-  const note=el('div');note.style.cssText='margin:.5rem 1.25rem;font-size:.625rem;color:var(--t3);line-height:1.5';
-  note.textContent='Tip: tap Backup before switching app versions. The file saves to your device \u2014 you can always Restore it if anything goes wrong.';
-  wrap.appendChild(note);
-
   return wrap;
 }
 
@@ -1434,6 +1438,19 @@ function openSettings(){
   const hd=el('div','sheet-hd');hd.innerHTML='<div class="st sf">\u2699\ufe0f Settings & targets</div>';
   const x=el('button','sx','\u00d7');x.onclick=()=>bg.remove();hd.appendChild(x);sheet.appendChild(hd);
 
+  // ---- DATA (export / backup / restore) at top ----
+  sheet.appendChild(el('div','set-gtitle mf','\ud83d\udcbe DATA'));
+  const dexp=el('button','pbtn');dexp.style.cssText+='background:var(--ac);color:#0a0a0a;font-weight:600';dexp.textContent='\ud83d\udce4 Export to Trainer';
+  dexp.onclick=()=>{const txt=buildTrainerExport();copyOrPrompt(txt,'Trainer summary copied \u2014 paste it to your trainer');};
+  sheet.appendChild(dexp);
+  const dbk=el('button','pbtn');dbk.textContent='\ud83d\udcbe Backup all data (download file)';
+  dbk.onclick=()=>backupData();sheet.appendChild(dbk);
+  const drs=el('button','pbtn');drs.textContent='\u21ba Restore from backup file';
+  drs.onclick=()=>restoreData();sheet.appendChild(drs);
+  const dnote=el('div');dnote.style.cssText='margin:.4rem 1.25rem .6rem;font-size:.625rem;color:var(--t3);line-height:1.5';
+  dnote.textContent='Tip: back up before switching app versions. The file saves to your device \u2014 Restore it anytime.';
+  sheet.appendChild(dnote);
+
   const mkField=(lbl,key,unit,isGoal)=>{
     const f=el('div','setfld');
     f.innerHTML='<div class="set-lbl">'+lbl+'</div>';
@@ -1615,7 +1632,18 @@ function mkActivityCard(a){
   mvRow.append(mvLbl,mvInp);body.appendChild(mvRow);
 
   const sb=el('button');sb.style.cssText='width:100%;margin-top:.6rem;padding:.7rem;border-radius:.55rem;background:'+(a.done?'rgba(74,222,128,.18)':gm.color)+';color:'+(a.done?'#4ade80':'#0a0a0a')+';font-weight:600;font-size:.8125rem;border:'+(a.done?'1px solid rgba(74,222,128,.4)':'none');sb.textContent=a.done?'✓ Logged — tap to save changes':'Save & mark done';
-  sb.onclick=()=>{a.done=true;upsertActivity(a);S._open=null;render();toast('✓ '+a.name+' logged');};body.appendChild(sb);
+  sb.onclick=()=>{
+    if(a.defKey==='run'&&!a.fields.effort){
+      const jg=parseFloat(a.fields.seg&&a.fields.seg.jog);
+      const wkk=parseFloat(a.fields.seg&&a.fields.seg.walk);
+      let effIdx=(a.fields.runStep!=null?a.fields.runStep:0);
+      if(!isNaN(jg)&&jg>0&&!isNaN(wkk)&&wkk>0)effIdx=runStepFromValues(jg,wkk);
+      a.fields.effort='medium';a.fields.runStep=effIdx;S.runStep=effIdx;
+      setTimeout(()=>toast('Logged at '+runStepLabel(effIdx)+' · 😈 Medium (stay). Tap Easy/Hard on the card to change.'),50);
+    }
+    a.done=true;upsertActivity(a);S._open=null;render();
+    if(a.defKey!=='run')toast('✓ '+a.name+' logged');
+  };body.appendChild(sb);
   const rm=el('button');rm.style.cssText='width:100%;margin-top:.4rem;padding:.5rem;border-radius:.5rem;background:transparent;color:var(--t3);font-size:.625rem;border:1px solid #2d2d2d';rm.textContent='Remove from this day';rm.onclick=()=>{removeActivity(a.id);S._open=null;render();};body.appendChild(rm);
   card.appendChild(body);
   return card;
