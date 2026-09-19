@@ -436,7 +436,7 @@ function makeActivity(S,defKey,iso){
     }
   } else if(def.group==='cardio'){
     if(def.runProg){
-      a.fields.runStep=(S.runStep!=null?S.runStep:0); // ladder level 0-29
+      a.fields.runLevel=(S.runLevel?{run:S.runLevel.run,walk:S.runLevel.walk}:{run:1,walk:2.0});
       a.fields.effort=''; // graded after run
       a.fields.segments=[];
       a.fields.distance='';a.fields.time='';a.fields.avgHR='';
@@ -504,6 +504,38 @@ function runStepLabel(idx){const s=runStep(idx);return 'Run '+s.jog+' min · Wal
 function runStepReps(idx){const s=runStep(idx);const cycle=s.jog+s.walk;return Math.max(1,Math.ceil(30/cycle));} // ≥30 min
 function runPhaseName(idx){const s=runStep(idx);if(s.jog<=2)return 'BASE';if(s.jog<=5)return 'BUILDING';if(s.jog<=10)return 'CONTINUOUS';return '5K+';}
 // map a logged jog-time + walk-interval to the nearest ladder step (for auto-adapt)
+// ===== VALUE-BASED RUN LEVEL (stores actual run/walk you did; not limited to fixed ladder) =====
+const WALK_STEPS=[2.0,1.5,1.0];
+function runLevelOf(S,a){
+  // priority: this activity's own level, else baseline S.runLevel, else level-1 defaults
+  if(a&&a.fields&&a.fields.runLevel)return {run:a.fields.runLevel.run,walk:a.fields.runLevel.walk};
+  if(S.runLevel)return {run:S.runLevel.run,walk:S.runLevel.walk};
+  return {run:1,walk:2.0};
+}
+function runLevelLabel(lv){return 'Run '+lv.run+' min \u00b7 Walk '+lv.walk+' min';}
+function runLevelReps(lv){return Math.max(1,Math.ceil(30/(lv.run+lv.walk)));}
+// nearest fixed-ladder index (for phase name + Run Plan highlight)
+function ladderIdxOf(lv){let best=0,bd=1e9;RUN_LADDER.forEach((s,i)=>{const d=Math.abs(s.jog-lv.run)*10+Math.abs(s.walk-lv.walk);if(d<bd){bd=d;best=i;}});return best;}
+// EASY: reduce walk one taper step; if already at min walk, go to next run-time at walk 2.0
+function runLevelEasy(lv){
+  const wi=WALK_STEPS.indexOf(lv.walk);
+  if(wi>=0&&wi<WALK_STEPS.length-1)return {run:lv.run,walk:WALK_STEPS[wi+1]};
+  if(lv.walk>1.0)return {run:lv.run,walk:Math.max(1.0,Math.round((lv.walk-0.5)*10)/10)}; // intermediate walk -> step down 0.5
+  // walk at floor -> next run-time, walk resets to 2.0
+  const jogs=[1,2,3,4,5,6,8,10,12,15];const ni=jogs.findIndex(j=>j>lv.run);
+  return {run:ni>=0?jogs[ni]:lv.run,walk:2.0};
+}
+// HARD: reduce run keeping walk (ease back), floor run at 1
+function runLevelHard(lv){
+  const jogs=[1,2,3,4,5,6,8,10,12,15];
+  // step run down toward previous whole rung; keep walk as-is (your 50/50 example: 1.5/1.5 -> 1/1)
+  let nr=lv.run;
+  if(lv.run>1){
+    // if run is intermediate (e.g. 1.5), drop to the whole below; else previous rung
+    const below=jogs.filter(j=>j<lv.run);nr=below.length?below[below.length-1]:1;
+  }
+  return {run:nr,walk:Math.min(lv.walk,lv.walk)}; // keep walk
+}
 function runStepFromValues(jog,walk){
   let best=0,bestD=1e9;
   RUN_LADDER.forEach((s,i)=>{const d=Math.abs(s.jog-jog)*10+Math.abs(s.walk-walk);if(d<bestD){bestD=d;best=i;}});
@@ -930,7 +962,7 @@ function mkNutrition(){
   const rh=el('div','nc-title');rh.textContent='30 levels \u00b7 grade to advance';rc.appendChild(rh);
   const intro=el('div','nc-line');intro.innerHTML='Each run-time has 3 weeks (walk taper 2.0\u21921.5\u21921.0), then the next run-time. <b>\ud83d\ude43 Easy</b> steps up \u00b7 <b>\ud83d\ude08 Medium</b> stays \u00b7 <b>\ud83e\udeea Hard</b> eases back. Min 30 min/session.';rc.appendChild(intro);
   // build compact table
-  const cur=(S.runStep!=null?S.runStep:0);
+  const cur=(S.runLevel?ladderIdxOf(S.runLevel):0);
   const tbl=el('div');tbl.style.cssText='margin-top:.5rem;font-family:monospace;font-size:.6875rem';
   const hdr=el('div');hdr.style.cssText='display:flex;color:var(--t3);border-bottom:1px solid var(--line);padding-bottom:.2rem;margin-bottom:.15rem';
   hdr.innerHTML='<span style="width:2.2rem">Lvl</span><span style="flex:1">Run \u00b7 Walk</span><span style="width:5rem">Phase</span><span style="width:2.5rem;text-align:right">Cyc</span>';
@@ -1332,7 +1364,7 @@ function buildTrainerExport(){
   const data={exported:now,user:S.user,heightCm:S.heightCm,goals:goals,
     sessions:L.map(a=>({date:a.date,type:a.defKey,group:a.group,gym:a.fields.gym,
       ex:a.fields.ex?Object.values(a.fields.ex).filter(e=>e&&e.chosen!==false).map(e=>({n:e.name,sets:(e.sets||[]).filter(st=>st.weight||st.reps),reps:e.reps,memo:e.memo})):undefined,
-      dist:a.fields.distance,time:a.fields.time,hr:a.fields.avgHR,intervals:a.fields.seg,runStep:a.fields.runStep,
+      dist:a.fields.distance,time:a.fields.time,hr:a.fields.avgHR,intervals:a.fields.seg,runStep:a.fields.runStep,runLevel:a.fields.runLevel,
       value:a.fields.value,dur:a.fields.duration,notes:a.notes})),
     measurements:measurementSeries(S,'weight').map(p=>p.date).filter((v,i,arr)=>arr.indexOf(v)===i).map(d=>{
       const m=(S.measurements||[]).concat(S.log.filter(a=>a.group==='body')).find(a=>a.date===d);
@@ -1636,10 +1668,10 @@ function mkActivityCard(a){
     if(a.defKey==='run'&&!a.fields.effort){
       const jg=parseFloat(a.fields.seg&&a.fields.seg.jog);
       const wkk=parseFloat(a.fields.seg&&a.fields.seg.walk);
-      let effIdx=(a.fields.runStep!=null?a.fields.runStep:0);
-      if(!isNaN(jg)&&jg>0&&!isNaN(wkk)&&wkk>0)effIdx=runStepFromValues(jg,wkk);
-      a.fields.effort='medium';a.fields.runStep=effIdx;S.runStep=effIdx;
-      setTimeout(()=>toast('Logged at '+runStepLabel(effIdx)+' · 😈 Medium (stay). Tap Easy/Hard on the card to change.'),50);
+      let did=a.fields.runLevel||{run:1,walk:2.0};
+      if(!isNaN(jg)&&jg>0&&!isNaN(wkk)&&wkk>0)did={run:jg,walk:wkk};
+      a.fields.effort='medium';a.fields.runLevel=did;S.runLevel={run:did.run,walk:did.walk};
+      setTimeout(()=>toast('Logged at '+runLevelLabel(did)+' · 😈 Medium (stay). Tap Easy/Hard on the card to change.'),50);
     }
     a.done=true;upsertActivity(a);S._open=null;render();
     if(a.defKey!=='run')toast('✓ '+a.name+' logged');
@@ -1805,7 +1837,7 @@ function mkBodyweightBody(a,body){
 
 /* ---- CARDIO ---- */
 function mkCardioBody(a,body){
-  if(a.defKey==='run'||a.fields.runStep!=null||a.fields.runWeek){mkRunBody(a,body);return;}
+  if(a.defKey==='run'||a.fields.runLevel!=null||a.fields.runStep!=null||a.fields.runWeek){mkRunBody(a,body);return;}
   const g=el('div','fgrid');
   [['distance','DISTANCE (km)'],['time','TIME (min)'],['avgHR','AVG HR']].forEach(([k,l])=>{
     const f=el('div','fld');f.innerHTML='<div class="flbl mf">'+l+'</div>';const inp=el('input');inp.type='text';inp.inputMode='decimal';inp.value=a.fields[k]||'';inp.oninput=e=>{a.fields[k]=e.target.value;save();updPace();};f.appendChild(inp);g.appendChild(f);
@@ -1822,42 +1854,43 @@ function currentRunStep(a){
   return 0;
 }
 function mkRunBody(a,body){
-  if(a.fields.runStep==null)a.fields.runStep=(S.runStep!=null?S.runStep:0);
-  const idx=a.fields.runStep;
-  const step=runStep(idx);
-  const reps=runStepReps(idx);
+  // value-based level: this run's own level, else baseline
+  if(!a.fields.runLevel)a.fields.runLevel=runLevelOf(S,a);
+  const lv=a.fields.runLevel;
+  const reps=runLevelReps(lv);
+  const li=ladderIdxOf(lv);
 
-  // level selector (step up/down the ladder)
+  // header + step arrows (arrows move along the fixed ladder as convenient presets)
   const wkRow=el('div');wkRow.style.cssText='display:flex;align-items:center;justify-content:space-between;margin:.4rem 0 .2rem';
   const wl=el('div');wl.style.cssText='font-size:.8125rem;color:var(--t1)';
-  wl.innerHTML='<b style="color:#60a5fa">'+runStepLabel(idx)+'</b><br><span class="mf" style="font-size:.5625rem;color:var(--t3)">Level '+(idx+1)+'/30 · '+runPhaseName(idx)+'</span>';
+  wl.innerHTML='<b style="color:#60a5fa">'+runLevelLabel(lv)+'</b><br><span class="mf" style="font-size:.5625rem;color:var(--t3)">~Level '+(li+1)+'/30 \u00b7 '+runPhaseName(li)+'</span>';
   const wkBtns=el('div');wkBtns.style.cssText='display:flex;gap:.3rem';
-  const wm=el('button','miniarrow','\u2039');wm.onclick=()=>{const ni=Math.max(0,idx-1);a.fields.runStep=ni;S.runStep=ni;upsertActivity(a);render();};
-  const wp=el('button','miniarrow','\u203a');wp.onclick=()=>{const ni=Math.min(RUN_LADDER.length-1,idx+1);a.fields.runStep=ni;S.runStep=ni;upsertActivity(a);render();};
+  const wm=el('button','miniarrow','\u2039');wm.onclick=()=>{const ni=Math.max(0,li-1);const s=RUN_LADDER[ni];a.fields.runLevel={run:s.jog,walk:s.walk};S.runLevel={run:s.jog,walk:s.walk};upsertActivity(a);render();};
+  const wp=el('button','miniarrow','\u203a');wp.onclick=()=>{const ni=Math.min(RUN_LADDER.length-1,li+1);const s=RUN_LADDER[ni];a.fields.runLevel={run:s.jog,walk:s.walk};S.runLevel={run:s.jog,walk:s.walk};upsertActivity(a);render();};
   wkBtns.append(wm,wp);wkRow.append(wl,wkBtns);body.appendChild(wkRow);
 
   const pn=el('div');pn.style.cssText='font-size:.5625rem;color:var(--t3);margin-bottom:.5rem;line-height:1.5';
-  pn.textContent='Minimum 30 min \u00b7 ~'+reps+' cycles of run '+step.jog+'/walk '+step.walk+'. Do more if you feel good.';
+  pn.textContent='Minimum 30 min \u00b7 ~'+reps+' cycles of run '+lv.run+'/walk '+lv.walk+'. Do more if you feel good.';
   body.appendChild(pn);
 
-  // session description
-  const sd=el('div');sd.style.cssText='font-size:.9375rem;color:var(--t1);margin-bottom:.5rem;font-weight:500';
-  sd.textContent='Run '+step.jog+' min \u00b7 Walk '+step.walk+' min \u00d7 '+reps;
+  const sd=el('div');sd.style.cssText='font-size:.9375rem;color:var(--t1);margin-bottom:.35rem;font-weight:500';
+  sd.textContent='Run '+lv.run+' min \u00b7 Walk '+lv.walk+' min \u00d7 '+reps;
   body.appendChild(sd);
 
-  // last time at this level
-  const prevRun=S.log.filter(x=>x.defKey==='run'&&x.done&&x.date<a.date&&x.fields&&x.fields.runStep===idx).sort((p,q)=>q.date.localeCompare(p.date))[0];
-  if(prevRun){const pl=el('div');pl.style.cssText='font-size:.5625rem;color:var(--t3);margin-bottom:.4rem';pl.textContent='Last did this level '+fmtNice(prevRun.date)+' \u00b7 '+daysAgoLabel(prevRun.date,a.date);body.appendChild(pl);}
+  // NEXT-UP memo (Easy target)
+  const up=runLevelEasy(lv);
+  const upMemo=el('div');upMemo.style.cssText='font-size:.5625rem;color:#4ade80;margin-bottom:.5rem';
+  upMemo.textContent='\u2b06\ufe0f Next up (if easy): '+runLevelLabel(up);
+  body.appendChild(upMemo);
 
-  // segment logging (walk/jog/reps) prefilled from target
+  // segment inputs prefilled from current level
   const grid=el('div','fgrid2');
   const mkF=(k,lbl,ph)=>{const f=el('div','fld');f.innerHTML='<div class="flbl mf">'+lbl+'</div>';const inp=el('input');inp.type='text';inp.inputMode='decimal';inp.value=(a.fields.seg&&a.fields.seg[k]!=null)?a.fields.seg[k]:'';inp.placeholder=ph;inp.oninput=e=>{a.fields.seg=a.fields.seg||{};a.fields.seg[k]=e.target.value;save();};f.appendChild(inp);return f;};
-  grid.appendChild(mkF('jog','RUN (min)',String(step.jog)));
-  grid.appendChild(mkF('walk','WALK (min)',String(step.walk)));
+  grid.appendChild(mkF('jog','RUN (min)',String(lv.run)));
+  grid.appendChild(mkF('walk','WALK (min)',String(lv.walk)));
   grid.appendChild(mkF('reps','REPS DONE','of '+reps));
   body.appendChild(grid);
 
-  // distance / time / HR
   const g2=el('div','fgrid2');
   [['distance','DISTANCE (km)'],['time','TOTAL TIME (min)'],['avgHR','AVG HR']].forEach(([k,l])=>{
     const f=el('div','fld');f.innerHTML='<div class="flbl mf">'+l+'</div>';const inp=el('input');inp.type='text';inp.inputMode='decimal';inp.value=a.fields[k]||'';inp.oninput=e=>{a.fields[k]=e.target.value;save();updPace();};f.appendChild(inp);g2.appendChild(f);
@@ -1865,44 +1898,44 @@ function mkRunBody(a,body){
   body.appendChild(g2);
   const pace=el('div','pace mf');const updPace=()=>{const d=parseFloat(a.fields.distance),t=parseFloat(a.fields.time);if(!isNaN(d)&&!isNaN(t)&&d>0){const p=t/d,mm=Math.floor(p),ss=Math.round((p-mm)*60);pace.textContent='Pace \u2248 '+mm+':'+String(ss).padStart(2,'0')+' /km';}else pace.textContent='';};updPace();body.appendChild(pace);
 
-  // effective level = what you actually ENTERED (snap to nearest ladder step), else the shown level
-  const effIdx=(function(){
+  // effective level = exactly what you ENTERED (no rounding), else current level
+  function enteredLevel(){
     const jg=parseFloat(a.fields.seg&&a.fields.seg.jog);
     const wk2=parseFloat(a.fields.seg&&a.fields.seg.walk);
-    if(!isNaN(jg)&&jg>0&&!isNaN(wk2)&&wk2>0)return runStepFromValues(jg,wk2);
-    return idx;
-  })();
-
-  // note if entered values map to a different level than shown
-  if(effIdx!==idx){
-    const snap=el('div');snap.style.cssText='font-size:.5625rem;color:#fbbf24;margin:.3rem 0 .1rem';
-    snap.textContent='\u26a1 You entered '+runStepLabel(effIdx)+' \u2014 grading from that level.';
-    body.appendChild(snap);
+    if(!isNaN(jg)&&jg>0&&!isNaN(wk2)&&wk2>0)return {run:jg,walk:wk2};
+    return {run:lv.run,walk:lv.walk};
   }
-  // EFFORT GRADING — sets next level
+
+  // EFFORT GRADING
   const gl=el('div');gl.style.cssText='font-size:.625rem;color:var(--t2);margin:.7rem 0 .3rem';gl.textContent='How did it feel? (sets your next run level)';body.appendChild(gl);
   const grow=el('div');grow.style.cssText='display:flex;gap:.4rem';
-  const grades=[['easy','\ud83d\ude43 Easy','#4ade80',1],['medium','\ud83d\ude08 Medium','#fbbf24',0],['hard','\ud83e\udeea Hard','#f87171',-1]];
-  grades.forEach(([key,lbl,col,delta])=>{
+  const grades=[['easy','\ud83d\ude43 Easy','#4ade80'],['medium','\ud83d\ude08 Medium','#fbbf24'],['hard','\ud83e\udeea Hard','#f87171']];
+  grades.forEach(([key,lbl,col])=>{
     const gb=el('button');const sel=a.fields.effort===key;
     gb.style.cssText='flex:1;padding:.5rem;border-radius:.5rem;border:1px solid '+(sel?col:'var(--line)')+';background:'+(sel?col+'22':'var(--s1)')+';color:'+(sel?col:'var(--t2)')+';font-size:.75rem';
     gb.textContent=lbl;
     gb.onclick=()=>{
       a.fields.effort=key;
-      // snap this run's recorded level to what was entered, then adjust next by grade
-      a.fields.runStep=effIdx;
-      const nextIdx=Math.max(0,Math.min(RUN_LADDER.length-1,effIdx+delta));
-      S.runStep=nextIdx;S._nextRunStep=nextIdx;
+      const did=enteredLevel();
+      a.fields.runLevel=did; // record what you actually did as this run's level
+      let next;
+      if(key==='easy')next=runLevelEasy(did);
+      else if(key==='hard')next=runLevelHard(did);
+      else next=did; // medium = hold
+      S.runLevel=next; // baseline for next run
       upsertActivity(a);render();
     };
     grow.appendChild(gb);
   });
   body.appendChild(grow);
   if(a.fields.effort){
-    const delta=a.fields.effort==='easy'?1:(a.fields.effort==='hard'?-1:0);
-    const nextIdx=Math.max(0,Math.min(RUN_LADDER.length-1,effIdx+delta));
+    const did=enteredLevel();
+    let next,arrow,verb;
+    if(a.fields.effort==='easy'){next=runLevelEasy(did);arrow='\u2191';verb='steps up to';}
+    else if(a.fields.effort==='hard'){next=runLevelHard(did);arrow='\u2193';verb='eases to';}
+    else{next=did;arrow='\u2192';verb='same level \u2014';}
     const nx=el('div');nx.style.cssText='font-size:.625rem;color:#4ade80;margin-top:.4rem';
-    nx.textContent=(delta===0?'\u2192 Next run: same level \u2014 '+runStepLabel(nextIdx):(delta>0?'\u2191 Next run steps up to: '+runStepLabel(nextIdx):'\u2193 Next run eases to: '+runStepLabel(nextIdx)));
+    nx.textContent=arrow+' Next run '+verb+' '+runLevelLabel(next);
     body.appendChild(nx);
   }
 }
