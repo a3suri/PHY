@@ -1268,7 +1268,7 @@ function backupData(){
   const data={version:'phy-v15',exported:new Date().toISOString(),state:{
     user:S.user,heightCm:S.heightCm,progStart:S.progStart,goals:S.goals,
     log:S.log,measurements:S.measurements,steps:S.steps,runWeek:S.runWeek,
-    nutrition:S.nutrition,targets:S.targets,menu:S.menu
+    nutrition:S.nutrition,targets:S.targets,menu:S.menu,runLevel:S.runLevel
   }};
   const json=JSON.stringify(data,null,2);
   const blob=new Blob([json],{type:'application/json'});
@@ -1302,6 +1302,9 @@ function restoreData(){
         S.nutrition=st.nutrition||{};
         if(st.targets)S.targets=st.targets;
         if(st.runWeek)S.runWeek=st.runWeek;
+        // run level: from backup, else recover from most recent logged run
+        if(st.runLevel)S.runLevel=st.runLevel;
+        else{const runs=(S.log||[]).filter(x=>x.defKey==='run'&&x.fields&&x.fields.runLevel).sort((p,q)=>q.date.localeCompare(p.date));if(runs[0])S.runLevel={run:runs[0].fields.runLevel.run,walk:runs[0].fields.runLevel.walk};}
         const nutDays=Object.keys(S.nutrition).length;
         saveNow();S.view='progress';render();
         toast('\u2713 Restored '+S.log.length+' activities, '+nutDays+' nutrition days');
