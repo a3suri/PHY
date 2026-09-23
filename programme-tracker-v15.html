@@ -257,6 +257,13 @@ button{cursor:pointer;border:none;background:none}
 .remind-bar{margin:.5rem 1.25rem 0;padding:.6rem .8rem;border-radius:.55rem;background:rgba(239,68,68,.14);border:1px solid rgba(239,68,68,.5);color:#fca5a5;font-size:.75rem;line-height:1.4;display:flex;align-items:center;justify-content:space-between;gap:.6rem;cursor:pointer}
 .remind-bar b{color:#fecaca}
 .remind-x{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:.6875rem;padding:.25rem .6rem;border-radius:.4rem;flex-shrink:0}
+
+.dryday{display:flex;align-items:center;gap:.6rem;margin:.5rem 0 .2rem;padding:.6rem .7rem;border-radius:.6rem;background:var(--s1);border:1px solid var(--line);cursor:pointer}
+.dryday.on{background:rgba(74,222,128,.14);border-color:rgba(74,222,128,.55)}
+.dry-tick{font-size:1.3rem;line-height:1}
+.dry-tick.dry-off{opacity:.5}
+.dry-lbl{font-size:.8125rem;color:var(--t1);font-weight:500}
+.dryday.on .dry-lbl{color:#4ade80}
 </style>
 </head>
 <body>
@@ -515,7 +522,25 @@ function runLevelOf(S,a){
 function runLevelLabel(lv){return 'Run '+lv.run+' min \u00b7 Walk '+lv.walk+' min';}
 function runLevelReps(lv){return Math.max(1,Math.ceil(30/(lv.run+lv.walk)));}
 // nearest fixed-ladder index (for phase name + Run Plan highlight)
-function ladderIdxOf(lv){let best=0,bd=1e9;RUN_LADDER.forEach((s,i)=>{const d=Math.abs(s.jog-lv.run)*10+Math.abs(s.walk-lv.walk);if(d<bd){bd=d;best=i;}});return best;}
+function ladderIdxOf(lv){
+  // RUN LENGTH IS KING: more run always outranks less walk.
+  // walk only breaks ties within the same run-time (walk down = further along).
+  // Progress score: run dominates (x1000), then shorter walk adds a little.
+  const jogs=[1,2,3,4,5,6,8,10,12,15];
+  const onLadder=jogs.indexOf(lv.run)>=0;
+  if(onLadder){
+    // exact run-time: match within that run-block by walk (nearest, walk-down = higher)
+    let best=0,bd=1e9;
+    RUN_LADDER.forEach((s,i)=>{if(s.jog===lv.run){const d=Math.abs(s.walk-lv.walk);if(d<bd){bd=d;best=i;}}});
+    return best;
+  }
+  // intermediate run-time (e.g. 1.5): you've surpassed the whole lower run-block.
+  // Mark the START of the next run-block (run is king).
+  const ni=jogs.findIndex(j=>j>lv.run);
+  if(ni>=0){const nextRun=jogs[ni];let s2=0;RUN_LADDER.forEach((s,i)=>{if(s.jog===nextRun&&s.walk===2.0)s2=i;});return s2;}
+  // beyond the top run-time: last level
+  return RUN_LADDER.length-1;
+}
 // EASY: reduce walk one taper step; if already at min walk, go to next run-time at walk 2.0
 function runLevelEasy(lv){
   const wi=WALK_STEPS.indexOf(lv.walk);
@@ -846,7 +871,7 @@ function mkGroupedChart(series,weeks,wkLabels){
 /* ===== NUTRITION TAB ===== */
 const DEFAULT_TARGETS={
   protein:130,carbs:180,fat:70,fibre:35,satfat:10,calActive:2000,calRest:1650,
-  alcUnits:14,alcDays:3,
+  alcUnits:14,alcDays:3,dryDays:4,
   stepsWeekday:7000,stepsWeekend:10000,
   gymWeek:3,runWeek:3,challengeWeek:7,yogaWeek:3
 };
@@ -894,6 +919,32 @@ const NUT_CARDS=[
     '3\u20134 litres water daily. Protein within 45 min post-workout.']}
 ];
 
+function mkRunPlan(){
+  const wrap=el('div');wrap.style.paddingBottom='2rem';
+    wrap.appendChild(mkSH('\ud83c\udfc3 Run plan \u00b7 5K\u219210K','#60a5fa'));
+  const rc=el('div','nutcard');
+  const rh=el('div','nc-title');rh.textContent='30 levels \u00b7 grade to advance';rc.appendChild(rh);
+  const intro=el('div','nc-line');intro.innerHTML='Each run-time has 3 weeks (walk taper 2.0\u21921.5\u21921.0), then the next run-time. <b>\ud83d\ude43 Easy</b> steps up \u00b7 <b>\ud83d\ude08 Medium</b> stays \u00b7 <b>\ud83e\udeea Hard</b> eases back. Min 30 min/session.';rc.appendChild(intro);
+  // build compact table
+  const cur=(S.runLevel?ladderIdxOf(S.runLevel):0);
+  const tbl=el('div');tbl.style.cssText='margin-top:.5rem;font-family:monospace;font-size:.6875rem';
+  const hdr=el('div');hdr.style.cssText='display:flex;color:var(--t3);border-bottom:1px solid var(--line);padding-bottom:.2rem;margin-bottom:.15rem';
+  hdr.innerHTML='<span style="width:2.2rem">Lvl</span><span style="flex:1">Run \u00b7 Walk</span><span style="width:5rem">Phase</span><span style="width:2.5rem;text-align:right">Cyc</span>';
+  tbl.appendChild(hdr);
+  RUN_LADDER.forEach((s,i)=>{
+    const isCur=i===cur;
+    const row=el('div');row.style.cssText='display:flex;padding:.12rem 0;'+(isCur?'background:rgba(96,165,250,.15);border-radius:.3rem;color:#93c5fd;font-weight:600':'color:var(--t2)');
+    const reps=Math.max(1,Math.ceil(30/(s.jog+s.walk)));
+    row.innerHTML='<span style="width:2.2rem">'+(isCur?'\u25b6':'')+(i+1)+'</span>'+
+      '<span style="flex:1">Run '+s.jog+' \u00b7 Walk '+s.walk+'</span>'+
+      '<span style="width:5rem;color:var(--t3)">'+runPhaseName(i)+'</span>'+
+      '<span style="width:2.5rem;text-align:right;color:var(--t3)">'+reps+'</span>';
+    tbl.appendChild(row);
+  });
+  rc.appendChild(tbl);
+  wrap.appendChild(rc);
+  return wrap;
+}
 function mkNutrition(){
   const wrap=el('div');wrap.style.paddingBottom='2rem';
   const iso=S.cursor;
@@ -956,29 +1007,6 @@ function mkNutrition(){
     wrap.appendChild(c);
   });
 
-  // ---- Run Plan reference (30-level ladder) ----
-  wrap.appendChild(mkSH('\ud83c\udfc3 Run plan \u00b7 5K\u219210K','#60a5fa'));
-  const rc=el('div','nutcard');
-  const rh=el('div','nc-title');rh.textContent='30 levels \u00b7 grade to advance';rc.appendChild(rh);
-  const intro=el('div','nc-line');intro.innerHTML='Each run-time has 3 weeks (walk taper 2.0\u21921.5\u21921.0), then the next run-time. <b>\ud83d\ude43 Easy</b> steps up \u00b7 <b>\ud83d\ude08 Medium</b> stays \u00b7 <b>\ud83e\udeea Hard</b> eases back. Min 30 min/session.';rc.appendChild(intro);
-  // build compact table
-  const cur=(S.runLevel?ladderIdxOf(S.runLevel):0);
-  const tbl=el('div');tbl.style.cssText='margin-top:.5rem;font-family:monospace;font-size:.6875rem';
-  const hdr=el('div');hdr.style.cssText='display:flex;color:var(--t3);border-bottom:1px solid var(--line);padding-bottom:.2rem;margin-bottom:.15rem';
-  hdr.innerHTML='<span style="width:2.2rem">Lvl</span><span style="flex:1">Run \u00b7 Walk</span><span style="width:5rem">Phase</span><span style="width:2.5rem;text-align:right">Cyc</span>';
-  tbl.appendChild(hdr);
-  RUN_LADDER.forEach((s,i)=>{
-    const isCur=i===cur;
-    const row=el('div');row.style.cssText='display:flex;padding:.12rem 0;'+(isCur?'background:rgba(96,165,250,.15);border-radius:.3rem;color:#93c5fd;font-weight:600':'color:var(--t2)');
-    const reps=Math.max(1,Math.ceil(30/(s.jog+s.walk)));
-    row.innerHTML='<span style="width:2.2rem">'+(isCur?'\u25b6':'')+(i+1)+'</span>'+
-      '<span style="flex:1">Run '+s.jog+' \u00b7 Walk '+s.walk+'</span>'+
-      '<span style="width:5rem;color:var(--t3)">'+runPhaseName(i)+'</span>'+
-      '<span style="width:2.5rem;text-align:right;color:var(--t3)">'+reps+'</span>';
-    tbl.appendChild(row);
-  });
-  rc.appendChild(tbl);
-  wrap.appendChild(rc);
   return wrap;
 }
 function hitRateStats(S,weeks){
@@ -1120,17 +1148,18 @@ function mkProgress(){
   wrap.appendChild(mkSH('Alcohol \u00b7 weekly','#f472b6'));
   const alcWeeks=weekKeysBack(S._freqRange||8);
   const alcData=alcWeeks.map(w=>{
-    const days=weekDates(w);let drinkDays=0,units=0;
-    days.forEach(d=>{const n=nutOn(S,d);if(n&&drinksCount(n.drinks)>0){drinkDays++;units+=drinksUnits(n.drinks);}});
-    return {week:w,drinkDays:drinkDays,units:Math.round(units*10)/10,win:(drinkDays<TGT().alcDays&&units<TGT().alcUnits)};
+    const days=weekDates(w).filter(d=>d<=todayISO());let drinkDays=0,units=0,dryDays=0;
+    days.forEach(d=>{const n=nutOn(S,d);if(n&&drinksCount(n.drinks)>0){drinkDays++;units+=drinksUnits(n.drinks);}else if(n&&n.dryDay===true){dryDays++;}});
+    return {week:w,drinkDays:drinkDays,units:Math.round(units*10)/10,dryDays:dryDays,win:(drinkDays<TGT().alcDays&&units<TGT().alcUnits)};
   });
-  if(alcData.some(a=>a.drinkDays>0||a.units>0)){
+  if(alcData.some(a=>a.drinkDays>0||a.units>0||a.dryDays>0)){
     const wkLabels2=alcWeeks.map(w=>{const d=parseISO(w);return (d.getMonth()+1)+'/'+d.getDate();});
     const series=[
+      {name:'Dry-days',emoji:'\u2705',color:'#4ade80',target:TGT().dryDays,counts:{}},
       {name:'Drink-days',emoji:'\ud83d\udcc5',color:'#f472b6',target:TGT().alcDays,counts:{}},
       {name:'Units',emoji:'\ud83c\udf77',color:'#c084fc',target:TGT().alcUnits,counts:{}}
     ];
-    alcWeeks.forEach((w,i)=>{series[0].counts[w]=alcData[i].drinkDays;series[1].counts[w]=alcData[i].units;});
+    alcWeeks.forEach((w,i)=>{series[0].counts[w]=alcData[i].dryDays;series[1].counts[w]=alcData[i].drinkDays;series[2].counts[w]=alcData[i].units;});
     const card=el('div','pchart');
     const legend='<span style="color:#f472b6">\ud83d\udcc5 Drink-days (\u25a1'+TGT().alcDays+')</span> <span style="color:#c084fc">\ud83c\udf77 Units (\u25a1'+TGT().alcUnits+')</span> <span style="color:#ef4444">\u25a1 target</span>';
     card.innerHTML='<div class="pc-lbl mf" style="margin-bottom:.3rem">'+legend+'</div>'+mkGroupedChart(series,alcWeeks,wkLabels2);
@@ -1139,9 +1168,16 @@ function mkProgress(){
     alcData.forEach(a=>{const s=el('div');s.style.cssText='flex:1;text-align:center;font-size:.75rem';s.textContent=a.win?'\ud83c\udfc6':'\u00b7';winRow.appendChild(s);});
     card.appendChild(winRow);
     wrap.appendChild(card);
+    // dry-days this week vs target
+    const thisWk=alcData[alcData.length-1];
+    const dryTgt=TGT().dryDays;
+    const dn=el('div');dn.style.cssText='margin:.3rem 1.25rem .2rem;font-size:.75rem;color:'+(thisWk.dryDays>=dryTgt?'#4ade80':'var(--t2)')+';font-weight:600';
+    dn.innerHTML='\u2705 Dry days this week: <b style="color:'+(thisWk.dryDays>=dryTgt?'#4ade80':'#fbbf24')+'">'+thisWk.dryDays+' / '+dryTgt+'</b>'+(thisWk.dryDays>=dryTgt?' \ud83c\udfaf hit!':'');
+    wrap.appendChild(dn);
+    const dryWeeks=alcData.filter(a=>a.dryDays>=dryTgt).length;
     const wins=alcData.filter(a=>a.win).length;
-    const wn=el('div');wn.style.cssText='margin:.3rem 1.25rem .5rem;font-size:.6875rem;color:#4ade80';
-    wn.textContent='\ud83c\udfc6 '+wins+' of '+alcData.length+' weeks on target (<3 days & <14 units)';
+    const wn=el('div');wn.style.cssText='margin:.1rem 1.25rem .5rem;font-size:.625rem;color:var(--t3)';
+    wn.textContent='\u2705 '+dryWeeks+'/'+alcData.length+' weeks hit '+dryTgt+'+ dry days \u00b7 \ud83c\udfc6 '+wins+' weeks under limits';
     wrap.appendChild(wn);
   }
 
@@ -1515,7 +1551,7 @@ function openSettings(){
     mkField('Calories \u2014 active day','calActive','kcal'),mkField('Calories \u2014 rest day','calRest','kcal')
   ]);
   group('\ud83c\udf77 ALCOHOL',[
-    mkField('Units / week (cap)','alcUnits','u'),mkField('Drink-days / week (cap)','alcDays','days')
+    mkField('Units / week (cap)','alcUnits','u'),mkField('Drink-days / week (cap)','alcDays','days'),mkField('Dry days / week (target)','dryDays','days')
   ]);
   group('\ud83d\udc63 STEPS',[
     mkField('Weekday target','stepsWeekday','steps'),mkField('Weekend target','stepsWeekend','steps')
@@ -1544,7 +1580,7 @@ function openSettings(){
 function mkHeader(){const h=el('div','hd');h.style.position='relative';h.innerHTML='<div class="eyebrow mf">Programme · '+(S.user||'You')+'</div><h1 class="sf">PHY<span class="em"> log</span></h1><div class="drange mf">'+fmtNice(S.cursor)+'</div>';const gear=el('button','gearbtn');gear.innerHTML='\u2699\ufe0f';gear.title='Settings & targets';gear.onclick=openSettings;h.appendChild(gear);return h;}
 
 /* links */
-function mkLinks(){const w=el('div','vlinks mf');[['today','Today'],['week','This Week'],['month','This Month'],['progress','Progress'],['nutrition','Nutrition']].forEach(([k,l])=>{const a=el('div','vlink'+(S.view===k?' on':''),l);a.onclick=()=>{S.view=k;if(k==='today')S.cursor=todayISO();save();render();};w.appendChild(a);});return w;}
+function mkLinks(){const w=el('div','vlinks mf');[['today','Today'],['week','This Week'],['month','This Month'],['progress','Progress'],['nutrition','Nutrition'],['runplan','Run Plan']].forEach(([k,l])=>{const a=el('div','vlink'+(S.view===k?' on':''),l);a.onclick=()=>{S.view=k;if(k==='today')S.cursor=todayISO();save();render();};w.appendChild(a);});return w;}
 
 /* day nav */
 function mkDayNav(){const n=el('div','daynav');const pv=el('button','arrow','‹');pv.onclick=()=>{S.cursor=addDays(S.cursor,-1);save();render();};const nx=el('button','arrow','›');nx.onclick=()=>{S.cursor=addDays(S.cursor,1);save();render();};const dc=el('div','dc');dc.style.position='relative';const t=S.cursor===todayISO();dc.innerHTML='<div class="d1">'+fmtShort(S.cursor)+'</div><div class="d2 mf">'+(t?'TODAY':'TAP TO PICK DATE')+'</div>';const dp=el('input');dp.type='date';dp.value=S.cursor;dp.className='dateoverlay';dp.onchange=e=>{if(e.target.value){S.cursor=e.target.value;save();render();}};dc.appendChild(dp);n.append(pv,dc,nx);return n;}
@@ -2061,6 +2097,17 @@ function openPicker(){
 }
 
 /* ===== TODAY ===== */
+function dryDayStreak(S,iso){
+  // consecutive days up to & including iso that are marked dry OR have 0 units logged with a dry flag
+  let streak=0,d=iso;
+  for(let i=0;i<400;i++){
+    const n=(S.nutrition||{})[d];
+    const isDry=n&&n.dryDay===true;
+    if(isDry)streak++;else break;
+    d=addDays(d,-1);
+  }
+  return streak;
+}
 function ensureDrinkLog(n){if(!n.drinks)n.drinks={};if(!Array.isArray(n.drinks.log))n.drinks.log=[];return n.drinks.log;}
 
 function openDrinkPicker(iso,catKey){
@@ -2147,7 +2194,8 @@ function mkDrinkStrip(iso){
     const cap=TGT().alcUnits;
     const wk=weekAlcoholUnits(S,iso);
     const today=drinksUnits(n.drinks);
-    const remaining=Math.round((cap-wk)*10)/10;
+    const led=alcoholLedger(S,iso);
+    const remaining=led.canHave; // account for carryover so it matches "Can have this wk"
     const over=remaining<0;
     const bud=el('div');bud.style.cssText='margin:.55rem 0 .2rem;padding:.6rem .7rem;border-radius:.55rem;background:var(--s1);border:1px solid var(--line);display:flex;justify-content:space-between;gap:.4rem;font-size:.6875rem';
     bud.innerHTML='<span style="color:var(--t2)">Today <b style="color:var(--t1)">'+today+'u</b></span>'+
@@ -2158,8 +2206,7 @@ function mkDrinkStrip(iso){
     const bar=el('div');const pct=Math.min(100,Math.round(wk/cap*100));
     bar.style.cssText='height:100%;width:'+pct+'%;background:'+(wk>cap?'#f87171':(wk>cap*0.8?'#fbbf24':'#4ade80'))+';transition:width .2s';
     barBg.appendChild(bar);box.appendChild(barBg);
-    // 2-week average + rolling make-up ledger
-    const led=alcoholLedger(S,iso);
+    // 2-week average + rolling make-up ledger (led computed above)
     const avgCol=led.avg2>cap?'#f87171':(led.avg2>cap*0.85?'#fbbf24':'#4ade80');
     const l2=el('div');l2.style.cssText='margin:.4rem 0 .2rem;padding:.65rem .7rem;border-radius:.55rem;background:var(--s1);border:1px solid var(--line);display:flex;justify-content:space-between;gap:.4rem;font-size:.8125rem';
     l2.innerHTML='<span style="color:var(--t2)">2-wk avg <b style="color:'+avgCol+';font-size:.9375rem">'+led.avg2+'u</b><span style="color:var(--t3);font-size:.625rem">/wk</span></span>'+
@@ -2171,6 +2218,27 @@ function mkDrinkStrip(iso){
       box.appendChild(dnote);
     }
   }
+  // DRY DAY tick — dopamine hit for a zero-alcohol day
+  {
+    const units=drinksUnits(n.drinks);
+    const isDry=n.dryDay===true;
+    const dry=el('div','dryday'+(isDry?' on':''));
+    const streak=dryDayStreak(S,iso);
+    if(isDry){
+      dry.innerHTML='<span class="dry-tick">\u2705</span><span class="dry-lbl">Dry day!'+(streak>1?' \ud83d\udd25 '+streak+' in a row':'')+'</span>';
+    } else if(units>0){
+      dry.innerHTML='<span class="dry-tick dry-off">\u2b1c</span><span class="dry-lbl" style="color:var(--t3)">'+units+'u logged \u2014 not a dry day</span>';
+    } else {
+      dry.innerHTML='<span class="dry-tick dry-off">\u2b1c</span><span class="dry-lbl">Tap to mark today DRY \u2705</span>';
+    }
+    dry.onclick=()=>{
+      if(drinksUnits(n.drinks)>0){toast('You\u2019ve logged drinks today \u2014 remove them first');return;}
+      n.dryDay=!n.dryDay;saveNow();render();
+      if(n.dryDay){const st=dryDayStreak(S,iso);toast(st>1?'\u2705 Dry day! \ud83d\udd25 '+st+' in a row':'\u2705 Dry day logged!');}
+    };
+    box.appendChild(dry);
+  }
+
   if(S._expAlc){
     // 4 category buttons
     const dp=el('div','drinkpick');dp.style.margin='.6rem 0 0';
@@ -2569,7 +2637,7 @@ function render(){
   if(!S.user){app.appendChild(mkSetup());return;}
   app.appendChild(mkHeader());app.appendChild(mkLinks());
   const rb=mkReminderBar();if(rb)app.appendChild(rb);
-  let v;try{if(S.view==='week')v=mkWeek();else if(S.view==='month')v=mkMonth();else if(S.view==='progress')v=mkProgress();else if(S.view==='nutrition')v=mkNutrition();else v=mkToday();}catch(e){v=el('div','empty','Render error: '+e.message);}
+  let v;try{if(S.view==='week')v=mkWeek();else if(S.view==='month')v=mkMonth();else if(S.view==='progress')v=mkProgress();else if(S.view==='nutrition')v=mkNutrition();else if(S.view==='runplan')v=mkRunPlan();else v=mkToday();}catch(e){v=el('div','empty','Render error: '+e.message);}
   app.appendChild(v);
   try{
     if(_viewChanged){window.scrollTo(0,0);_lastView=S.view;}
