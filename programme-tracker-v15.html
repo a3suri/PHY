@@ -1704,13 +1704,22 @@ function mkActivityCard(a){
 
   const sb=el('button');sb.style.cssText='width:100%;margin-top:.6rem;padding:.7rem;border-radius:.55rem;background:'+(a.done?'rgba(74,222,128,.18)':gm.color)+';color:'+(a.done?'#4ade80':'#0a0a0a')+';font-weight:600;font-size:.8125rem;border:'+(a.done?'1px solid rgba(74,222,128,.4)':'none');sb.textContent=a.done?'✓ Logged — tap to save changes':'Save & mark done';
   sb.onclick=()=>{
-    if(a.defKey==='run'&&!a.fields.effort){
-      const jg=parseFloat(a.fields.seg&&a.fields.seg.jog);
-      const wkk=parseFloat(a.fields.seg&&a.fields.seg.walk);
-      let did=a.fields.runLevel||{run:1,walk:2.0};
-      if(!isNaN(jg)&&jg>0&&!isNaN(wkk)&&wkk>0)did={run:jg,walk:wkk};
-      a.fields.effort='medium';a.fields.runLevel=did;S.runLevel={run:did.run,walk:did.walk};
-      setTimeout(()=>toast('Logged at '+runLevelLabel(did)+' · 😈 Medium (stay). Tap Easy/Hard on the card to change.'),50);
+    if(a.defKey==='run'){
+      // ALWAYS re-read entered run/walk at save; entered values win regardless of tap order.
+      const baseLv=a.fields.runLevel||{run:1,walk:2.0};
+      let jg=parseFloat(a.fields.seg&&a.fields.seg.jog);
+      let wkk=parseFloat(a.fields.seg&&a.fields.seg.walk);
+      if(isNaN(jg)||jg<=0)jg=baseLv.run;   // untyped run -> use shown level
+      if(isNaN(wkk)||wkk<=0)wkk=baseLv.walk; // untyped walk -> use shown level
+      let did={run:jg,walk:wkk};
+      const grade=a.fields.effort||'medium'; // default Medium if not graded
+      a.fields.effort=grade;a.fields.runLevel=did;
+      let next=did;
+      if(grade==='easy')next=runLevelEasy(did);
+      else if(grade==='hard')next=runLevelHard(did);
+      S.runLevel={run:next.run,walk:next.walk};
+      const gEmoji=grade==='easy'?'\ud83d\ude43':(grade==='hard'?'\ud83e\udeea':'\ud83d\ude08');
+      setTimeout(()=>toast('Logged '+runLevelLabel(did)+' '+gEmoji+' \u2014 next run: '+runLevelLabel(next)),50);
     }
     a.done=true;upsertActivity(a);S._open=null;render();
     if(a.defKey!=='run')toast('✓ '+a.name+' logged');
@@ -1939,10 +1948,12 @@ function mkRunBody(a,body){
 
   // effective level = exactly what you ENTERED (no rounding), else current level
   function enteredLevel(){
-    const jg=parseFloat(a.fields.seg&&a.fields.seg.jog);
-    const wk2=parseFloat(a.fields.seg&&a.fields.seg.walk);
-    if(!isNaN(jg)&&jg>0&&!isNaN(wk2)&&wk2>0)return {run:jg,walk:wk2};
-    return {run:lv.run,walk:lv.walk};
+    let jg=parseFloat(a.fields.seg&&a.fields.seg.jog);
+    let wk2=parseFloat(a.fields.seg&&a.fields.seg.walk);
+    // if only one field was typed, use the shown level for the other (placeholder value)
+    if(isNaN(jg)||jg<=0)jg=lv.run;
+    if(isNaN(wk2)||wk2<=0)wk2=lv.walk;
+    return {run:jg,walk:wk2};
   }
 
   // EFFORT GRADING
@@ -2371,7 +2382,7 @@ function mkStepsStrip(iso){
   wrap.appendChild(top);
   const inp=el('input','ss-inp');inp.type='text';inp.inputMode='numeric';inp.value=val;inp.placeholder='Enter steps for '+fmtShort(iso).split(' ').slice(0,1)+'…';
   inp.oninput=e=>{S.steps[iso]=e.target.value;save();};
-  inp.onblur=()=>render();
+  inp.onblur=()=>{setTimeout(()=>{const ae=document.activeElement;if(!(ae&&(ae.tagName==='INPUT'||ae.tagName==='TEXTAREA')))render();},100);};
   wrap.appendChild(inp);
   const bar=el('div','ss-bar');const fill=el('div','ss-fill');fill.style.width=pct+'%';fill.style.background=hit?'#4ade80':'#60a5fa';bar.appendChild(fill);wrap.appendChild(bar);
   return wrap;
@@ -2640,10 +2651,13 @@ function render(){
   let v;try{if(S.view==='week')v=mkWeek();else if(S.view==='month')v=mkMonth();else if(S.view==='progress')v=mkProgress();else if(S.view==='nutrition')v=mkNutrition();else if(S.view==='runplan')v=mkRunPlan();else v=mkToday();}catch(e){v=el('div','empty','Render error: '+e.message);}
   app.appendChild(v);
   try{
-    if(_viewChanged){window.scrollTo(0,0);_lastView=S.view;}
+    // if the user is actively typing in a field, don't yank the scroll at all
+    const ae=(typeof document!=='undefined')?document.activeElement:null;
+    const typing=ae&&(ae.tagName==='INPUT'||ae.tagName==='TEXTAREA');
+    if(typing){/* leave scroll & focus alone while typing */}
+    else if(_viewChanged){window.scrollTo(0,0);_lastView=S.view;}
     else{
-      // in-place re-render (e.g. ticking a set): keep the user where they were
-      requestAnimationFrame(()=>{try{window.scrollTo(0,_prevScroll);}catch(e){}});
+      requestAnimationFrame(()=>{try{if(!(document.activeElement&&(document.activeElement.tagName==='INPUT'||document.activeElement.tagName==='TEXTAREA')))window.scrollTo(0,_prevScroll);}catch(e){}});
       window.scrollTo(0,_prevScroll);
     }
   }catch(e){}
