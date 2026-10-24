@@ -183,7 +183,7 @@ button{cursor:pointer;border:none;background:none}
 .pb-val{font-size:.625rem;color:var(--t2);margin-top:.15rem}
 .pbtn{width:calc(100% - 2.5rem);margin:.4rem 1.25rem;padding:.85rem;border-radius:.7rem;background:var(--s1);border:1px solid var(--line);color:var(--t1);font-size:.8125rem;font-weight:600}
 
-.gymsel{display:flex;align-items:center;gap:.4rem;margin:.3rem 0 .6rem}
+.gymsel{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;margin:.3rem 0 .6rem}
 .gymsel-lbl{font-size:.5625rem;letter-spacing:.1em;color:var(--t3);margin-right:.2rem}
 .gymchip{padding:.35rem .7rem;border-radius:.5rem;background:var(--s2);border:1px solid #333;font-size:.6875rem;color:var(--t2)}
 .gymchip.on{background:rgba(251,146,60,.16);border-color:rgba(251,146,60,.5);color:var(--ac);font-weight:600}
@@ -268,6 +268,13 @@ button{cursor:pointer;border:none;background:none}
 .prepbadge{font-size:.5rem;font-weight:700;letter-spacing:.08em;color:#22d3ee;background:rgba(34,211,238,.15);border:1px solid rgba(34,211,238,.4);border-radius:.3rem;padding:.1rem .3rem;margin-right:.1rem}
 
 .appver{font-size:.5625rem;color:var(--t3);opacity:.6;margin-top:.1rem;letter-spacing:.05em}
+
+.setrate{display:flex;gap:.3rem;margin:-.05rem 0 .45rem 2.9rem}
+.ratebtn{font-size:.85rem;line-height:1;padding:.12rem .4rem;border-radius:.4rem;background:var(--s1);border:1px solid var(--line);opacity:.45}
+.ratebtn.on{opacity:1}
+.ratebtn.r-easy.on{border-color:#4ade80;background:rgba(74,222,128,.15)}
+.ratebtn.r-medium.on{border-color:#fbbf24;background:rgba(251,191,36,.15)}
+.ratebtn.r-hard.on{border-color:#f87171;background:rgba(248,113,113,.15)}
 </style>
 </head>
 <body>
@@ -338,7 +345,7 @@ const ACT_EMOJI={
 function actEmoji(defKey,group){return ACT_EMOJI[defKey]||(GROUP_META[group]&&GROUP_META[group].icon)||'\u2b50';}
 const GROUP_ORDER=['bodyweight','flex','strength','cardio','other','body','rest'];
 
-const APP_VERSION="v16.0";
+const APP_VERSION="v16.1";
 function defState(){return{version:2,user:'',heightCm:176,progStart:DEFAULT_START,
   goals:{weight:'',bodyFat:'',muscle:'',waist:'',targetDate:''},
   log:[],measurements:[],menu:JSON.parse(JSON.stringify(DEFAULT_MENU)),
@@ -388,7 +395,7 @@ function lastActivity(S,defKey,beforeIso){
   return past[0]||null;
 }
 // last time a specific exercise (by name) was done in any session of this defKey
-function GYMS(){return ['UK','CH','Other'];}
+function GYMS(){return ['UK','CH','Spain','India','Other'];}
 // McGill Big 3 prep block — descending 6/4/2, bodyweight (no load), with form guidance
 const PREP_EXERCISES={
   'McGill Curl-up':{prep:true,sets:[{weight:'BW',reps:'6'},{weight:'BW',reps:'4'},{weight:'BW',reps:'2'}],memo:'Hands under lower back, one knee bent. Lift head+shoulders slightly, hold 8-10s. Brace, don\u2019t flatten the back. Switch bent knee each set.'},
@@ -1755,7 +1762,7 @@ function mkStrengthBody(a,body){
   if(!a.fields.gym)a.fields.gym='UK';
   const gymRow=el('div','gymsel');
   const gl=el('div','gymsel-lbl mf');gl.textContent='GYM';gymRow.appendChild(gl);
-  ['UK','CH','Other'].forEach(g=>{
+  ['UK','CH','Spain','India','Other'].forEach(g=>{
     const c=el('button','gymchip'+(a.fields.gym===g?' on':''));c.textContent=g;
     c.onclick=()=>{
       a.fields.gym=g;
@@ -1843,6 +1850,7 @@ function mkStrengthBody(a,body){
         const refTxt=ex.refSets.filter(s=>s.weight||s.reps).map(s=>(s.weight||'–')+'×'+(s.reps||'–')).join(', ');
         if(refTxt){const rf=el('div','ex-ref mf');rf.textContent='@'+ex.refGym+' ('+fmtNice(ex.refDate).replace(/ \d{4}$/,'')+'): '+refTxt;row.appendChild(rf);}
       }
+      const _wIn=[],_rIn=[];
       (ex.sets||[]).forEach((st,si)=>{
         const line=el('div','setline');
         const stick=el('button','setdone'+(st.done?' on':''));
@@ -1850,11 +1858,21 @@ function mkStrengthBody(a,body){
         stick.onclick=()=>{st.done=!st.done;upsertActivity(a);render();};
         const snlbl=el('span','sn mf');snlbl.textContent='SET '+(si+1);
         line.append(stick,snlbl);
-        const w=el('input');w.type='text';w.inputMode='decimal';w.value=st.weight||'';w.placeholder='kg';w.oninput=e=>{st.weight=e.target.value;save();};
-        const rp=el('input');rp.type='text';rp.inputMode='numeric';rp.value=st.reps||'';rp.placeholder='reps';rp.oninput=e=>{st.reps=e.target.value;save();};
+        const w=el('input');w.type='text';w.inputMode='decimal';w.value=st.weight||'';w.placeholder='kg';
+        const rp=el('input');rp.type='text';rp.inputMode='numeric';rp.value=st.reps||'';rp.placeholder='reps';
+        _wIn.push(w);_rIn.push(rp);
+        w.oninput=e=>{const v=e.target.value;st.weight=v;for(let j=si+1;j<ex.sets.length;j++){if(!ex.sets[j].weight){ex.sets[j].weight=v;if(_wIn[j])_wIn[j].value=v;}}save();};
+        rp.oninput=e=>{const v=e.target.value;st.reps=v;for(let j=si+1;j<ex.sets.length;j++){if(!ex.sets[j].reps){ex.sets[j].reps=v;if(_rIn[j])_rIn[j].value=v;}}save();};
         line.append(w,el('span','u','kg'),rp,el('span','u','reps'));
         if((ex.sets||[]).length>1){const del=el('button','setdel','×');del.onclick=()=>{ex.sets.splice(si,1);upsertActivity(a);render();};line.appendChild(del);}
         row.appendChild(line);
+        const rate=el('div','setrate');
+        [['easy','🙃'],['medium','😈'],['hard','🫪']].forEach(([key,em])=>{
+          const rb=el('button','ratebtn r-'+key+(st.rating===key?' on':''));rb.textContent=em;
+          rb.onclick=()=>{st.rating=(st.rating===key?'':key);upsertActivity(a);render();};
+          rate.appendChild(rb);
+        });
+        row.appendChild(rate);
       });
       const add=el('div','addset','+ add set');add.onclick=()=>{const last=ex.sets[ex.sets.length-1];ex.sets.push(last?{weight:last.weight||'',reps:last.reps||''}:{weight:'',reps:''});upsertActivity(a);render();};row.appendChild(add);
       // White memo note (short cue e.g. 'kneeling','sitting')
